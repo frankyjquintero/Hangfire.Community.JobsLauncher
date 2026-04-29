@@ -1,0 +1,824 @@
+﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True Namespace: Hangfire.Community.JobLauncher.Dashboard.Pages *@
+@using Hangfire.Dashboard
+@using Hangfire.Dashboard.Pages
+@using Hangfire.Community.JobsLauncher.Dashboard.Models
+@using Hangfire.Community.JobsLauncher.Dashboard.Pages
+@inherits Hangfire.Dashboard.RazorPage
+@{
+    Layout = new LayoutPage("Job Launcher");
+    // Asumimos que la clase parcial tiene una propiedad CriticalQueues
+}
+<style>
+    #paramsContainer .param-complex {
+        border-left: 2px solid #ccc;
+        padding-left: 10px;
+        margin-bottom: 10px;
+    }
+    .param-complex label {
+        font-weight: normal;
+        font-style: italic;
+    }
+    #jsonParams {
+        font-family: monospace;
+    }
+    .help-block .btn {
+        margin-right: 5px;
+    }
+</style>
+
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#launchTab" aria-controls="launchTab" role="tab" data-toggle="tab">Launch</a></li>
+    <li role="presentation"><a href="#historyTab" aria-controls="historyTab" role="tab" data-toggle="tab">History</a></li>
+    <li role="presentation"><a href="#templatesTab" aria-controls="templatesTab" role="tab" data-toggle="tab">Templates</a></li>
+</ul>
+
+<div class="tab-content" style="padding-top:15px;">
+    <!-- ==================== PESTAÑA LAUNCH ==================== -->
+    <div role="tabpanel" class="tab-pane fade in active" id="launchTab">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Job Configuration</div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label>Mode</label>
+                            <div>
+                                <label class="radio-inline"><input type="radio" name="launchMode" value="assisted" checked> Assisted (assembly)</label>
+                                <label class="radio-inline"><input type="radio" name="launchMode" value="manual"> Manual (JSON)</label>
+                            </div>
+                        </div>
+                        <!-- Campos según modo -->
+                        <div id="assistedFields">
+                            <div class="form-group">
+                                <label>Class Name</label>
+                                <div class="input-group">
+                                    <input type="text" id="classNameAssisted" class="form-control" placeholder="Namespace.ClassName">
+                                    <span class="input-group-btn"><button class="btn btn-default" id="btnLoadMethods" type="button">Load Methods</button></span>
+                                </div>
+                            </div>
+                            <div class="form-group" id="methodSelectGroup" style="display:none;">
+                                <label>Method</label>
+                                <select id="methodSelect" class="form-control"><option value="">-- Select method --</option></select>
+                            </div>
+                            <div id="paramsContainer"></div>
+                        </div>
+                        <div id="manualFields" style="display:none;">
+                            <div class="form-group">
+                                <label>Class Name</label>
+                                <input type="text" id="classNameManual" class="form-control" placeholder="Namespace.ClassName">
+                            </div>
+                            <div class="form-group">
+                                <label>Method Name</label>
+                                <input type="text" id="methodNameManual" class="form-control" placeholder="MethodName">
+                            </div>
+                            <div class="form-group">
+                                <label>Parameters (JSON)</label>
+                                <textarea id="jsonParams" class="form-control" rows="6"
+                                          placeholder='{"to":"email@example.com","subject":"Test"}'></textarea>
+                                <div class="help-block">
+                                    <button type="button" class="btn btn-xs btn-default" id="validateJsonBtn">Validate</button>
+                                    <button type="button" class="btn btn-xs btn-default" id="formatJsonBtn">Format</button>
+                                    <span id="jsonValidationMsg" class="text-danger" style="display:none;">Invalid JSON</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Opciones avanzadas -->
+                        <div class="form-group">
+                            <a role="button" data-toggle="collapse" href="#advancedOptions" aria-expanded="false">Advanced options ▾</a>
+                            <div class="collapse" id="advancedOptions" style="margin-top:5px;">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" id="chkPerformContext"> Include PerformContext</label>
+                                </div>
+                                <div class="checkbox">
+                                    <label><input type="checkbox" id="chkCancellationToken"> Include CancellationToken</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Modo de ejecución -->
+                        <div class="form-group">
+                            <label>Execution Mode</label>
+                            <div id="executionModeGroup">
+                                <label class="radio-inline"><input type="radio" name="execMode" value="FireAndForget" checked> Fire & Forget</label>
+                                <label class="radio-inline"><input type="radio" name="execMode" value="Schedule"> Schedule (minutes)</label>
+                                <label class="radio-inline"><input type="radio" name="execMode" value="ScheduleDateTime"> Schedule (date)</label>
+                                <label class="radio-inline"><input type="radio" name="execMode" value="Recurring"> Recurring</label>
+                                <label class="radio-inline"><input type="radio" name="execMode" value="Continuation"> Continuation</label>
+                            </div>
+                        </div>
+                        <!-- Campos específicos del modo de ejecución -->
+                        <div id="scheduleFields" style="display:none;">
+                            <div class="form-group">
+                                <label>Delay (minutes)</label>
+                                <input type="number" id="delayMinutes" class="form-control" min="1" value="30">
+                            </div>
+                        </div>
+                        <div id="scheduleDateTimeFields" style="display:none;">
+                            <div class="form-group">
+                                <label>Scheduled Date (UTC)</label>
+                                <input type="datetime-local" id="scheduledDateTime" class="form-control">
+                            </div>
+                        </div>
+                        <div id="recurringFields" style="display:none;">
+                            <div class="form-group">
+                                <label>Cron Expression</label>
+                                <div class="input-group">
+                                    <input type="text" id="cronExpression" class="form-control" placeholder="* * * * *">
+                                    <span class="input-group-btn"><button class="btn btn-default" id="btnValidateCron" type="button">Validate</button></span>
+                                </div>
+                                <div id="cronPreview" style="margin-top:5px; display:none;" class="text-info"></div>
+                            </div>
+                            <!-- Motor recurrente (solo visible en modo manual) -->
+                            <div class="form-group" id="recurringEngineGroup" style="display:none;">
+                                <label>Recurring Engine</label>
+                                <select id="recurringEngine" class="form-control">
+                                    <option value="BuiltIn">Built-in (lightweight)</option>
+                                    <option value="DynamicJobs">DynamicJobs (advanced)</option>
+                                </select>
+                                <span id="dynamicJobsWarning" class="text-warning" style="display:none;">DynamicJobs no está instalado en el dashboard o workers.</span>
+                            </div>
+                        </div>
+                        <div id="continuationFields" style="display:none;">
+                            <div class="form-group">
+                                <label>Parent Job Id</label>
+                                <input type="text" id="parentJobId" class="form-control" placeholder="job-id">
+                            </div>
+                        </div>
+                        <!-- Cola -->
+                        <div class="form-group">
+                            <label>Queue</label>
+                            <input type="text" id="queue" class="form-control" list="queueList" value="default">
+                            <datalist id="queueList"></datalist>
+                            <span id="criticalQueueWarning" class="text-warning" style="display:none;">⚠ Esta cola requiere confirmación.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Actions</div>
+                    <div class="panel-body">
+                        <button type="button" class="btn btn-info btn-block" id="btnPreview">Preview</button>
+                        <button type="button" class="btn btn-success btn-block" id="btnLaunch">Launch Job</button>
+                        <div id="launchResult" class="alert" style="margin-top:10px; display:none;"></div>
+                    </div>
+                </div>
+                <div class="panel panel-default" id="previewPanel" style="display:none;">
+                    <div class="panel-heading">Preview</div>
+                    <div class="panel-body"><pre id="previewContent"></pre></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PESTAÑA HISTORY ==================== -->
+    <div role="tabpanel" class="tab-pane fade" id="historyTab">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-sm-6"><strong>Recent launches</strong></div>
+                    <div class="col-sm-6 text-right"><button class="btn btn-sm btn-danger" id="btnClearHistory">Clear history</button></div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <table class="table table-condensed" id="historyTable">
+                    <thead><tr><th>Timestamp</th><th>JobId</th><th>Class</th><th>Method</th><th>Queue</th><th>Mode</th><th>Engine</th><th></th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PESTAÑA TEMPLATES ==================== -->
+    <div role="tabpanel" class="tab-pane fade" id="templatesTab">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Saved templates</div>
+                    <div class="panel-body">
+                        <table class="table table-condensed" id="templatesTable">
+                            <thead><tr><th>Name</th><th>Class</th><th>Method</th><th>Queue</th><th>Mode</th><th></th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Manage</div>
+                    <div class="panel-body">
+                        <button id="btnSaveTemplate" class="btn btn-primary btn-block">Save current as template</button>
+                        <div class="form-group" style="margin-top:10px;">
+                            <label>Import template</label>
+                            <input type="file" id="importFile" accept=".json">
+                            <button id="btnImport" class="btn btn-default btn-block" style="margin-top:5px;">Import</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmación para colas críticas -->
+<div class="modal fade" id="criticalConfirmModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header"><h4 class="modal-title">Confirm Launch</h4></div>
+            <div class="modal-body">
+                <p>The queue <strong id="criticalQueueName"></strong> is marked as critical. Are you sure you want to launch this job?</p>
+                <div><pre id="criticalJobSummary"></pre></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmCriticalLaunch">Confirm & Launch</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ====== VARIABLES GLOBALES ======
+    var currentMethods = [];        // array de MethodInfoDto
+    var dynamicJobsAvailable = false;
+    var criticalQueues =  [];
+    var apiBaseUrl = '@Url.To("/joblauncher")';
+
+    // ====== UTILIDADES ======
+    function $$(id){ return document.getElementById(id); }
+    function fetchJson(url, options){ return fetch(url, options).then(r => r.json()); }
+
+    // ====== INICIALIZACIÓN ======
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchJson(apiBaseUrl + '/api/capabilities').then(function(caps) {
+            dynamicJobsAvailable = caps.dynamicJobsAvailable;
+            adjustRecurringEngineDisplay();
+        });
+        loadQueues();
+        bindEvents();
+        loadHistory();
+        loadTemplates();
+    });
+
+    function bindEvents() {
+        // Modo
+        var radios = document.querySelectorAll('input[name="launchMode"]');
+        radios.forEach(function(r) { r.addEventListener('change', toggleMode); });
+
+        // Load methods
+        $$('btnLoadMethods').addEventListener('click', loadMethods);
+
+        // Method select
+        $$('methodSelect').addEventListener('change', onMethodChange);
+
+        // Execution modes
+        var execRadios = document.querySelectorAll('input[name="execMode"]');
+        execRadios.forEach(function(r) { r.addEventListener('change', toggleExecMode); });
+
+        // Validate/format JSON
+        $$('validateJsonBtn').addEventListener('click', validateJson);
+        $$('formatJsonBtn').addEventListener('click', formatJson);
+
+        // Cron
+        $$('btnValidateCron').addEventListener('click', validateCron);
+
+        // Botones principales
+        $$('btnPreview').addEventListener('click', showPreview);
+        $$('btnLaunch').addEventListener('click', submitJob);
+        $$('confirmCriticalLaunch').addEventListener('click', confirmedLaunch);
+
+        // History
+        $$('btnClearHistory').addEventListener('click', clearHistory);
+
+        // Templates
+        $$('btnSaveTemplate').addEventListener('click', saveTemplate);
+        $$('btnImport').addEventListener('click', importTemplate);
+
+        // Atajo Ctrl+Enter
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); submitJob(); }
+        });
+
+        // Mostrar/esconder campos de ejecución
+        toggleExecMode();
+        toggleMode();
+    }
+
+    // ====== MODO ASISTIDO / MANUAL ======
+    function toggleMode() {
+        var mode = document.querySelector('input[name="launchMode"]:checked').value;
+        if (mode === 'assisted') {
+            $$('assistedFields').style.display = 'block';
+            $$('manualFields').style.display = 'none';
+        } else {
+            $$('assistedFields').style.display = 'none';
+            $$('manualFields').style.display = 'block';
+        }
+        toggleExecMode(); // para mostrar/ocultar motor recurrente según modo
+    }
+
+    // ====== MODO DE EJECUCIÓN ======
+    function toggleExecMode() {
+        var mode = document.querySelector('input[name="execMode"]:checked').value;
+        $$('scheduleFields').style.display = (mode === 'Schedule') ? 'block' : 'none';
+        $$('scheduleDateTimeFields').style.display = (mode === 'ScheduleDateTime') ? 'block' : 'none';
+        $$('recurringFields').style.display = (mode === 'Recurring') ? 'block' : 'none';
+        $$('continuationFields').style.display = (mode === 'Continuation') ? 'block' : 'none';
+
+        // Motor recurrente visible solo si estamos en Recurring y en modo manual
+        adjustRecurringEngineDisplay();
+    }
+
+    function adjustRecurringEngineDisplay() {
+        var mode = document.querySelector('input[name="launchMode"]:checked').value;
+        var execMode = document.querySelector('input[name="execMode"]:checked').value;
+        if (execMode === 'Recurring' && mode === 'manual') {
+            $$('recurringEngineGroup').style.display = 'block';
+            var optDynamic = $$('recurringEngine').querySelector('option[value="DynamicJobs"]');
+            if (!dynamicJobsAvailable) {
+                optDynamic.disabled = true;
+                $$('dynamicJobsWarning').style.display = 'inline';
+            } else {
+                optDynamic.disabled = false;
+                $$('dynamicJobsWarning').style.display = 'none';
+            }
+        } else {
+            $$('recurringEngineGroup').style.display = 'none';
+        }
+    }
+
+    // Ajusta cuando se cambie de ejecución o modo
+    document.querySelectorAll('input[name="execMode"]').forEach(r => r.addEventListener('change', adjustRecurringEngineDisplay));
+    document.querySelectorAll('input[name="launchMode"]').forEach(r => r.addEventListener('change', adjustRecurringEngineDisplay));
+
+    // ====== CARGAR MÉTODOS (ASISTIDO) ======
+    function loadMethods() {
+        var className = $$('classNameAssisted').value.trim();
+        if (!className) { alert('Class name required'); return; }
+        fetchJson(apiBaseUrl + '/api/methods?className=' + encodeURIComponent(className))
+            .then(function(resp) {
+                if (!resp.success) {
+                    alert(resp.error + ' Switched to manual mode.');
+                    document.querySelector('input[name="launchMode"][value="manual"]').checked = true;
+                    toggleMode();
+                    return;
+                }
+                currentMethods = resp.methods;
+                var sel = $$('methodSelect');
+                sel.innerHTML = '<option value="">-- Select method --</option>';
+                currentMethods.forEach(function(m, i) {
+                    sel.innerHTML += '<option value="' + i + '">' + m.methodName + '</option>';
+                });
+                $$('methodSelectGroup').style.display = 'block';
+                $$('paramsContainer').innerHTML = '';
+            });
+    }
+
+    // ====== GENERAR PARÁMETROS DINÁMICOS (ASISTIDO) ======
+    function onMethodChange() {
+        var idx = $$('methodSelect').value;
+        if (idx === '') { $$('paramsContainer').innerHTML = ''; return; }
+        var method = currentMethods[parseInt(idx)];
+        var html = '';
+        method.parameters.forEach(function(p) {
+            html += '<div class="form-group param-field">';
+            html += '<label>' + p.name + ' (' + p.type + ')</label>';
+            if (p.isComplex) {
+                // Editor JSON simple
+                html += '<textarea class="form-control param-complex" data-param-name="' + p.name + '" rows="3" placeholder="Insert JSON for ' + p.type + '"></textarea>';
+            } else {
+                var inputType = 'text';
+                if (p.type.startsWith('int') || p.type.startsWith('long') || p.type.startsWith('short') ||
+                    p.type.startsWith('byte') || p.type.startsWith('double') || p.type.startsWith('float') ||
+                    p.type.startsWith('decimal')) inputType = 'number';
+                else if (p.type.startsWith('DateTime') || p.type.startsWith('DateTimeOffset')) inputType = 'datetime-local';
+                else if (p.type.startsWith('bool')) inputType = 'checkbox';
+                html += '<input type="' + inputType + '" class="form-control" data-param-name="' + p.name + '" placeholder="' + p.type + '" />';
+            }
+            html += '</div>';
+        });
+        $$('paramsContainer').innerHTML = html;
+    }
+
+    // ====== JSON VALIDATE / FORMAT ======
+    function validateJson() {
+        var text = $$('jsonParams').value.trim();
+        if (!text) return;
+        try { JSON.parse(text); $$('jsonValidationMsg').style.display = 'none'; alert('Valid JSON.'); }
+        catch(e) { $$('jsonValidationMsg').style.display = 'inline'; }
+    }
+    function formatJson() {
+        var text = $$('jsonParams').value.trim();
+        try { var obj = JSON.parse(text); $$('jsonParams').value = JSON.stringify(obj, null, 2); $$('jsonValidationMsg').style.display = 'none'; }
+        catch(e) { $$('jsonValidationMsg').style.display = 'inline'; }
+    }
+
+    // ====== VALIDATE CRON ======
+    function validateCron() {
+        var expr = $$('cronExpression').value.trim();
+        if (!expr) { alert('Cron expression required'); return; }
+        fetchJson(apiBaseUrl + '/pi/validate-cron?expression=' + encodeURIComponent(expr))
+            .then(function(resp) {
+                var div = $$('cronPreview');
+                if (!resp.success) {
+                    div.innerHTML = '<span class="text-danger">' + resp.error + '</span>';
+                } else {
+                    div.innerHTML = 'Next occurrences: ' + resp.occurrences.join(', ');
+                }
+                div.style.display = 'block';
+            });
+    }
+
+    // ====== COLAS CRÍTICAS ======
+    function isQueueCritical(queue) {
+        return criticalQueues.indexOf(queue) >= 0;
+    }
+
+    function checkCriticalQueue(queue) {
+        if (isQueueCritical(queue)) {
+            $$('criticalQueueWarning').style.display = 'block';
+            return true;
+        } else {
+            $$('criticalQueueWarning').style.display = 'none';
+            return false;
+        }
+    }
+
+    // Verificar al escribir
+    $$('queue').addEventListener('input', function() { checkCriticalQueue(this.value); });
+    $$('queue').addEventListener('change', function() { checkCriticalQueue(this.value); });
+
+    // ====== CARGAR COLAS ======
+    function loadQueues() {
+        fetchJson(apiBaseUrl + '/api/queues').then(function(resp) {
+            var datalist = $$('queueList');
+            datalist.innerHTML = '';
+            (resp.queues || []).forEach(function(q) {
+                datalist.innerHTML += '<option value="' + q + '">';
+            });
+        });
+    }
+
+    // ====== BUILD REQUEST OBJECT ======
+    function buildRequest() {
+        var mode = document.querySelector('input[name="launchMode"]:checked').value;
+        var className = mode === 'assisted' ? $$('classNameAssisted').value.trim() : $$('classNameManual').value.trim();
+        var methodName = mode === 'assisted' ? (function() {
+            var idx = $$('methodSelect').value;
+            return idx === '' ? '' : currentMethods[parseInt(idx)].methodName;
+        })() : $$('methodNameManual').value.trim();
+
+        var request = {
+            className: className,
+            methodName: methodName,
+            queue: $$('queue').value.trim() || 'default',
+            executionMode: document.querySelector('input[name="execMode"]:checked').value,
+            includePerformContext: $$('chkPerformContext').checked,
+            includeCancellationToken: $$('chkCancellationToken').checked,
+            parameters: null,
+            rawParametersJson: null
+        };
+
+        // Si manual, rawParametersJson
+        if (mode === 'manual') {
+            request.rawParametersJson = $$('jsonParams').value.trim() || '{}';
+        } else {
+            // Recoger parámetros del formulario asistido
+            var paramDict = {};
+            var paramFields = document.querySelectorAll('#paramsContainer .param-field');
+            paramFields.forEach(function(field) {
+                var name = field.querySelector('[data-param-name]').getAttribute('data-param-name');
+                var input = field.querySelector('[data-param-name]');
+                var value;
+                if (input.type === 'checkbox') {
+                    value = input.checked ? 'true' : 'false';
+                } else {
+                    value = input.value;
+                }
+                paramDict[name] = value;
+            });
+            request.parameters = paramDict;
+        }
+
+        // Completion specific
+        if (request.executionMode === 'Schedule') {
+            request.delayMinutes = parseInt($$('delayMinutes').value) || 30;
+        }
+        if (request.executionMode === 'ScheduleDateTime') {
+            request.scheduledDateTime = $$('scheduledDateTime').value ? new Date($$('scheduledDateTime').value).toISOString() : null;
+        }
+        if (request.executionMode === 'Recurring') {
+            request.cronExpression = $$('cronExpression').value.trim() || '* * * * *';
+            if (mode === 'manual') {
+                request.recurringEngine = $$('recurringEngine').value;
+            }
+        }
+        if (request.executionMode === 'Continuation') {
+            request.parentJobId = $$('parentJobId').value.trim();
+        }
+        return request;
+    }
+
+    // ====== PREVIEW ======
+    function showPreview() {
+        var req = buildRequest();
+        var summary = 'Class: ' + req.className + '\nMethod: ' + req.methodName + '\nQueue: ' + req.queue +
+                      '\nMode: ' + req.executionMode + '\nEngine: ' + (req.recurringEngine || 'Direct') +
+                      '\nParameters: ' + (req.rawParametersJson || JSON.stringify(req.parameters));
+        $$('previewContent').textContent = summary;
+        $$('previewPanel').style.display = 'block';
+    }
+
+    // ====== SUBMIT / LAUNCH ======
+    var pendingLaunchRequest = null; // para confirmación de cola crítica
+
+    function submitJob() {
+        var req = buildRequest();
+        if (!req.className || !req.methodName) { alert('ClassName and MethodName are required.'); return; }
+
+        if (isQueueCritical(req.queue)) {
+            pendingLaunchRequest = req;
+            $$('criticalQueueName').textContent = req.queue;
+            $$('criticalJobSummary').textContent = 'Class: ' + req.className + '\nMethod: ' + req.methodName + '\nMode: ' + req.executionMode;
+            $('#criticalConfirmModal').modal('show');
+        } else {
+            launchJob(req);
+        }
+    }
+
+    function confirmedLaunch() {
+        $('#criticalConfirmModal').modal('hide');
+        if (pendingLaunchRequest) launchJob(pendingLaunchRequest);
+    }
+
+    function launchJob(req) {
+        var formData = new FormData();
+        formData.append('json', JSON.stringify(req));
+
+        fetch(apiBaseUrl + '/api/launch', {
+            method: 'POST',
+            body: formData
+        })
+        .then(function(r) { return r.json(); })
+          .then(function(result) {
+              var alertDiv = $$('launchResult');
+              alertDiv.style.display = 'block';
+              if (result.success) {
+                  alertDiv.className = 'alert alert-success';
+                  alertDiv.innerHTML = 'Job launched successfully! <a href="' + result.link + '" target="_blank">' + result.jobId + '</a>';
+                  loadQueues(); // actualizar colas
+                  loadHistory(); // recargar historial
+              } else {
+                  alertDiv.className = 'alert alert-danger';
+                  alertDiv.textContent = 'Error: ' + (result.error || 'Unknown error');
+              }
+          }).catch(function(err) {
+              var alertDiv = $$('launchResult');
+              alertDiv.style.display = 'block';
+              alertDiv.className = 'alert alert-danger';
+              alertDiv.textContent = 'Network error: ' + err.message;
+          });
+    }
+
+    // ====== HISTORY ======
+    function loadHistory() {
+        fetchJson(apiBaseUrl + '/api/history').then(function(entries) {
+            var tbody = $$('historyTable').querySelector('tbody');
+            tbody.innerHTML = '';
+            entries.forEach(function(e) {
+                var row = '<tr>' +
+                    '<td>' + new Date(e.timestamp).toLocaleString() + '</td>' +
+                    '<td><a href="/jobs/details/' + e.jobId + '" target="_blank">' + e.jobId + '</a></td>' +
+                    '<td>' + e.className + '</td>' +
+                    '<td>' + e.methodName + '</td>' +
+                    '<td>' + e.queue + '</td>' +
+                    '<td>' + e.mode + '</td>' +
+                    '<td>' + e.engine + '</td>' +
+                    '<td>' +
+                    '<button class="btn btn-xs btn-default relaunch" data-entry=\'' + JSON.stringify(e).replace(/'/g, "&#39;") + '\'>Relaunch</button> ' +
+                    '<button class="btn btn-xs btn-default clone-launch" data-entry=\'' + JSON.stringify(e).replace(/'/g, "&#39;") + '\'>Clone & Launch</button>' +
+                    '</td>' +
+                    '</tr>';
+                tbody.innerHTML += row;
+            });
+            // Bind events
+            document.querySelectorAll('.relaunch').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var entry = JSON.parse(this.getAttribute('data-entry'));
+                    loadEntryToForm(entry);
+                    document.querySelector('.nav-tabs a[href="#launchTab"]').click();
+                });
+            });
+            document.querySelectorAll('.clone-launch').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var entry = JSON.parse(this.getAttribute('data-entry'));
+                    if (confirm('Clone and launch job with same parameters?')) {
+                        var req = buildRequestFromHistory(entry);
+                        launchJob(req);
+                    }
+                });
+            });
+        });
+    }
+
+    function clearHistory() {
+        if (!confirm('Clear history?')) return;
+        fetch(apiBaseUrl + '/api/history', { method: 'DELETE' }).then(function() { loadHistory(); });
+    }
+
+    function loadEntryToForm(entry) {
+        // Cargar datos en el formulario (modo manual o asistido)
+        if (entry.mode === 'Manual') {
+            document.querySelector('input[name="launchMode"][value="manual"]').checked = true;
+            toggleMode();
+            $$('classNameManual').value = entry.className;
+            $$('methodNameManual').value = entry.methodName;
+            $$('jsonParams').value = entry.parametersJson;
+        } else {
+            document.querySelector('input[name="launchMode"][value="assisted"]').checked = true;
+            toggleMode();
+            $$('classNameAssisted').value = entry.className;
+            // Intentar cargar métodos para restaurar el select (complejo, omitido por brevedad)
+            $$('paramsContainer').innerHTML = '<div class="text-info">Parameters restored: ' + entry.parametersJson + '</div>';
+        }
+        // Otros campos
+        if (entry.executionMode) {
+            var radio = document.querySelector('input[name="execMode"][value="' + entry.executionMode + '"]');
+            if (radio) radio.checked = true;
+            toggleExecMode();
+        }
+        $$('queue').value = entry.queue;
+        $$('chkPerformContext').checked = entry.includePerformContext;
+        $$('chkCancellationToken').checked = entry.includeCancellationToken;
+    }
+
+    function buildRequestFromHistory(entry) {
+        return {
+            className: entry.className,
+            methodName: entry.methodName,
+            queue: entry.queue,
+            executionMode: entry.executionMode,
+            cronExpression: entry.cronExpression,
+            delayMinutes: entry.delayMinutes,
+            scheduledDateTime: entry.scheduledDateTime,
+            parentJobId: entry.parentJobId,
+            recurringEngine: entry.engine === 'DynamicJobs' ? 'DynamicJobs' : 'BuiltIn',
+            includePerformContext: entry.includePerformContext,
+            includeCancellationToken: entry.includeCancellationToken,
+            rawParametersJson: entry.parametersJson,
+            parameters: null
+        };
+    }
+
+    // ====== TEMPLATES ======
+    function loadTemplates() {
+        fetchJson(apiBaseUrl + '/api/templates').then(function(templates) {
+            var tbody = $$('templatesTable').querySelector('tbody');
+            tbody.innerHTML = '';
+            templates.forEach(function(t) {
+                var row = '<tr>' +
+                    '<td>' + t.name + '</td>' +
+                    '<td>' + t.className + '</td>' +
+                    '<td>' + t.methodName + '</td>' +
+                    '<td>' + t.queue + '</td>' +
+                    '<td>' + t.executionMode + '</td>' +
+                    '<td>' +
+                    '<button class="btn btn-xs btn-default load-template" data-name="' + t.name + '">Load</button> ' +
+                    '<button class="btn btn-xs btn-default clone-template" data-name="' + t.name + '">Clone & Launch</button> ' +
+                    '<button class="btn btn-xs btn-danger delete-template" data-name="' + t.name + '">Delete</button> ' +
+                    '<button class="btn btn-xs btn-info export-template" data-name="' + t.name + '">Export</button>' +
+                    '</td>' +
+                    '</tr>';
+                tbody.innerHTML += row;
+            });
+            bindTemplateEvents();
+        });
+    }
+
+    function bindTemplateEvents() {
+        document.querySelectorAll('.load-template').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var name = this.getAttribute('data-name');
+                fetchJson(apiBaseUrl + '/api/templates?name=' + encodeURIComponent(name))
+                    .then(function(t) { loadTemplateToForm(t); document.querySelector('.nav-tabs a[href="#launchTab"]').click(); });
+            });
+        });
+        document.querySelectorAll('.clone-template').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var name = this.getAttribute('data-name');
+                fetchJson(apiBaseUrl + '/api/templates?name=' + encodeURIComponent(name))
+                    .then(function(t) {
+                        var req = buildRequestFromTemplate(t);
+                        if (confirm('Clone and launch?')) launchJob(req);
+                    });
+            });
+        });
+        document.querySelectorAll('.delete-template').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var name = this.getAttribute('data-name');
+                if (confirm('Delete template ' + name + '?')) {
+                    fetch(apiBaseUrl + '/api/templates?name=' + encodeURIComponent(name), { method: 'DELETE' })
+                        .then(function() { loadTemplates(); });
+                }
+            });
+        });
+        document.querySelectorAll('.export-template').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var name = this.getAttribute('data-name');
+                window.open('/joblauncher/api/export-import?action=export&templateName=' + encodeURIComponent(name), '_blank');
+            });
+        });
+    }
+
+    function saveTemplate() {
+        var req = buildRequest();
+        if (!req.className || !req.methodName) { alert('Class and method required.'); return; }
+        var name = prompt('Template name:');
+        if (!name) return;
+        var template = {
+            name: name,
+            className: req.className,
+            methodName: req.methodName,
+            queue: req.queue,
+            executionMode: req.executionMode,
+            cronExpression: req.cronExpression,
+            delayMinutes: req.delayMinutes,
+            scheduledDateTime: req.scheduledDateTime,
+            parentJobId: req.parentJobId,
+            recurringEngine: req.recurringEngine,
+            includePerformContext: req.includePerformContext,
+            includeCancellationToken: req.includeCancellationToken,
+            parameters: req.parameters,
+            rawParametersJson: req.rawParametersJson
+        };
+        var formData = new FormData();
+        formData.append('json', JSON.stringify(template));
+        fetch(apiBaseUrl + '/api/templates', { method: 'POST', body: formData })
+            .then(function(r) { return r.json(); })
+            .then(function(res) { alert(res.message || 'Saved.'); loadTemplates(); });
+    }
+
+    function loadTemplateToForm(template) {
+        if (template.rawParametersJson) {
+            document.querySelector('input[name="launchMode"][value="manual"]').checked = true;
+            toggleMode();
+            $$('classNameManual').value = template.className;
+            $$('methodNameManual').value = template.methodName;
+            $$('jsonParams').value = template.rawParametersJson;
+        } else {
+            document.querySelector('input[name="launchMode"][value="assisted"]').checked = true;
+            toggleMode();
+            $$('classNameAssisted').value = template.className;
+            // cargar métodos similar a loadEntryToForm (incompleto)
+        }
+        // Resto de campos
+        var radio = document.querySelector('input[name="execMode"][value="' + template.executionMode + '"]');
+        if (radio) radio.checked = true;
+        toggleExecMode();
+        $$('queue').value = template.queue;
+        $$('chkPerformContext').checked = template.includePerformContext;
+        $$('chkCancellationToken').checked = template.includeCancellationToken;
+    }
+
+    function buildRequestFromTemplate(template) {
+        return {
+            className: template.className,
+            methodName: template.methodName,
+            queue: template.queue,
+            executionMode: template.executionMode,
+            cronExpression: template.cronExpression,
+            delayMinutes: template.delayMinutes,
+            scheduledDateTime: template.scheduledDateTime,
+            parentJobId: template.parentJobId,
+            recurringEngine: template.recurringEngine,
+            includePerformContext: template.includePerformContext,
+            includeCancellationToken: template.includeCancellationToken,
+            rawParametersJson: template.rawParametersJson,
+            parameters: template.parameters
+        };
+    }
+
+    function importTemplate() {
+    var fileInput = $$('importFile');
+    if (!fileInput.files[0]) { alert('Select a file.'); return; }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var template = JSON.parse(e.target.result);
+        var formData = new FormData();
+        formData.append('json', JSON.stringify(template));
+        fetch(apiBaseUrl + '/api/templates', { method: 'POST', body: formData })
+            .then(function(r) { return r.json(); })
+            .then(function(res) {
+                if (res.conflict) {
+                    if (confirm(res.message + ' Overwrite?')) {
+                        fetch(apiBaseUrl + '/api/templates', { method: 'POST', body: formData })
+                            .then(function() { loadTemplates(); });
+                    }
+                } else {
+                    alert(res.message || 'Imported.');
+                    loadTemplates();
+                }
+            });
+    };
+    reader.readAsText(fileInput.files[0]);
+}
+</script>

@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Hangfire.APMJobs/Hangfire.APMJobs.csproj" />
+  <Project Path="Hangfire.Community.JobsLauncher.Dashboard/Hangfire.Community.JobsLauncher.Dashboard.csproj" />
+  <Project Path="Hangfire.JobLauncher.Common/Hangfire.Community.JobLauncher.Common.csproj" Id="002a884d-616f-40a8-9a4b-f8ce6bb911fb" />
+</Solution>

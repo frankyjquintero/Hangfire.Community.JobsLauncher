@@ -1,0 +1,68 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+
+		<IsPackable>true</IsPackable>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageOutputPath>artifacts</PackageOutputPath>
+
+		<PackageId>Hangfire.Community.JobLauncher.Dashboard</PackageId>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/frankyjquintero/Hangfire.Community.JobLauncher</RepositoryUrl>
+		<Description></Description>
+		
+		<PackageTags>hangfire dashboard jobs</PackageTags>
+
+
+		<Authors>FrankyJquintero</Authors>
+		<Product>Hangfire.Community.JobLauncher.Dashboard</Product>
+		<Version>1.0.0</Version>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<LangVersion>7.3</LangVersion>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+		<RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
+		<IncludeContentInPack>true</IncludeContentInPack>
+		<RazorViewsCodeGenDirectory>$(MSBuildProjectDirectory)\</RazorViewsCodeGenDirectory>
+	</PropertyGroup>
+
+	<!-- README -->
+	<ItemGroup>
+		<Content Include="..\README.md" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+	<!-- Razor -->
+	<ItemGroup>
+		<Compile Update="Pages\JobLauncherPage.cshtml.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>JobLauncherPage.cshtml</DependentUpon>
+		</Compile>
+		<!-- Agrega más archivos aquí siguiendo el mismo patrón -->
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="Pages\JobLauncherPage.cshtml">
+			<Generator>RazorGenerator</Generator>
+			<LastGenOutput>JobLauncher.cshtml.cs</LastGenOutput>
+		</None>
+		<!-- Agrega más archivos aquí siguiendo el mismo patrón -->
+	</ItemGroup>
+
+	<!-- Dependencias -->
+	<ItemGroup>
+		<PackageReference Include="HangFire.Core" Version="1.7.28" />
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
+		<PackageReference Include="RazorGenerator.MsBuild" Version="2.5.0" PrivateAssets="all" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Filters\" />
+	  <Folder Include="Services\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\Hangfire.JobLauncher.Common\Hangfire.Community.JobLauncher.Common.csproj" />
+	</ItemGroup>
+
+</Project>

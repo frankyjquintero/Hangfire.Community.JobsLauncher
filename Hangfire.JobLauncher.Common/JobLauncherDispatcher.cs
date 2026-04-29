@@ -1,0 +1,136 @@
+﻿using Hangfire.Server;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text.Json;
+
+namespace Hangfire.Community.JobLauncher.Common
+{
+    public static class JobLauncherDispatcher
+    {
+        public static void ExecuteJob(
+            string className,
+            string methodName,
+            string queue,
+            string serializedParameters,
+            bool includePerformContext = false,
+            bool includeCancellationToken = false)
+        {
+            var type = Type.GetType(className, throwOnError: true);
+            var method = type.GetMethod(methodName,
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
+            object instance = method.IsStatic ? null : Activator.CreateInstance(type);
+            object[] parameters = BuildParameterArray(
+                method.GetParameters(),
+                serializedParameters,
+                includePerformContext,
+                includeCancellationToken);
+            method.Invoke(instance, parameters);
+        }
+
+        private static object[] BuildParameterArray(
+            ParameterInfo[] paramInfos, string json,
+            bool includePerformContext, bool includeCancellationToken)
+        {
+            var dict = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
+            var list = new List<object>();
+            foreach (var p in paramInfos)
+            {
+                if (p.ParameterType == typeof(PerformContext) && includePerformContext)
+                {
+                    list.Add(null); // Hangfire inyecta el contexto real
+                    continue;
+                }
+                if (p.ParameterType == typeof(IJobCancellationToken) && includeCancellationToken)
+                {
+                    list.Add(JobCancellationToken.Null);
+                    continue;
+                }
+                if (dict.TryGetValue(p.Name, out var element))
+                    list.Add(ConvertJsonElement(element, p.ParameterType));
+                else
+                    list.Add(p.DefaultValue ?? (p.ParameterType.IsValueType ?
+                        Activator.CreateInstance(p.ParameterType) : null));
+            }
+            return list.ToArray();
+        }
+
+        public static object ConvertJsonElement(JsonElement element, Type targetType)
+        {
+            // Tipos simples
+            if (targetType == typeof(string)) return element.GetString();
+            if (targetType == typeof(int)) return element.GetInt32();
+            if (targetType == typeof(long)) return element.GetInt64();
+            if (targetType == typeof(bool)) return element.GetBoolean();
+            if (targetType == typeof(double)) return element.GetDouble();
+            if (targetType == typeof(float)) return element.GetSingle();
+            if (targetType == typeof(decimal)) return element.GetDecimal();
+            if (targetType == typeof(DateTime)) return element.GetDateTime();
+            if (targetType == typeof(DateTimeOffset)) return element.GetDateTimeOffset();
+            if (targetType == typeof(Guid)) return element.GetGuid();
+            if (targetType == typeof(TimeSpan)) return TimeSpan.Parse(element.GetString());
+
+            // Nullable<T>
+            if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                if (element.ValueKind == JsonValueKind.Null) return null;
+                return ConvertJsonElement(element, Nullable.GetUnderlyingType(targetType));
+            }
+
+            // Enum
+            if (targetType.IsEnum)
+                return Enum.Parse(targetType, element.GetString() ?? element.GetRawText());
+
+            // Arrays y listas
+            if (typeof(IEnumerable).IsAssignableFrom(targetType) && targetType != typeof(string))
+            {
+                Type elementType = targetType.IsArray
+                    ? targetType.GetElementType()
+                    : targetType.GetGenericArguments().FirstOrDefault();
+                if (elementType == null)
+                    throw new InvalidOperationException($"Cannot determine element type for {targetType}");
+                var items = element.EnumerateArray()
+                    .Select(el => ConvertJsonElement(el, elementType))
+                    .ToList();
+                // Convertir a array o lista genérica según corresponda
+                if (targetType.IsArray)
+                {
+                    Array array = Array.CreateInstance(elementType, items.Count);
+                    for (int i = 0; i < items.Count; i++) array.SetValue(items[i], i);
+                    return array;
+                }
+                // Lista genérica
+                Type listType = typeof(List<>).MakeGenericType(elementType);
+                object list = Activator.CreateInstance(listType);
+                var addMethod = listType.GetMethod("Add");
+                foreach (var item in items) addMethod.Invoke(list, new[] { item });
+                return list;
+            }
+
+            // Diccionarios
+            if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+            {
+                var keyType = targetType.GetGenericArguments()[0];
+                var valueType = targetType.GetGenericArguments()[1];
+                var dict = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(element.GetRawText());
+                object result = Activator.CreateInstance(targetType);
+                var addMethod = targetType.GetMethod("Add");
+                foreach (var kvp in dict)
+                {
+                    object key = Convert.ChangeType(kvp.Key, keyType);
+                    object value = ConvertJsonElement(kvp.Value, valueType);
+                    addMethod.Invoke(result, new[] { key, value });
+                }
+                return result;
+            }
+
+            // Fallback: deserialización JSON completa
+            return JsonSerializer.Deserialize(element.GetRawText(), targetType);
+        }
+
+        /// <summary>Marcador para evitar advertencias de paquete no utilizado en workers.</summary>
+        public static void EnableDynamicJobSupport() { }
+    }
+}
