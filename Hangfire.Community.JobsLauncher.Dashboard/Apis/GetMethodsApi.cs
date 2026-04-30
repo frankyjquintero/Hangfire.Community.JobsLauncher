@@ -79,7 +79,7 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
 
                 await WriteJson(context, new { success = true, methods });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 await WriteJson(context, new { success = false, error = "Assembly no disponible. Usa el modo manual." });
             }

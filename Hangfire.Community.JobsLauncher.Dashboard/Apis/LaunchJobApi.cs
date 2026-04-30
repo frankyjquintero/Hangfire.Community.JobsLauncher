@@ -172,12 +172,17 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
 
             foreach (var p in methodParams)
             {
-                // Hangfire inyecta automáticamente PerformContext y IJobCancellationToken si los necesita
-                // No los incluimos en la expresión lambda, así que simplemente los omitimos.
                 if (p.ParameterType == typeof(PerformContext) && includePerformContext)
+                {
+                    args.Add(null); // Hangfire lo reemplaza automáticamente
                     continue;
+                }
                 if (p.ParameterType == typeof(IJobCancellationToken) && includeCancellationToken)
+                {
+                    args.Add(JobCancellationToken.Null); // o null, Hangfire lo maneja
                     continue;
+                }
+
 
                 if (paramDict.TryGetValue(p.Name, out var element))
                 {
@@ -185,7 +190,6 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
                 }
                 else
                 {
-                    // Si no está en el JSON, usar valor por defecto
                     args.Add(p.DefaultValue ?? (p.ParameterType.IsValueType ? Activator.CreateInstance(p.ParameterType) : null));
                 }
             }
@@ -195,32 +199,38 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
 
         private static LambdaExpression CreateDirectExpression(MethodInfo method, object[] args)
         {
-            // args ya están filtrados (sin PerformContext/CancellationToken)
-            var paramExpressions = args.Select(a => Expression.Constant(a)).ToArray();
+            var parameters = method.GetParameters();
+
+            // Crear las expresiones constantes con el tipo exacto del parámetro
+            var paramExpressions = parameters.Select((p, i) =>
+            {
+                // Si ya no hay más args, lanzar error (no debería ocurrir)
+                if (i >= args.Length)
+                    throw new InvalidOperationException("Mismatch between method parameters and arguments.");
+                var arg = args[i];
+                // Si el argumento es null y el tipo del parámetro no permite null (ej. int), podría fallar,
+                // pero para tipos anulables o referencias está bien.
+                return Expression.Constant(arg, p.ParameterType);
+            }).ToArray();
 
             if (method.IsStatic)
             {
                 var call = Expression.Call(method, paramExpressions);
                 if (method.ReturnType == typeof(void))
                     return Expression.Lambda<Action>(call);
-                else if (method.ReturnType == typeof(Task))
+                if (method.ReturnType == typeof(Task))
                     return Expression.Lambda<Func<Task>>(call);
-                else
-                    throw new NotSupportedException("Return type not supported.");
+                throw new NotSupportedException($"Return type {method.ReturnType} not supported.");
             }
             else
             {
-                // Método de instancia: crear instancia con new()
-                var ctor = method.DeclaringType.GetConstructor(Type.EmptyTypes)
-                    ?? throw new InvalidOperationException("Instance method requires parameterless constructor.");
-                var instanceExp = Expression.New(ctor);
-                var call = Expression.Call(instanceExp, method, paramExpressions);
+                var instance = Expression.New(method.DeclaringType.GetConstructor(Type.EmptyTypes));
+                var call = Expression.Call(instance, method, paramExpressions);
                 if (method.ReturnType == typeof(void))
                     return Expression.Lambda<Action>(call);
-                else if (method.ReturnType == typeof(Task))
+                if (method.ReturnType == typeof(Task))
                     return Expression.Lambda<Func<Task>>(call);
-                else
-                    throw new NotSupportedException("Return type not supported.");
+                throw new NotSupportedException($"Return type {method.ReturnType} not supported.");
             }
         }
 
@@ -376,7 +386,7 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
                 ClassName = request.ClassName,
                 MethodName = request.MethodName,
                 Queue = request.Queue,
-                Mode = request.RawParametersJson != null ? "Manual" : "Assisted",
+                Mode = request.Mode,
                 ExecutionMode = request.ExecutionMode,
                 Engine = engine,
                 ParametersJson = serializedParams,

@@ -21,6 +21,7 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Models
 
     public class LaunchRequest
     {
+        public string Mode { get; set; } // "assisted" o "manual"
         public string ClassName { get; set; }
         public string MethodName { get; set; }
         public string Queue { get; set; } = "default";
@@ -62,6 +63,7 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Models
 
     public class JobTemplate
     {
+        public string Mode { get; set; }
         public string Name { get; set; }
         public string ClassName { get; set; }
         public string MethodName { get; set; }
