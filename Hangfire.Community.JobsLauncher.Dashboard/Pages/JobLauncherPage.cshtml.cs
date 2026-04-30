@@ -411,179 +411,185 @@ WriteLiteral("\';\r\n    var selectedMethod = null; // almacenará el MethodInfo
 "       else if (underlyingType === \'system.timespan\' || underlyingType === \'time" +
 "span\') {\r\n            html = \'<input type=\"text\" class=\"form-control\" data-param" +
 "-name=\"\' + name + \'\" placeholder=\"hh:mm:ss\" value=\"\' + (isNullable ? \'\' : \'00:00" +
-":00\') + \'\" />\';\r\n        }\r\n        // Enum (tratado como texto)\r\n        else i" +
-"f (underlyingType.includes(\'.\') && !underlyingType.startsWith(\'system.\')) {\r\n   " +
-"         html = \'<input type=\"text\" class=\"form-control\" data-param-name=\"\' + na" +
-"me + \'\" placeholder=\"Enum value of \' + paramInfo.type + \'\" />\';\r\n        }\r\n    " +
-"    // Cadena y otros\r\n        else {\r\n            html = \'<input type=\"text\" cl" +
-"ass=\"form-control\" data-param-name=\"\' + name + \'\" placeholder=\"\' + paramInfo.typ" +
-"e + \'\" />\';\r\n        }\r\n    \r\n        if (isNullable) {\r\n            html += \'<s" +
-"mall class=\"text-muted\">(Optional, leave empty for null)</small>\';\r\n        }\r\n " +
-"   \r\n        return html;\r\n    }\r\n\r\n    // ====== JSON VALIDATE / FORMAT / SUGGE" +
-"ST ======\r\n    function validateJson() {\r\n        var text = $$(\'jsonParams\').va" +
-"lue.trim();\r\n        if (!text) return;\r\n        try { JSON.parse(text); $$(\'jso" +
-"nValidationMsg\').style.display = \'none\'; alert(\'Valid JSON.\'); }\r\n        catch(" +
-"e) { $$(\'jsonValidationMsg\').style.display = \'inline\'; }\r\n    }\r\n    function fo" +
-"rmatJson() {\r\n        var text = $$(\'jsonParams\').value.trim();\r\n        try { v" +
-"ar obj = JSON.parse(text); $$(\'jsonParams\').value = JSON.stringify(obj, null, 2)" +
-"; $$(\'jsonValidationMsg\').style.display = \'none\'; }\r\n        catch(e) { $$(\'json" +
-"ValidationMsg\').style.display = \'inline\'; }\r\n    }\r\n\r\n    function suggestJsonSt" +
-"ructure() {\r\n        var className = $$(\'classNameManual\').value.trim();\r\n      " +
-"  var methodName = $$(\'methodNameManual\').value.trim();\r\n    \r\n        if (!clas" +
-"sName || !methodName) {\r\n            alert(\'Please enter Class Name and Method N" +
-"ame first.\');\r\n            return;\r\n        }\r\n    \r\n        // Llamar a la API " +
-"para obtener los métodos\r\n        fetchJson(apiBaseUrl + \'/api/methods?className" +
-"=\' + encodeURIComponent(className))\r\n            .then(function(resp) {\r\n       " +
-"         if (!resp.success) {\r\n                    alert(\'Assembly no disponible" +
-": \' + resp.error);\r\n                    return;\r\n                }\r\n            " +
-"    // Buscar el método especificado\r\n                var method = resp.methods." +
-"find(function(m) { return m.methodName === methodName; });\r\n                if (" +
-"!method) {\r\n                    alert(\'Method not found.\');\r\n                   " +
-" return;\r\n                }\r\n            \r\n                // Generar un objeto " +
-"JSON con valores por defecto según los tipos\r\n                var suggestion = {" +
-"};\r\n                method.parameters.forEach(function(p) {\r\n                   " +
-" suggestion[p.name] = getDefaultValueForType(p.type, p.isComplex);\r\n            " +
-"    });\r\n            \r\n                // Formatear el JSON y mostrarlo en el te" +
-"xtarea\r\n                $$(\'jsonParams\').value = JSON.stringify(suggestion, null" +
-", 2);\r\n            })\r\n            .catch(function(err) {\r\n                alert" +
-"(\'Error loading suggestion: \' + err.message);\r\n            });\r\n    }\r\n\r\n    fun" +
-"ction getDefaultValueForType(type, isComplex) {\r\n        if (type.endsWith(\'?\'))" +
-" {\r\n            return null; // anulable, sugerimos null\r\n        }\r\n        if " +
-"(isComplex) {\r\n            return {}; // objeto vacío como placeholder\r\n        " +
-"}\r\n        var t = type.toLowerCase();\r\n        if (t.includes(\'int\') || t.inclu" +
-"des(\'long\') || t.includes(\'short\') || t.includes(\'byte\')) return 0;\r\n        if " +
-"(t.includes(\'double\') || t.includes(\'float\') || t.includes(\'decimal\') || t.inclu" +
-"des(\'single\')) return 0.0;\r\n        if (t.includes(\'bool\')) return true;\r\n      " +
-"  if (t.includes(\'datetime\') || t.includes(\'datetimeoffset\')) return new Date()." +
-"toISOString();\r\n        if (t === \'system.guid\' || t === \'guid\') return \'0000000" +
-"0-0000-0000-0000-000000000000\';\r\n        if (t === \'system.timespan\' || t === \'t" +
-"imespan\') return \'00:00:00\';\r\n        if (t === \'system.string\' || t === \'string" +
-"\') return \'\';\r\n        // Para enums, intentamos extraer el primer valor posible" +
-" (no disponible aquí, dejamos string vacío)\r\n        return \'\';\r\n}\r\n\r\n    // ===" +
-"=== VALIDATE CRON ======\r\n    function validateCron() {\r\n        var expr = $$(\'" +
-"cronExpression\').value.trim();\r\n        if (!expr) { alert(\'Cron expression requ" +
-"ired\'); return; }\r\n        fetchJson(apiBaseUrl + \'/pi/validate-cron?expression=" +
-"\' + encodeURIComponent(expr))\r\n            .then(function(resp) {\r\n             " +
-"   var div = $$(\'cronPreview\');\r\n                if (!resp.success) {\r\n         " +
-"           div.innerHTML = \'<span class=\"text-danger\">\' + resp.error + \'</span>\'" +
-";\r\n                } else {\r\n                    div.innerHTML = \'Next occurrenc" +
-"es: \' + resp.occurrences.join(\', \');\r\n                }\r\n                div.sty" +
-"le.display = \'block\';\r\n            });\r\n    }\r\n\r\n    // ====== COLAS CRÍTICAS ==" +
-"====\r\n    function isQueueCritical(queue) {\r\n        return criticalQueues.index" +
-"Of(queue) >= 0;\r\n    }\r\n\r\n    function checkCriticalQueue(queue) {\r\n        if (" +
-"isQueueCritical(queue)) {\r\n            $$(\'criticalQueueWarning\').style.display " +
-"= \'block\';\r\n            return true;\r\n        } else {\r\n            $$(\'critical" +
-"QueueWarning\').style.display = \'none\';\r\n            return false;\r\n        }\r\n  " +
-"  }\r\n\r\n    // Verificar al escribir\r\n    $$(\'queue\').addEventListener(\'input\', f" +
-"unction() { checkCriticalQueue(this.value); });\r\n    $$(\'queue\').addEventListene" +
-"r(\'change\', function() { checkCriticalQueue(this.value); });\r\n\r\n    // ====== CA" +
-"RGAR COLAS ======\r\n    function loadQueues() {\r\n        fetchJson(apiBaseUrl + \'" +
-"/api/queues\').then(function(resp) {\r\n            var datalist = $$(\'queueList\');" +
-"\r\n            datalist.innerHTML = \'\';\r\n            (resp.queues || []).forEach(" +
-"function(q) {\r\n                datalist.innerHTML += \'<option value=\"\' + q + \'\">" +
-"\';\r\n            });\r\n        });\r\n    }\r\n\r\n    // ====== BUILD REQUEST OBJECT ==" +
-"====\r\n    function convertToType(value, type, isComplex) {\r\n        // Detectar " +
-"si el tipo es anulable (termina en \'?\')\r\n        var isNullable = type.endsWith(" +
-"\'?\');\r\n        var underlyingType = isNullable ? type.slice(0, -1).toLowerCase()" +
-" : type.toLowerCase();\r\n    \r\n        // Si el campo está vacío o es null y es a" +
-"nulable, retornar null\r\n        if (isNullable && (value === \'\' || value === nul" +
-"l || value === undefined)) {\r\n            return null;\r\n        }\r\n    \r\n       " +
-" // Para tipos complejos, ya se parsea el JSON\r\n        if (isComplex) {\r\n      " +
-"      if (value === \'\' && isNullable) return null;\r\n            try {\r\n         " +
-"       return JSON.parse(value);\r\n            } catch(e) {\r\n                retu" +
-"rn value; // fallback\r\n            }\r\n        }\r\n    \r\n        // A continuación" +
-", la conversión normal pero usando underlyingType\r\n        if (underlyingType.in" +
-"cludes(\'int\') || underlyingType.includes(\'long\') || \r\n            underlyingType" +
-".includes(\'short\') || underlyingType.includes(\'byte\')) {\r\n            var num = " +
-"parseInt(value, 10);\r\n            return isNaN(num) ? (isNullable ? null : value" +
-") : num;\r\n        }\r\n        if (underlyingType.includes(\'double\') || underlying" +
-"Type.includes(\'float\') || \r\n            underlyingType.includes(\'decimal\') || un" +
-"derlyingType.includes(\'single\')) {\r\n            var num = parseFloat(value);\r\n  " +
-"          return isNaN(num) ? (isNullable ? null : value) : num;\r\n        }\r\n   " +
-"     if (underlyingType.includes(\'bool\')) {\r\n            if (typeof value === \'b" +
-"oolean\') return value;\r\n            if (value === \'\' && isNullable) return null;" +
-"\r\n            return value === \'true\' || value === \'1\' || value === \'on\';\r\n     " +
-"   }\r\n        // Fechas se envían como string ISO, se mantienen igual\r\n        /" +
-"/ Para otros, string\r\n        return value;\r\n    }\r\n\r\n\r\n    function buildReques" +
-"t() {\r\n        var mode = document.querySelector(\'input[name=\"launchMode\"]:check" +
-"ed\').value;\r\n        var className = mode === \'assisted\' ? $$(\'classNameAssisted" +
-"\').value.trim() : $$(\'classNameManual\').value.trim();\r\n        var methodName = " +
-"mode === \'assisted\' ? (function() {\r\n            var idx = $$(\'methodSelect\').va" +
-"lue;\r\n            return idx === \'\' ? \'\' : currentMethods[parseInt(idx)].methodN" +
-"ame;\r\n        })() : $$(\'methodNameManual\').value.trim();\r\n\r\n\r\n        var reque" +
-"st = {\r\n            mode: mode,\r\n            className: className,\r\n            " +
-"methodName: methodName,\r\n            queue: $$(\'queue\').value.trim() || \'default" +
-"\',\r\n            executionMode: document.querySelector(\'input[name=\"execMode\"]:ch" +
-"ecked\').value,\r\n            includePerformContext: $$(\'chkPerformContext\').check" +
-"ed,\r\n            includeCancellationToken: $$(\'chkCancellationToken\').checked,\r\n" +
-"            parameters: null,\r\n            rawParametersJson: null\r\n        };\r\n" +
-"\r\n        // Si manual, rawParametersJson\r\n        if (mode === \'manual\') {\r\n   " +
-"         request.rawParametersJson = $$(\'jsonParams\').value.trim() || \'{}\';\r\n   " +
-"     } else {\r\n            // Modo asistido: construir objeto con valores tipado" +
-"s\r\n            var paramsObj = {};\r\n            var paramFields = document.query" +
-"SelectorAll(\'#paramsContainer .param-field\');\r\n            paramFields.forEach(f" +
-"unction(field) {\r\n                var input = field.querySelector(\'[data-param-n" +
-"ame]\');\r\n                var name = input.getAttribute(\'data-param-name\');\r\n    " +
-"            var rawValue;\r\n                if (input.type === \'checkbox\') {\r\n   " +
-"                 rawValue = input.checked;\r\n                } else {\r\n          " +
-"          rawValue = input.value;\r\n                }\r\n                // Buscar " +
-"la definición del parámetro en el método seleccionado\r\n                var param" +
-"Def = selectedMethod ? selectedMethod.parameters.find(function(p) { return p.nam" +
-"e === name; }) : null;\r\n                if (paramDef) {\r\n                    var" +
-" convertedValue = convertToType(rawValue, paramDef.type, paramDef.isComplex);\r\n " +
-"                   paramsObj[name] = convertedValue;\r\n                } else {\r\n" +
-"                    paramsObj[name] = rawValue; // fallback\r\n                }\r\n" +
-"            });\r\n            request.rawParametersJson = JSON.stringify(paramsOb" +
-"j);\r\n            request.parameters = null; // no usar el diccionario de strings" +
-"\r\n        }\r\n\r\n        // Completion specific\r\n        if (request.executionMode" +
-" === \'Schedule\') {\r\n            request.delayMinutes = parseInt($$(\'delayMinutes" +
-"\').value) || 30;\r\n        }\r\n        if (request.executionMode === \'ScheduleDate" +
-"Time\') {\r\n            request.scheduledDateTime = $$(\'scheduledDateTime\').value " +
-"? new Date($$(\'scheduledDateTime\').value).toISOString() : null;\r\n        }\r\n    " +
-"    if (request.executionMode === \'Recurring\') {\r\n            request.cronExpres" +
-"sion = $$(\'cronExpression\').value.trim() || \'* * * * *\';\r\n            if (mode =" +
-"== \'manual\') {\r\n                request.recurringEngine = $$(\'recurringEngine\')." +
-"value;\r\n            }\r\n        }\r\n        if (request.executionMode === \'Continu" +
-"ation\') {\r\n            request.parentJobId = $$(\'parentJobId\').value.trim();\r\n  " +
-"      }\r\n        return request;\r\n    }\r\n\r\n    // ====== PREVIEW ======\r\n    fun" +
-"ction showPreview() {\r\n        var req = buildRequest();\r\n        var summary = " +
-"\'Class: \' + req.className + \'\\nMethod: \' + req.methodName + \'\\nQueue: \' + req.qu" +
-"eue +\r\n                      \'\\nMode: \' + req.executionMode + \'\\nEngine: \' + (re" +
-"q.recurringEngine || \'Direct\') +\r\n                      \'\\nParameters: \' + (req." +
-"rawParametersJson || JSON.stringify(req.parameters));\r\n        $$(\'previewConten" +
-"t\').textContent = summary;\r\n        $$(\'previewPanel\').style.display = \'block\';\r" +
-"\n    }\r\n\r\n    // ====== SUBMIT / LAUNCH ======\r\n    var pendingLaunchRequest = n" +
-"ull; // para confirmación de cola crítica\r\n\r\n    function submitJob() {\r\n       " +
-" var req = buildRequest();\r\n        if (!req.className || !req.methodName) { ale" +
-"rt(\'ClassName and MethodName are required.\'); return; }\r\n\r\n        if (isQueueCr" +
-"itical(req.queue)) {\r\n            pendingLaunchRequest = req;\r\n            $$(\'c" +
-"riticalQueueName\').textContent = req.queue;\r\n            $$(\'criticalJobSummary\'" +
-").textContent = \'Class: \' + req.className + \'\\nMethod: \' + req.methodName + \'\\nM" +
-"ode: \' + req.executionMode;\r\n            $(\'#criticalConfirmModal\').modal(\'show\'" +
-");\r\n        } else {\r\n            launchJob(req);\r\n        }\r\n    }\r\n\r\n    funct" +
-"ion confirmedLaunch() {\r\n        $(\'#criticalConfirmModal\').modal(\'hide\');\r\n    " +
-"    if (pendingLaunchRequest) launchJob(pendingLaunchRequest);\r\n    }\r\n\r\n    fun" +
-"ction launchJob(req) {\r\n        var formData = new FormData();\r\n        formData" +
-".append(\'json\', JSON.stringify(req));\r\n\r\n        fetch(apiBaseUrl + \'/api/launch" +
-"\', {\r\n            method: \'POST\',\r\n            body: formData\r\n        })\r\n     " +
-"   .then(function(r) { return r.json(); })\r\n          .then(function(result) {\r\n" +
-"              var alertDiv = $$(\'launchResult\');\r\n              alertDiv.style.d" +
-"isplay = \'block\';\r\n              if (result.success) {\r\n                  alertD" +
-"iv.className = \'alert alert-success\';\r\n                  alertDiv.innerHTML = \'J" +
-"ob launched successfully! <a href=\"\' + result.link + \'\" target=\"_blank\">\' + resu" +
-"lt.jobId + \'</a>\';\r\n                  loadQueues(); // actualizar colas\r\n       " +
-"           loadHistory(); // recargar historial\r\n              } else {\r\n       " +
-"           alertDiv.className = \'alert alert-danger\';\r\n                  alertDi" +
-"v.textContent = \'Error: \' + (result.error || \'Unknown error\');\r\n              }\r" +
-"\n          }).catch(function(err) {\r\n              var alertDiv = $$(\'launchResu" +
-"lt\');\r\n              alertDiv.style.display = \'block\';\r\n              alertDiv.c" +
-"lassName = \'alert alert-danger\';\r\n              alertDiv.textContent = \'Network " +
-"error: \' + err.message;\r\n          });\r\n    }\r\n\r\n    // ====== HISTORY ======\r\n " +
-"   function loadHistory() {\r\n        var dashboardBaseUrl = \'");
+":00\') + \'\" />\';\r\n        }\r\n        // Enum\r\n        else if (underlyingType.inc" +
+"ludes(\'.\') && !underlyingType.startsWith(\'system.\')) {\r\n            if (paramInf" +
+"o.enumValues && paramInfo.enumValues.length > 0) {\r\n                html += \'<se" +
+"lect class=\"form-control\" data-param-name=\"\' + name + \'\">\';\r\n                par" +
+"amInfo.enumValues.forEach(function(val) {\r\n                    html += \'<option " +
+"value=\"\' + val + \'\">\' + val + \'</option>\';\r\n                });\r\n               " +
+" html += \'</select>\';\r\n            } else {\r\n                // Fallback a input" +
+" de texto si no recibimos los valores\r\n                html = \'<input type=\"text" +
+"\" class=\"form-control\" data-param-name=\"\' + name + \'\" placeholder=\"Enum value of" +
+" \' + paramInfo.type + \'\" />\';\r\n            }\r\n        }\r\n        // Cadena y otr" +
+"os\r\n        else {\r\n            html = \'<input type=\"text\" class=\"form-control\" " +
+"data-param-name=\"\' + name + \'\" placeholder=\"\' + paramInfo.type + \'\" />\';\r\n      " +
+"  }\r\n    \r\n        if (isNullable) {\r\n            html += \'<small class=\"text-mu" +
+"ted\">(Optional, leave empty for null)</small>\';\r\n        }\r\n    \r\n        return" +
+" html;\r\n    }\r\n\r\n    // ====== JSON VALIDATE / FORMAT / SUGGEST ======\r\n    func" +
+"tion validateJson() {\r\n        var text = $$(\'jsonParams\').value.trim();\r\n      " +
+"  if (!text) return;\r\n        try { JSON.parse(text); $$(\'jsonValidationMsg\').st" +
+"yle.display = \'none\'; alert(\'Valid JSON.\'); }\r\n        catch(e) { $$(\'jsonValida" +
+"tionMsg\').style.display = \'inline\'; }\r\n    }\r\n    function formatJson() {\r\n     " +
+"   var text = $$(\'jsonParams\').value.trim();\r\n        try { var obj = JSON.parse" +
+"(text); $$(\'jsonParams\').value = JSON.stringify(obj, null, 2); $$(\'jsonValidatio" +
+"nMsg\').style.display = \'none\'; }\r\n        catch(e) { $$(\'jsonValidationMsg\').sty" +
+"le.display = \'inline\'; }\r\n    }\r\n\r\n    function suggestJsonStructure() {\r\n      " +
+"  var className = $$(\'classNameManual\').value.trim();\r\n        var methodName = " +
+"$$(\'methodNameManual\').value.trim();\r\n    \r\n        if (!className || !methodNam" +
+"e) {\r\n            alert(\'Please enter Class Name and Method Name first.\');\r\n    " +
+"        return;\r\n        }\r\n    \r\n        // Llamar a la API para obtener los mé" +
+"todos\r\n        fetchJson(apiBaseUrl + \'/api/methods?className=\' + encodeURICompo" +
+"nent(className))\r\n            .then(function(resp) {\r\n                if (!resp." +
+"success) {\r\n                    alert(\'Assembly no disponible: \' + resp.error);\r" +
+"\n                    return;\r\n                }\r\n                // Buscar el mé" +
+"todo especificado\r\n                var method = resp.methods.find(function(m) { " +
+"return m.methodName === methodName; });\r\n                if (!method) {\r\n       " +
+"             alert(\'Method not found.\');\r\n                    return;\r\n         " +
+"       }\r\n            \r\n                // Generar un objeto JSON con valores po" +
+"r defecto según los tipos\r\n                var suggestion = {};\r\n               " +
+" method.parameters.forEach(function(p) {\r\n                    suggestion[p.name]" +
+" = getDefaultValueForType(p.type, p.isComplex);\r\n                });\r\n          " +
+"  \r\n                // Formatear el JSON y mostrarlo en el textarea\r\n           " +
+"     $$(\'jsonParams\').value = JSON.stringify(suggestion, null, 2);\r\n            " +
+"})\r\n            .catch(function(err) {\r\n                alert(\'Error loading sug" +
+"gestion: \' + err.message);\r\n            });\r\n    }\r\n\r\n    function getDefaultVal" +
+"ueForType(type, isComplex) {\r\n        if (type.endsWith(\'?\')) {\r\n            ret" +
+"urn null; // anulable, sugerimos null\r\n        }\r\n        if (isComplex) {\r\n    " +
+"        return {}; // objeto vacío como placeholder\r\n        }\r\n        var t = " +
+"type.toLowerCase();\r\n        if (t.includes(\'int\') || t.includes(\'long\') || t.in" +
+"cludes(\'short\') || t.includes(\'byte\')) return 0;\r\n        if (t.includes(\'double" +
+"\') || t.includes(\'float\') || t.includes(\'decimal\') || t.includes(\'single\')) retu" +
+"rn 0.0;\r\n        if (t.includes(\'bool\')) return true;\r\n        if (t.includes(\'d" +
+"atetime\') || t.includes(\'datetimeoffset\')) return new Date().toISOString();\r\n   " +
+"     if (t === \'system.guid\' || t === \'guid\') return \'00000000-0000-0000-0000-00" +
+"0000000000\';\r\n        if (t === \'system.timespan\' || t === \'timespan\') return \'0" +
+"0:00:00\';\r\n        if (t === \'system.string\' || t === \'string\') return \'\';\r\n    " +
+"    // Para enums, intentamos extraer el primer valor posible (no disponible aqu" +
+"í, dejamos string vacío)\r\n        return \'\';\r\n}\r\n\r\n    // ====== VALIDATE CRON =" +
+"=====\r\n    function validateCron() {\r\n        var expr = $$(\'cronExpression\').va" +
+"lue.trim();\r\n        if (!expr) { alert(\'Cron expression required\'); return; }\r\n" +
+"        fetchJson(apiBaseUrl + \'/pi/validate-cron?expression=\' + encodeURICompon" +
+"ent(expr))\r\n            .then(function(resp) {\r\n                var div = $$(\'cr" +
+"onPreview\');\r\n                if (!resp.success) {\r\n                    div.inne" +
+"rHTML = \'<span class=\"text-danger\">\' + resp.error + \'</span>\';\r\n                " +
+"} else {\r\n                    div.innerHTML = \'Next occurrences: \' + resp.occurr" +
+"ences.join(\', \');\r\n                }\r\n                div.style.display = \'block" +
+"\';\r\n            });\r\n    }\r\n\r\n    // ====== COLAS CRÍTICAS ======\r\n    function " +
+"isQueueCritical(queue) {\r\n        return criticalQueues.indexOf(queue) >= 0;\r\n  " +
+"  }\r\n\r\n    function checkCriticalQueue(queue) {\r\n        if (isQueueCritical(que" +
+"ue)) {\r\n            $$(\'criticalQueueWarning\').style.display = \'block\';\r\n       " +
+"     return true;\r\n        } else {\r\n            $$(\'criticalQueueWarning\').styl" +
+"e.display = \'none\';\r\n            return false;\r\n        }\r\n    }\r\n\r\n    // Verif" +
+"icar al escribir\r\n    $$(\'queue\').addEventListener(\'input\', function() { checkCr" +
+"iticalQueue(this.value); });\r\n    $$(\'queue\').addEventListener(\'change\', functio" +
+"n() { checkCriticalQueue(this.value); });\r\n\r\n    // ====== CARGAR COLAS ======\r\n" +
+"    function loadQueues() {\r\n        fetchJson(apiBaseUrl + \'/api/queues\').then(" +
+"function(resp) {\r\n            var datalist = $$(\'queueList\');\r\n            datal" +
+"ist.innerHTML = \'\';\r\n            (resp.queues || []).forEach(function(q) {\r\n    " +
+"            datalist.innerHTML += \'<option value=\"\' + q + \'\">\';\r\n            });" +
+"\r\n        });\r\n    }\r\n\r\n    // ====== BUILD REQUEST OBJECT ======\r\n    function " +
+"convertToType(value, type, isComplex) {\r\n        // Detectar si el tipo es anula" +
+"ble (termina en \'?\')\r\n        var isNullable = type.endsWith(\'?\');\r\n        var " +
+"underlyingType = isNullable ? type.slice(0, -1).toLowerCase() : type.toLowerCase" +
+"();\r\n    \r\n        // Si el campo está vacío o es null y es anulable, retornar n" +
+"ull\r\n        if (isNullable && (value === \'\' || value === null || value === unde" +
+"fined)) {\r\n            return null;\r\n        }\r\n    \r\n        // Para tipos comp" +
+"lejos, ya se parsea el JSON\r\n        if (isComplex) {\r\n            if (value ===" +
+" \'\' && isNullable) return null;\r\n            try {\r\n                return JSON." +
+"parse(value);\r\n            } catch(e) {\r\n                return value; // fallba" +
+"ck\r\n            }\r\n        }\r\n    \r\n        // A continuación, la conversión nor" +
+"mal pero usando underlyingType\r\n        if (underlyingType.includes(\'int\') || un" +
+"derlyingType.includes(\'long\') || \r\n            underlyingType.includes(\'short\') " +
+"|| underlyingType.includes(\'byte\')) {\r\n            var num = parseInt(value, 10)" +
+";\r\n            return isNaN(num) ? (isNullable ? null : value) : num;\r\n        }" +
+"\r\n        if (underlyingType.includes(\'double\') || underlyingType.includes(\'floa" +
+"t\') || \r\n            underlyingType.includes(\'decimal\') || underlyingType.includ" +
+"es(\'single\')) {\r\n            var num = parseFloat(value);\r\n            return is" +
+"NaN(num) ? (isNullable ? null : value) : num;\r\n        }\r\n        if (underlying" +
+"Type.includes(\'bool\')) {\r\n            if (typeof value === \'boolean\') return val" +
+"ue;\r\n            if (value === \'\' && isNullable) return null;\r\n            retur" +
+"n value === \'true\' || value === \'1\' || value === \'on\';\r\n        }\r\n        // Fe" +
+"chas se envían como string ISO, se mantienen igual\r\n        // Para otros, strin" +
+"g\r\n        return value;\r\n    }\r\n\r\n\r\n    function buildRequest() {\r\n        var " +
+"mode = document.querySelector(\'input[name=\"launchMode\"]:checked\').value;\r\n      " +
+"  var className = mode === \'assisted\' ? $$(\'classNameAssisted\').value.trim() : $" +
+"$(\'classNameManual\').value.trim();\r\n        var methodName = mode === \'assisted\'" +
+" ? (function() {\r\n            var idx = $$(\'methodSelect\').value;\r\n            r" +
+"eturn idx === \'\' ? \'\' : currentMethods[parseInt(idx)].methodName;\r\n        })() " +
+": $$(\'methodNameManual\').value.trim();\r\n\r\n\r\n        var request = {\r\n           " +
+" mode: mode,\r\n            className: className,\r\n            methodName: methodN" +
+"ame,\r\n            queue: $$(\'queue\').value.trim() || \'default\',\r\n            exe" +
+"cutionMode: document.querySelector(\'input[name=\"execMode\"]:checked\').value,\r\n   " +
+"         includePerformContext: $$(\'chkPerformContext\').checked,\r\n            in" +
+"cludeCancellationToken: $$(\'chkCancellationToken\').checked,\r\n            paramet" +
+"ers: null,\r\n            rawParametersJson: null\r\n        };\r\n\r\n        // Si man" +
+"ual, rawParametersJson\r\n        if (mode === \'manual\') {\r\n            request.ra" +
+"wParametersJson = $$(\'jsonParams\').value.trim() || \'{}\';\r\n        } else {\r\n    " +
+"        // Modo asistido: construir objeto con valores tipados\r\n            var " +
+"paramsObj = {};\r\n            var paramFields = document.querySelectorAll(\'#param" +
+"sContainer .param-field\');\r\n            paramFields.forEach(function(field) {\r\n " +
+"               var input = field.querySelector(\'[data-param-name]\');\r\n          " +
+"      var name = input.getAttribute(\'data-param-name\');\r\n                var raw" +
+"Value;\r\n                if (input.type === \'checkbox\') {\r\n                    ra" +
+"wValue = input.checked;\r\n                } else {\r\n                    rawValue " +
+"= input.value;\r\n                }\r\n                // Buscar la definición del p" +
+"arámetro en el método seleccionado\r\n                var paramDef = selectedMetho" +
+"d ? selectedMethod.parameters.find(function(p) { return p.name === name; }) : nu" +
+"ll;\r\n                if (paramDef) {\r\n                    var convertedValue = c" +
+"onvertToType(rawValue, paramDef.type, paramDef.isComplex);\r\n                    " +
+"paramsObj[name] = convertedValue;\r\n                } else {\r\n                   " +
+" paramsObj[name] = rawValue; // fallback\r\n                }\r\n            });\r\n  " +
+"          request.rawParametersJson = JSON.stringify(paramsObj);\r\n            re" +
+"quest.parameters = null; // no usar el diccionario de strings\r\n        }\r\n\r\n    " +
+"    // Completion specific\r\n        if (request.executionMode === \'Schedule\') {\r" +
+"\n            request.delayMinutes = parseInt($$(\'delayMinutes\').value) || 30;\r\n " +
+"       }\r\n        if (request.executionMode === \'ScheduleDateTime\') {\r\n         " +
+"   request.scheduledDateTime = $$(\'scheduledDateTime\').value ? new Date($$(\'sche" +
+"duledDateTime\').value).toISOString() : null;\r\n        }\r\n        if (request.exe" +
+"cutionMode === \'Recurring\') {\r\n            request.cronExpression = $$(\'cronExpr" +
+"ession\').value.trim() || \'* * * * *\';\r\n            if (mode === \'manual\') {\r\n   " +
+"             request.recurringEngine = $$(\'recurringEngine\').value;\r\n           " +
+" }\r\n        }\r\n        if (request.executionMode === \'Continuation\') {\r\n        " +
+"    request.parentJobId = $$(\'parentJobId\').value.trim();\r\n        }\r\n        re" +
+"turn request;\r\n    }\r\n\r\n    // ====== PREVIEW ======\r\n    function showPreview()" +
+" {\r\n        var req = buildRequest();\r\n        var summary = \'Class: \' + req.cla" +
+"ssName + \'\\nMethod: \' + req.methodName + \'\\nQueue: \' + req.queue +\r\n            " +
+"          \'\\nMode: \' + req.executionMode + \'\\nEngine: \' + (req.recurringEngine |" +
+"| \'Direct\') +\r\n                      \'\\nParameters: \' + (req.rawParametersJson |" +
+"| JSON.stringify(req.parameters));\r\n        $$(\'previewContent\').textContent = s" +
+"ummary;\r\n        $$(\'previewPanel\').style.display = \'block\';\r\n    }\r\n\r\n    // ==" +
+"==== SUBMIT / LAUNCH ======\r\n    var pendingLaunchRequest = null; // para confir" +
+"mación de cola crítica\r\n\r\n    function submitJob() {\r\n        var req = buildReq" +
+"uest();\r\n        if (!req.className || !req.methodName) { alert(\'ClassName and M" +
+"ethodName are required.\'); return; }\r\n\r\n        if (isQueueCritical(req.queue)) " +
+"{\r\n            pendingLaunchRequest = req;\r\n            $$(\'criticalQueueName\')." +
+"textContent = req.queue;\r\n            $$(\'criticalJobSummary\').textContent = \'Cl" +
+"ass: \' + req.className + \'\\nMethod: \' + req.methodName + \'\\nMode: \' + req.execut" +
+"ionMode;\r\n            $(\'#criticalConfirmModal\').modal(\'show\');\r\n        } else " +
+"{\r\n            launchJob(req);\r\n        }\r\n    }\r\n\r\n    function confirmedLaunch" +
+"() {\r\n        $(\'#criticalConfirmModal\').modal(\'hide\');\r\n        if (pendingLaun" +
+"chRequest) launchJob(pendingLaunchRequest);\r\n    }\r\n\r\n    function launchJob(req" +
+") {\r\n        var formData = new FormData();\r\n        formData.append(\'json\', JSO" +
+"N.stringify(req));\r\n\r\n        fetch(apiBaseUrl + \'/api/launch\', {\r\n            m" +
+"ethod: \'POST\',\r\n            body: formData\r\n        })\r\n        .then(function(r" +
+") { return r.json(); })\r\n          .then(function(result) {\r\n              var a" +
+"lertDiv = $$(\'launchResult\');\r\n              alertDiv.style.display = \'block\';\r\n" +
+"              if (result.success) {\r\n                  alertDiv.className = \'ale" +
+"rt alert-success\';\r\n                  alertDiv.innerHTML = \'Job launched success" +
+"fully! <a href=\"\' + result.link + \'\" target=\"_blank\">\' + result.jobId + \'</a>\';\r" +
+"\n                  loadQueues(); // actualizar colas\r\n                  loadHist" +
+"ory(); // recargar historial\r\n              } else {\r\n                  alertDiv" +
+".className = \'alert alert-danger\';\r\n                  alertDiv.textContent = \'Er" +
+"ror: \' + (result.error || \'Unknown error\');\r\n              }\r\n          }).catch" +
+"(function(err) {\r\n              var alertDiv = $$(\'launchResult\');\r\n            " +
+"  alertDiv.style.display = \'block\';\r\n              alertDiv.className = \'alert a" +
+"lert-danger\';\r\n              alertDiv.textContent = \'Network error: \' + err.mess" +
+"age;\r\n          });\r\n    }\r\n\r\n    // ====== HISTORY ======\r\n    function loadHis" +
+"tory() {\r\n        var dashboardBaseUrl = \'");
 
 
             
-            #line 802 "..\..\Pages\JobLauncherPage.cshtml"
+            #line 811 "..\..\Pages\JobLauncherPage.cshtml"
                            Write(Url.To("/"));
 
             

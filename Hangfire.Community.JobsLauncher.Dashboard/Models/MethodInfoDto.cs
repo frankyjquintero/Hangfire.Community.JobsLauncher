@@ -17,6 +17,7 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Models
         public string Type { get; set; }
         /// <summary>Indica si el tipo es complejo (clase, lista, diccionario, etc.) y requiere editor JSON.</summary>
         public bool IsComplex { get; set; }
+        public List<string> EnumValues { get; set; }
     }
 
     public class LaunchRequest

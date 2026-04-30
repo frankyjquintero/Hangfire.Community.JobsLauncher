@@ -493,9 +493,18 @@
         else if (underlyingType === 'system.timespan' || underlyingType === 'timespan') {
             html = '<input type="text" class="form-control" data-param-name="' + name + '" placeholder="hh:mm:ss" value="' + (isNullable ? '' : '00:00:00') + '" />';
         }
-        // Enum (tratado como texto)
+        // Enum
         else if (underlyingType.includes('.') && !underlyingType.startsWith('system.')) {
-            html = '<input type="text" class="form-control" data-param-name="' + name + '" placeholder="Enum value of ' + paramInfo.type + '" />';
+            if (paramInfo.enumValues && paramInfo.enumValues.length > 0) {
+                html += '<select class="form-control" data-param-name="' + name + '">';
+                paramInfo.enumValues.forEach(function(val) {
+                    html += '<option value="' + val + '">' + val + '</option>';
+                });
+                html += '</select>';
+            } else {
+                // Fallback a input de texto si no recibimos los valores
+                html = '<input type="text" class="form-control" data-param-name="' + name + '" placeholder="Enum value of ' + paramInfo.type + '" />';
+            }
         }
         // Cadena y otros
         else {

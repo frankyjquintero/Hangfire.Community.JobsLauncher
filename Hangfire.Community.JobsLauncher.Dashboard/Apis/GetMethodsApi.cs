@@ -73,7 +73,10 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
                         {
                             Name = p.Name,
                             Type = GetTypeName(p.ParameterType),
-                            IsComplex = IsComplexType(p.ParameterType)
+                            IsComplex = IsComplexType(p.ParameterType),
+                            EnumValues = p.ParameterType.IsEnum
+                                ? Enum.GetNames(p.ParameterType).ToList()
+                                : null
                         }).ToList()
                     }).ToList();
 
