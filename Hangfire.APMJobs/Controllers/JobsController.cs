@@ -1,9 +1,10 @@
+using Hangfire;
+using Hangfire.Server;
+using Hangfire.States;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using Hangfire;
-using Hangfire.States;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Hangfire.APMJobs.Controllers
 {
@@ -164,6 +165,110 @@ namespace Hangfire.APMJobs.Controllers
         {
             Thread.Sleep(_random.Next(1000, 5000));
             Console.WriteLine($"[{DateTime.Now}] Search index rebuilt.");
+        }
+
+        /// <summary>
+        /// Parámetros: tipos primitivos (string, int, bool, double)
+        /// JSON ejemplo: {"customerName":"John","age":30,"isPremium":true,"balance":1200.5}
+        /// </summary>
+        public static void ProcessCustomer(string customerName, int age, bool isPremium, double balance)
+        {
+            Thread.Sleep(1000);
+            Console.WriteLine($"[{DateTime.Now}] Processing customer {customerName}, age {age}, premium: {isPremium}, balance: {balance:C}");
+        }
+
+        /// <summary>
+        /// Parámetros: DateTime + tipos anulables (int?, DateTime?)
+        /// JSON ejemplo: {"startDate":"2025-03-15T00:00:00","endDate":null,"maxRetries":null}
+        /// </summary>
+        public static void GenerateReport(DateTime startDate, DateTime? endDate, int? maxRetries)
+        {
+            Thread.Sleep(1000);
+            var end = endDate?.ToString("d") ?? "today";
+            var retries = maxRetries?.ToString() ?? "unlimited";
+            Console.WriteLine($"[{DateTime.Now}] Report from {startDate:d} to {end}, max retries: {retries}");
+        }
+
+        /// <summary>
+        /// Parámetros: Enum + DateTime + Guid
+        /// JSON ejemplo: {"priority":"High","notifyAt":"2025-04-01T09:30:00","trackingId":"a1b2c3d4-..."}
+        /// </summary>
+        public enum JobPriority { Low, Medium, High, Critical }
+
+        public static void ScheduleWork(JobPriority priority, DateTime notifyAt, Guid trackingId)
+        {
+            Thread.Sleep(1000);
+            Console.WriteLine($"[{DateTime.Now}] Scheduled work - Priority: {priority}, Notify at: {notifyAt:g}, TrackingId: {trackingId}");
+        }
+
+        /// <summary>
+        /// Parámetros: Lista de strings, Dictionary, TimeSpan
+        /// JSON ejemplo: 
+        /// {
+        ///   "emailAddresses": ["a@b.com","c@d.com"],
+        ///   "metadata": {"key1":"value1","key2":"value2"},
+        ///   "timeout": "00:05:00"
+        /// }
+        /// </summary>
+        public static void SendBulkEmails(List<string> emailAddresses, Dictionary<string, string> metadata, TimeSpan timeout)
+        {
+            Thread.Sleep(1000);
+            Console.WriteLine($"[{DateTime.Now}] Sending emails to {emailAddresses.Count} recipients, timeout {timeout}. Metadata keys: {string.Join(",", metadata.Keys)}");
+        }
+
+        /// <summary>
+        /// Parámetros: clase compleja + lista de enteros
+        /// JSON ejemplo: 
+        /// {
+        ///   "config": {"Server":"smtp.example.com","Port":587,"UseSsl":true},
+        ///   "attachmentIds": [101, 102, 103]
+        /// }
+        /// </summary>
+        public class EmailConfig
+        {
+            public string Server { get; set; } = string.Empty;
+            public int Port { get; set; }
+            public bool UseSsl { get; set; }
+        }
+
+        public static void SendEmailWithAttachments(EmailConfig config, List<int> attachmentIds)
+        {
+            Thread.Sleep(1000);
+            Console.WriteLine($"[{DateTime.Now}] Email via {config.Server}:{config.Port} (SSL:{config.UseSsl}), attachments: {attachmentIds.Count}");
+        }
+
+        /// <summary>
+        /// Parámetros: array de objetos complejos + enum anulable
+        /// JSON ejemplo:
+        /// {
+        ///   "logEntries": [{"Message":"Started","Timestamp":"2025-01-01T00:00:00"},{"Message":"Done","Timestamp":"2025-01-01T01:00:00"}],
+        ///   "severity": "Medium"
+        /// }
+        /// </summary>
+        public class LogEntry
+        {
+            public string Message { get; set; } = string.Empty;
+            public DateTime Timestamp { get; set; }
+        }
+
+        public static void BatchLogWrites(LogEntry[] logEntries, JobPriority? severity)
+        {
+            Thread.Sleep(1000);
+            string sev = severity?.ToString() ?? "not specified";
+            Console.WriteLine($"[{DateTime.Now}] Writing {logEntries.Length} log entries, severity: {sev}");
+        }
+
+        /// <summary>
+        /// Método que acepta PerformContext y IJobCancellationToken (para probar las opciones avanzadas)
+        /// </summary>
+        public static void LongRunningTaskWithCancellation(PerformContext context, IJobCancellationToken token)
+        {
+            for (int i = 0; i < 60; i++)
+            {
+                token.ThrowIfCancellationRequested();
+                Thread.Sleep(1000);
+            }
+            Console.WriteLine($"[{DateTime.Now}] Long task completed.");
         }
     }
 }

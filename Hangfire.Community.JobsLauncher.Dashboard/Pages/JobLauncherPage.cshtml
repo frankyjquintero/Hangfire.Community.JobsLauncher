@@ -78,6 +78,7 @@
                                 <div class="help-block">
                                     <button type="button" class="btn btn-xs btn-default" id="validateJsonBtn">Validate</button>
                                     <button type="button" class="btn btn-xs btn-default" id="formatJsonBtn">Format</button>
+                                    <button type="button" class="btn btn-xs btn-info" id="suggestJsonBtn">Suggest JSON</button>
                                     <span id="jsonValidationMsg" class="text-danger" style="display:none;">Invalid JSON</span>
                                 </div>
                             </div>
@@ -242,6 +243,7 @@
     var dynamicJobsAvailable = false;
     var criticalQueues =  [];
     var apiBaseUrl = '@Url.To("/joblauncher")';
+    var selectedMethod = null; // almacenará el MethodInfoDto actual
 
     // ====== UTILIDADES ======
     function $$(id){ return document.getElementById(id); }
@@ -274,9 +276,10 @@
         var execRadios = document.querySelectorAll('input[name="execMode"]');
         execRadios.forEach(function(r) { r.addEventListener('change', toggleExecMode); });
 
-        // Validate/format JSON
+        // Validate/format JSON/ suggest
         $$('validateJsonBtn').addEventListener('click', validateJson);
         $$('formatJsonBtn').addEventListener('click', formatJson);
+        $$('suggestJsonBtn').addEventListener('click', suggestJsonStructure);
 
         // Cron
         $$('btnValidateCron').addEventListener('click', validateCron);
@@ -301,6 +304,7 @@
         // Mostrar/esconder campos de ejecución
         toggleExecMode();
         toggleMode();
+
     }
 
     // ====== MODO ASISTIDO / MANUAL ======
@@ -366,7 +370,9 @@
                 var sel = $$('methodSelect');
                 sel.innerHTML = '<option value="">-- Select method --</option>';
                 currentMethods.forEach(function(m, i) {
-                    sel.innerHTML += '<option value="' + i + '">' + m.methodName + '</option>';
+                    var params = m.parameters.map(function(p) { return p.name; }).join(', ');
+                    var display = m.methodName + '(' + params + ')';
+                    sel.innerHTML += '<option value="' + i + '">' + display + '</option>';
                 });
                 $$('methodSelectGroup').style.display = 'block';
                 $$('paramsContainer').innerHTML = '';
@@ -376,30 +382,91 @@
     // ====== GENERAR PARÁMETROS DINÁMICOS (ASISTIDO) ======
     function onMethodChange() {
         var idx = $$('methodSelect').value;
-        if (idx === '') { $$('paramsContainer').innerHTML = ''; return; }
+        if (idx === '') { 
+            $$('paramsContainer').innerHTML = ''; 
+            selectedMethod = null; 
+            return; 
+        }
         var method = currentMethods[parseInt(idx)];
+        selectedMethod = method;
         var html = '';
+    
         method.parameters.forEach(function(p) {
             html += '<div class="form-group param-field">';
             html += '<label>' + p.name + ' (' + p.type + ')</label>';
+        
             if (p.isComplex) {
-                // Editor JSON simple
-                html += '<textarea class="form-control param-complex" data-param-name="' + p.name + '" rows="3" placeholder="Insert JSON for ' + p.type + '"></textarea>';
+                // Editor JSON para tipos complejos
+                html += '<textarea class="form-control param-complex" data-param-name="' + p.name + '" rows="3" placeholder=\'Insert JSON for ' + p.type + '\'></textarea>';
             } else {
-                var inputType = 'text';
-                if (p.type.startsWith('int') || p.type.startsWith('long') || p.type.startsWith('short') ||
-                    p.type.startsWith('byte') || p.type.startsWith('double') || p.type.startsWith('float') ||
-                    p.type.startsWith('decimal')) inputType = 'number';
-                else if (p.type.startsWith('DateTime') || p.type.startsWith('DateTimeOffset')) inputType = 'datetime-local';
-                else if (p.type.startsWith('bool')) inputType = 'checkbox';
-                html += '<input type="' + inputType + '" class="form-control" data-param-name="' + p.name + '" placeholder="' + p.type + '" />';
+                html += generateInputForSimpleType(p);
             }
             html += '</div>';
         });
         $$('paramsContainer').innerHTML = html;
     }
 
-    // ====== JSON VALIDATE / FORMAT ======
+    function generateInputForSimpleType(paramInfo) {
+        var type = paramInfo.type;
+        var name = paramInfo.name;
+        var isNullable = type.endsWith('?');
+        var underlyingType = isNullable ? type.slice(0, -1).toLowerCase() : type.toLowerCase();
+    
+        var html = '';
+    
+        // Números enteros
+        if (underlyingType.includes('int') || underlyingType.includes('long') || 
+            underlyingType.includes('short') || underlyingType.includes('byte')) {
+            html = '<input type="number" class="form-control" data-param-name="' + name + '" step="1" value="' + (isNullable ? '' : '0') + '" />';
+        }
+        // Números flotantes
+        else if (underlyingType.includes('double') || underlyingType.includes('float') || 
+                 underlyingType.includes('decimal') || underlyingType.includes('single')) {
+            html = '<input type="number" class="form-control" data-param-name="' + name + '" step="any" value="' + (isNullable ? '' : '0.0') + '" />';
+        }
+        // Booleanos (select True/False + opción vacía si anulable)
+        else if (underlyingType.includes('bool')) {
+            html = '<select class="form-control" data-param-name="' + name + '">';
+            if (isNullable) html += '<option value="">-- Not set --</option>';
+            html += '<option value="true">True</option><option value="false">False</option>';
+            html += '</select>';
+        }
+        // Fechas y horas
+        else if (underlyingType.includes('datetime') || underlyingType.includes('datetimeoffset')) {
+            var defaultDate = isNullable ? '' : new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+            html = '<input type="datetime-local" class="form-control" data-param-name="' + name + '" value="' + defaultDate + '" />';
+            html += '<small class="help-block">Click the calendar icon to select a date and time.</small>';
+        }
+        // Fecha sin hora (date)
+        else if (underlyingType === 'system.datetime' || underlyingType === 'datetime') {
+            var defaultDate = isNullable ? '' : new Date().toISOString().slice(0, 10);
+            html = '<input type="date" class="form-control" data-param-name="' + name + '" value="' + defaultDate + '" />';
+        }
+        // GUID
+        else if (underlyingType === 'system.guid' || underlyingType === 'guid') {
+            html = '<input type="text" class="form-control" data-param-name="' + name + '" placeholder="00000000-0000-0000-0000-000000000000" value="' + (isNullable ? '' : '00000000-0000-0000-0000-000000000000') + '" />';
+        }
+        // TimeSpan
+        else if (underlyingType === 'system.timespan' || underlyingType === 'timespan') {
+            html = '<input type="text" class="form-control" data-param-name="' + name + '" placeholder="hh:mm:ss" value="' + (isNullable ? '' : '00:00:00') + '" />';
+        }
+        // Enum (tratado como texto)
+        else if (underlyingType.includes('.') && !underlyingType.startsWith('system.')) {
+            html = '<input type="text" class="form-control" data-param-name="' + name + '" placeholder="Enum value of ' + paramInfo.type + '" />';
+        }
+        // Cadena y otros
+        else {
+            html = '<input type="text" class="form-control" data-param-name="' + name + '" placeholder="' + paramInfo.type + '" />';
+        }
+    
+        if (isNullable) {
+            html += '<small class="text-muted">(Optional, leave empty for null)</small>';
+        }
+    
+        return html;
+    }
+
+    // ====== JSON VALIDATE / FORMAT / SUGGEST ======
     function validateJson() {
         var text = $$('jsonParams').value.trim();
         if (!text) return;
@@ -411,6 +478,62 @@
         try { var obj = JSON.parse(text); $$('jsonParams').value = JSON.stringify(obj, null, 2); $$('jsonValidationMsg').style.display = 'none'; }
         catch(e) { $$('jsonValidationMsg').style.display = 'inline'; }
     }
+
+    function suggestJsonStructure() {
+        var className = $$('classNameManual').value.trim();
+        var methodName = $$('methodNameManual').value.trim();
+    
+        if (!className || !methodName) {
+            alert('Please enter Class Name and Method Name first.');
+            return;
+        }
+    
+        // Llamar a la API para obtener los métodos
+        fetchJson(apiBaseUrl + '/api/methods?className=' + encodeURIComponent(className))
+            .then(function(resp) {
+                if (!resp.success) {
+                    alert('Assembly no disponible: ' + resp.error);
+                    return;
+                }
+                // Buscar el método especificado
+                var method = resp.methods.find(function(m) { return m.methodName === methodName; });
+                if (!method) {
+                    alert('Method not found.');
+                    return;
+                }
+            
+                // Generar un objeto JSON con valores por defecto según los tipos
+                var suggestion = {};
+                method.parameters.forEach(function(p) {
+                    suggestion[p.name] = getDefaultValueForType(p.type, p.isComplex);
+                });
+            
+                // Formatear el JSON y mostrarlo en el textarea
+                $$('jsonParams').value = JSON.stringify(suggestion, null, 2);
+            })
+            .catch(function(err) {
+                alert('Error loading suggestion: ' + err.message);
+            });
+    }
+
+    function getDefaultValueForType(type, isComplex) {
+        if (type.endsWith('?')) {
+            return null; // anulable, sugerimos null
+        }
+        if (isComplex) {
+            return {}; // objeto vacío como placeholder
+        }
+        var t = type.toLowerCase();
+        if (t.includes('int') || t.includes('long') || t.includes('short') || t.includes('byte')) return 0;
+        if (t.includes('double') || t.includes('float') || t.includes('decimal') || t.includes('single')) return 0.0;
+        if (t.includes('bool')) return true;
+        if (t.includes('datetime') || t.includes('datetimeoffset')) return new Date().toISOString();
+        if (t === 'system.guid' || t === 'guid') return '00000000-0000-0000-0000-000000000000';
+        if (t === 'system.timespan' || t === 'timespan') return '00:00:00';
+        if (t === 'system.string' || t === 'string') return '';
+        // Para enums, intentamos extraer el primer valor posible (no disponible aquí, dejamos string vacío)
+        return '';
+}
 
     // ====== VALIDATE CRON ======
     function validateCron() {
@@ -459,6 +582,48 @@
     }
 
     // ====== BUILD REQUEST OBJECT ======
+    function convertToType(value, type, isComplex) {
+        // Detectar si el tipo es anulable (termina en '?')
+        var isNullable = type.endsWith('?');
+        var underlyingType = isNullable ? type.slice(0, -1).toLowerCase() : type.toLowerCase();
+    
+        // Si el campo está vacío o es null y es anulable, retornar null
+        if (isNullable && (value === '' || value === null || value === undefined)) {
+            return null;
+        }
+    
+        // Para tipos complejos, ya se parsea el JSON
+        if (isComplex) {
+            if (value === '' && isNullable) return null;
+            try {
+                return JSON.parse(value);
+            } catch(e) {
+                return value; // fallback
+            }
+        }
+    
+        // A continuación, la conversión normal pero usando underlyingType
+        if (underlyingType.includes('int') || underlyingType.includes('long') || 
+            underlyingType.includes('short') || underlyingType.includes('byte')) {
+            var num = parseInt(value, 10);
+            return isNaN(num) ? (isNullable ? null : value) : num;
+        }
+        if (underlyingType.includes('double') || underlyingType.includes('float') || 
+            underlyingType.includes('decimal') || underlyingType.includes('single')) {
+            var num = parseFloat(value);
+            return isNaN(num) ? (isNullable ? null : value) : num;
+        }
+        if (underlyingType.includes('bool')) {
+            if (typeof value === 'boolean') return value;
+            if (value === '' && isNullable) return null;
+            return value === 'true' || value === '1' || value === 'on';
+        }
+        // Fechas se envían como string ISO, se mantienen igual
+        // Para otros, string
+        return value;
+    }
+
+
     function buildRequest() {
         var mode = document.querySelector('input[name="launchMode"]:checked').value;
         var className = mode === 'assisted' ? $$('classNameAssisted').value.trim() : $$('classNameManual').value.trim();
@@ -482,21 +647,29 @@
         if (mode === 'manual') {
             request.rawParametersJson = $$('jsonParams').value.trim() || '{}';
         } else {
-            // Recoger parámetros del formulario asistido
-            var paramDict = {};
+            // Modo asistido: construir objeto con valores tipados
+            var paramsObj = {};
             var paramFields = document.querySelectorAll('#paramsContainer .param-field');
             paramFields.forEach(function(field) {
-                var name = field.querySelector('[data-param-name]').getAttribute('data-param-name');
                 var input = field.querySelector('[data-param-name]');
-                var value;
+                var name = input.getAttribute('data-param-name');
+                var rawValue;
                 if (input.type === 'checkbox') {
-                    value = input.checked ? 'true' : 'false';
+                    rawValue = input.checked;
                 } else {
-                    value = input.value;
+                    rawValue = input.value;
                 }
-                paramDict[name] = value;
+                // Buscar la definición del parámetro en el método seleccionado
+                var paramDef = selectedMethod ? selectedMethod.parameters.find(function(p) { return p.name === name; }) : null;
+                if (paramDef) {
+                    var convertedValue = convertToType(rawValue, paramDef.type, paramDef.isComplex);
+                    paramsObj[name] = convertedValue;
+                } else {
+                    paramsObj[name] = rawValue; // fallback
+                }
             });
-            request.parameters = paramDict;
+            request.rawParametersJson = JSON.stringify(paramsObj);
+            request.parameters = null; // no usar el diccionario de strings
         }
 
         // Completion specific

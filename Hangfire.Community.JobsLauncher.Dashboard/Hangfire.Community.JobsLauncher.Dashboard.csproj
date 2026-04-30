@@ -36,14 +36,6 @@
 
 	<!-- Razor -->
 	<ItemGroup>
-		<Compile Update="Pages\JobLauncherPage.cshtml.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>JobLauncherPage.cshtml</DependentUpon>
-		</Compile>
-		<!-- Agrega más archivos aquí siguiendo el mismo patrón -->
-	</ItemGroup>
-	<ItemGroup>
 		<None Update="Pages\JobLauncherPage.cshtml">
 			<Generator>RazorGenerator</Generator>
 			<LastGenOutput>JobLauncher.cshtml.cs</LastGenOutput>

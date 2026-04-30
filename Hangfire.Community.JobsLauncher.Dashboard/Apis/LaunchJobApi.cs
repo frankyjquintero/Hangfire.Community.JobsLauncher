@@ -179,11 +179,11 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
             else
             {
                 // BuiltIn: usar DirectJobInvoker en RecurringJob
-                //RecurringJob.AddOrUpdate(recurringId,
-                //    () => DirectJobInvoker.Invoke(request.ClassName, request.MethodName, serializedParams,
-                //        request.IncludePerformContext, request.IncludeCancellationToken),
-                //    request.CronExpression,
-                //    request.Queue);
+                RecurringJob.AddOrUpdate(recurringId,
+                    () => DirectJobInvoker.Invoke(request.ClassName, request.MethodName, serializedParams,
+                        request.IncludePerformContext, request.IncludeCancellationToken),
+                    cronExpression: request.CronExpression,
+                    queue: request.Queue);
                 return recurringId;
             }
         }
@@ -257,11 +257,17 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
             }
             else
             {
-                //RecurringJob.AddOrUpdate(recurringId,
-                //    () => JobLauncherDispatcher.ExecuteJob(request.ClassName, request.MethodName, request.Queue,
-                //        serializedParams, request.IncludePerformContext, request.IncludeCancellationToken),
-                //    request.CronExpression,
-                //    request.Queue);
+                RecurringJob.AddOrUpdate(
+                        recurringId,
+                        () => JobLauncherDispatcher.ExecuteJob(
+                            request.ClassName,
+                            request.MethodName,
+                            request.Queue,
+                            serializedParams,
+                            request.IncludePerformContext,
+                            request.IncludeCancellationToken),
+                        cronExpression: request.CronExpression,
+                        queue: request.Queue);
                 return recurringId;
             }
         }
