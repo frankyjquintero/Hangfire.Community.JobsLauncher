@@ -71,210 +71,217 @@ WriteLiteral("<style>\r\n    #paramsContainer .param-complex {\r\n        border
 "cc;\r\n        padding-left: 10px;\r\n        margin-bottom: 10px;\r\n    }\r\n    .para" +
 "m-complex label {\r\n        font-weight: normal;\r\n        font-style: italic;\r\n  " +
 "  }\r\n    #jsonParams {\r\n        font-family: monospace;\r\n    }\r\n    .help-block " +
-".btn {\r\n        margin-right: 5px;\r\n    }\r\n</style>\r\n\r\n<ul class=\"nav nav-tabs\" " +
-"role=\"tablist\">\r\n    <li role=\"presentation\" class=\"active\"><a href=\"#launchTab\"" +
-" aria-controls=\"launchTab\" role=\"tab\" data-toggle=\"tab\">Launch</a></li>\r\n    <li" +
-" role=\"presentation\"><a href=\"#historyTab\" aria-controls=\"historyTab\" role=\"tab\"" +
-" data-toggle=\"tab\">History</a></li>\r\n    <li role=\"presentation\"><a href=\"#templ" +
-"atesTab\" aria-controls=\"templatesTab\" role=\"tab\" data-toggle=\"tab\">Templates</a>" +
-"</li>\r\n</ul>\r\n\r\n<div class=\"tab-content\" style=\"padding-top:15px;\">\r\n    <!-- ==" +
-"================== PESTAÑA LAUNCH ==================== -->\r\n    <div role=\"tabpa" +
-"nel\" class=\"tab-pane fade in active\" id=\"launchTab\">\r\n        <div class=\"row\">\r" +
-"\n            <div class=\"col-md-6\">\r\n                <div class=\"panel panel-def" +
-"ault\">\r\n                    <div class=\"panel-heading\">Job Configuration</div>\r\n" +
-"                    <div class=\"panel-body\">\r\n                        <div class" +
-"=\"form-group\">\r\n                            <label>Mode</label>\r\n               " +
-"             <div>\r\n                                <label class=\"radio-inline\">" +
-"<input type=\"radio\" name=\"launchMode\" value=\"assisted\" checked> Assisted (assemb" +
-"ly)</label>\r\n                                <label class=\"radio-inline\"><input " +
-"type=\"radio\" name=\"launchMode\" value=\"manual\"> Manual (JSON)</label>\r\n          " +
-"                  </div>\r\n                        </div>\r\n                      " +
-"  <!-- Campos según modo -->\r\n                        <div id=\"assistedFields\">\r" +
-"\n                            <div class=\"form-group\">\r\n                         " +
-"       <label>Class Name</label>\r\n                                <div class=\"in" +
-"put-group\">\r\n                                    <input type=\"text\" id=\"classNam" +
-"eAssisted\" class=\"form-control\" placeholder=\"Namespace.ClassName\">\r\n            " +
-"                        <span class=\"input-group-btn\"><button class=\"btn btn-def" +
-"ault\" id=\"btnLoadMethods\" type=\"button\">Load Methods</button></span>\r\n          " +
-"                      </div>\r\n                            </div>\r\n              " +
-"              <div class=\"form-group\" id=\"methodSelectGroup\" style=\"display:none" +
-";\">\r\n                                <label>Method</label>\r\n                    " +
-"            <select id=\"methodSelect\" class=\"form-control\"><option value=\"\">-- S" +
-"elect method --</option></select>\r\n                            </div>\r\n         " +
-"                   <div id=\"paramsContainer\"></div>\r\n                        </d" +
-"iv>\r\n                        <div id=\"manualFields\" style=\"display:none;\">\r\n    " +
-"                        <div class=\"form-group\">\r\n                              " +
-"  <label>Class Name</label>\r\n                                <input type=\"text\" " +
-"id=\"classNameManual\" class=\"form-control\" placeholder=\"Namespace.ClassName\">\r\n  " +
-"                          </div>\r\n                            <div class=\"form-g" +
-"roup\">\r\n                                <label>Method Name</label>\r\n            " +
-"                    <input type=\"text\" id=\"methodNameManual\" class=\"form-control" +
-"\" placeholder=\"MethodName\">\r\n                            </div>\r\n               " +
-"             <div class=\"form-group\">\r\n                                <label>Pa" +
-"rameters (JSON)</label>\r\n                                <textarea id=\"jsonParam" +
-"s\" class=\"form-control\" rows=\"6\"\r\n                                          plac" +
-"eholder=\'{\"to\":\"email@example.com\",\"subject\":\"Test\"}\'></textarea>\r\n             " +
-"                   <div class=\"help-block\">\r\n                                   " +
-" <button type=\"button\" class=\"btn btn-xs btn-default\" id=\"validateJsonBtn\">Valid" +
-"ate</button>\r\n                                    <button type=\"button\" class=\"b" +
-"tn btn-xs btn-default\" id=\"formatJsonBtn\">Format</button>\r\n                     " +
-"               <button type=\"button\" class=\"btn btn-xs btn-info\" id=\"suggestJson" +
-"Btn\">Suggest JSON</button>\r\n                                    <span id=\"jsonVa" +
-"lidationMsg\" class=\"text-danger\" style=\"display:none;\">Invalid JSON</span>\r\n    " +
-"                            </div>\r\n                            </div>\r\n        " +
-"                </div>\r\n                        <!-- Opciones avanzadas -->\r\n   " +
-"                     <div class=\"form-group\">\r\n                            <a ro" +
-"le=\"button\" data-toggle=\"collapse\" href=\"#advancedOptions\" aria-expanded=\"false\"" +
-">Advanced options ▾</a>\r\n                            <div class=\"collapse\" id=\"a" +
-"dvancedOptions\" style=\"margin-top:5px;\">\r\n                                <div c" +
-"lass=\"checkbox\">\r\n                                    <label><input type=\"checkb" +
-"ox\" id=\"chkPerformContext\"> Include PerformContext</label>\r\n                    " +
-"            </div>\r\n                                <div class=\"checkbox\">\r\n    " +
-"                                <label><input type=\"checkbox\" id=\"chkCancellatio" +
-"nToken\"> Include CancellationToken</label>\r\n                                </di" +
-"v>\r\n                            </div>\r\n                        </div>\r\n        " +
-"                <!-- Modo de ejecución -->\r\n                        <div class=\"" +
-"form-group\">\r\n                            <label>Execution Mode</label>\r\n       " +
-"                     <div id=\"executionModeGroup\">\r\n                            " +
-"    <label class=\"radio-inline\"><input type=\"radio\" name=\"execMode\" value=\"FireA" +
-"ndForget\" checked> Fire & Forget</label>\r\n                                <label" +
-" class=\"radio-inline\"><input type=\"radio\" name=\"execMode\" value=\"Schedule\"> Sche" +
-"dule (minutes)</label>\r\n                                <label class=\"radio-inli" +
-"ne\"><input type=\"radio\" name=\"execMode\" value=\"ScheduleDateTime\"> Schedule (date" +
-")</label>\r\n                                <label class=\"radio-inline\"><input ty" +
-"pe=\"radio\" name=\"execMode\" value=\"Recurring\"> Recurring</label>\r\n               " +
-"                 <label class=\"radio-inline\"><input type=\"radio\" name=\"execMode\"" +
-" value=\"Continuation\"> Continuation</label>\r\n                            </div>\r" +
-"\n                        </div>\r\n                        <!-- Campos específicos" +
-" del modo de ejecución -->\r\n                        <div id=\"scheduleFields\" sty" +
-"le=\"display:none;\">\r\n                            <div class=\"form-group\">\r\n     " +
-"                           <label>Delay (minutes)</label>\r\n                     " +
-"           <input type=\"number\" id=\"delayMinutes\" class=\"form-control\" min=\"1\" v" +
-"alue=\"30\">\r\n                            </div>\r\n                        </div>\r\n" +
-"                        <div id=\"scheduleDateTimeFields\" style=\"display:none;\">\r" +
-"\n                            <div class=\"form-group\">\r\n                         " +
-"       <label>Scheduled Date (UTC)</label>\r\n                                <inp" +
-"ut type=\"datetime-local\" id=\"scheduledDateTime\" class=\"form-control\">\r\n         " +
-"                   </div>\r\n                        </div>\r\n                     " +
-"   <div id=\"recurringFields\" style=\"display:none;\">\r\n                           " +
-" <div class=\"form-group\">\r\n                                <label>Cron Expressio" +
-"n</label>\r\n                                <div class=\"input-group\">\r\n          " +
-"                          <input type=\"text\" id=\"cronExpression\" class=\"form-con" +
-"trol\" placeholder=\"* * * * *\">\r\n                                    <span class=" +
-"\"input-group-btn\"><button class=\"btn btn-default\" id=\"btnValidateCron\" type=\"but" +
-"ton\">Validate</button></span>\r\n                                </div>\r\n         " +
-"                       <div id=\"cronPreview\" style=\"margin-top:5px; display:none" +
-";\" class=\"text-info\"></div>\r\n                            </div>\r\n               " +
-"             <!-- Motor recurrente (solo visible en modo manual) -->\r\n          " +
-"                  <div class=\"form-group\" id=\"recurringEngineGroup\" style=\"displ" +
-"ay:none;\">\r\n                                <label>Recurring Engine</label>\r\n   " +
-"                             <select id=\"recurringEngine\" class=\"form-control\">\r" +
-"\n                                    <option value=\"BuiltIn\">Built-in (lightweig" +
-"ht)</option>\r\n                                    <option value=\"DynamicJobs\">Dy" +
-"namicJobs (advanced)</option>\r\n                                </select>\r\n      " +
-"                          <span id=\"dynamicJobsWarning\" class=\"text-warning\" sty" +
-"le=\"display:none;\">DynamicJobs no está instalado en el dashboard o workers.</spa" +
-"n>\r\n                            </div>\r\n                        </div>\r\n        " +
-"                <div id=\"continuationFields\" style=\"display:none;\">\r\n           " +
-"                 <div class=\"form-group\">\r\n                                <labe" +
-"l>Parent Job Id</label>\r\n                                <input type=\"text\" id=\"" +
-"parentJobId\" class=\"form-control\" placeholder=\"job-id\">\r\n                       " +
-"     </div>\r\n                        </div>\r\n                        <!-- Cola -" +
-"->\r\n                        <div class=\"form-group\">\r\n                          " +
-"  <label>Queue</label>\r\n                            <input type=\"text\" id=\"queue" +
-"\" class=\"form-control\" list=\"queueList\" value=\"default\">\r\n                      " +
-"      <datalist id=\"queueList\"></datalist>\r\n                            <span id" +
-"=\"criticalQueueWarning\" class=\"text-warning\" style=\"display:none;\">⚠ Esta cola r" +
-"equiere confirmación.</span>\r\n                        </div>\r\n                  " +
-"  </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"co" +
-"l-md-6\">\r\n                <div class=\"panel panel-default\">\r\n                   " +
-" <div class=\"panel-heading\">Actions</div>\r\n                    <div class=\"panel" +
-"-body\">\r\n                        <button type=\"button\" class=\"btn btn-info btn-b" +
-"lock\" id=\"btnPreview\">Preview</button>\r\n                        <button type=\"bu" +
-"tton\" class=\"btn btn-success btn-block\" id=\"btnLaunch\">Launch Job</button>\r\n    " +
-"                    <button type=\"button\" class=\"btn btn-warning btn-block\" id=\"" +
-"btnSaveAsTemplate\" style=\"margin-top:5px;\">Save as Template</button>\r\n          " +
-"              <div id=\"launchResult\" class=\"alert\" style=\"margin-top:10px; displ" +
-"ay:none;\"></div>\r\n                    </div>\r\n                </div>\r\n          " +
-"      <div class=\"panel panel-default\" id=\"previewPanel\" style=\"display:none;\">\r" +
-"\n                    <div class=\"panel-heading\">Preview</div>\r\n                 " +
-"   <div class=\"panel-body\"><pre id=\"previewContent\"></pre></div>\r\n              " +
-"  </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n    <!-- ===========" +
-"========= PESTAÑA HISTORY ==================== -->\r\n    <div role=\"tabpanel\" cla" +
-"ss=\"tab-pane fade\" id=\"historyTab\">\r\n        <div class=\"panel panel-default\">\r\n" +
-"            <div class=\"panel-heading\">\r\n                <div class=\"row\">\r\n    " +
-"                <div class=\"col-sm-6\"><strong>Recent launches</strong></div>\r\n  " +
-"                  <div class=\"col-sm-6 text-right\"><button class=\"btn btn-sm btn" +
-"-danger\" id=\"btnClearHistory\">Clear history</button></div>\r\n                </di" +
-"v>\r\n            </div>\r\n            <div class=\"panel-body\">\r\n                <t" +
-"able class=\"table table-condensed\" id=\"historyTable\">\r\n                    <thea" +
-"d><tr><th>Timestamp</th><th>JobId</th><th>Class</th><th>Method</th><th>Queue</th" +
-"><th>Mode</th><th>Engine</th><th></th></tr></thead>\r\n                    <tbody>" +
-"</tbody>\r\n                </table>\r\n                <div class=\"alert alert-info" +
-"\" style=\"margin-top:15px;\">\r\n                    <strong>About the buttons:</str" +
-"ong>\r\n                    <ul style=\"margin-bottom:0;\">\r\n                       " +
-" <li><strong>Relaunch:</strong> Loads this job\'s parameters into the Launch tab " +
-"so you can review or modify them before launching.</li>\r\n                       " +
-" <li><strong>Clone & Launch:</strong> Immediately creates and enqueues an identi" +
-"cal job without editing.</li>\r\n                    </ul>\r\n                </div>" +
-"\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n    <!-- ===================" +
-"= PESTAÑA TEMPLATES ==================== -->\r\n    <div role=\"tabpanel\" class=\"ta" +
-"b-pane fade\" id=\"templatesTab\">\r\n        <div class=\"row\">\r\n            <div cla" +
-"ss=\"col-md-8\">\r\n                <div class=\"panel panel-default\">\r\n             " +
-"       <div class=\"panel-heading\">Saved templates</div>\r\n                    <di" +
-"v class=\"panel-body\">\r\n                        <table class=\"table table-condens" +
-"ed\" id=\"templatesTable\">\r\n                            <thead><tr><th>Name</th><t" +
-"h>Class</th><th>Method</th><th>Queue</th><th>Mode</th><th></th></tr></thead>\r\n  " +
-"                          <tbody></tbody>\r\n                        </table>\r\n   " +
-"                 </div>\r\n                </div>\r\n            </div>\r\n           " +
-" <div class=\"col-md-4\">\r\n                <div class=\"panel panel-default\">\r\n    " +
-"                <div class=\"panel-heading\">Manage</div>\r\n                    <di" +
-"v class=\"panel-body\">\r\n                        <p><small>You can also create a t" +
-"emplate from any job in the <strong>History</strong> tab using the <em>Save as t" +
-"emplate</em> button.</small></p>\r\n                        <div class=\"form-group" +
-"\" style=\"margin-top:10px;\">\r\n                            <label>Import template<" +
-"/label>\r\n                            <input type=\"file\" id=\"importFile\" accept=\"" +
-".json\">\r\n                            <button id=\"btnImport\" class=\"btn btn-defau" +
-"lt btn-block\" style=\"margin-top:5px;\">Import</button>\r\n                        <" +
-"/div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n " +
-"       </div>\r\n        <!-- Modal para vista previa de plantilla -->\r\n        <d" +
-"iv class=\"modal fade\" id=\"templatePreviewModal\" tabindex=\"-1\" role=\"dialog\">\r\n  " +
-"          <div class=\"modal-dialog modal-lg\" role=\"document\">\r\n                <" +
-"div class=\"modal-content\">\r\n                    <div class=\"modal-header\">\r\n    " +
-"                    <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&ti" +
-"mes;</button>\r\n                        <h4 class=\"modal-title\">Template Preview:" +
-" <span id=\"previewTemplateName\"></span></h4>\r\n                    </div>\r\n      " +
-"              <div class=\"modal-body\">\r\n                        <dl class=\"dl-ho" +
-"rizontal\">\r\n                            <dt>Class</dt><dd id=\"prevClass\"></dd>\r\n" +
-"                            <dt>Method</dt><dd id=\"prevMethod\"></dd>\r\n          " +
-"                  <dt>Queue</dt><dd id=\"prevQueue\"></dd>\r\n                      " +
-"      <dt>Execution Mode</dt><dd id=\"prevExecMode\"></dd>\r\n                      " +
-"      <dt>Recurring Engine</dt><dd id=\"prevEngine\"></dd>\r\n                      " +
-"      <dt>Mode</dt><dd id=\"prevMode\"></dd>\r\n                            <dt>Para" +
-"ms (raw JSON)</dt>\r\n                            <dd><pre id=\"prevParams\" style=\"" +
-"max-height:300px; overflow-y:auto; background:#f5f5f5; padding:10px;\"></pre></dd" +
-">\r\n                        </dl>\r\n                    </div>\r\n                  " +
-"  <div class=\"modal-footer\">\r\n                        <button type=\"button\" clas" +
-"s=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\r\n                    </d" +
-"iv>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</d" +
-"iv>\r\n\r\n<!-- Modal de Confirmación para colas críticas -->\r\n<div class=\"modal fad" +
-"e\" id=\"criticalConfirmModal\" tabindex=\"-1\" role=\"dialog\">\r\n    <div class=\"modal" +
-"-dialog\" role=\"document\">\r\n        <div class=\"modal-content\">\r\n            <div" +
-" class=\"modal-header\"><h4 class=\"modal-title\">Confirm Launch</h4></div>\r\n       " +
-"     <div class=\"modal-body\">\r\n                <p>The queue <strong id=\"critical" +
-"QueueName\"></strong> is marked as critical. Are you sure you want to launch this" +
-" job?</p>\r\n                <div><pre id=\"criticalJobSummary\"></pre></div>\r\n     " +
-"       </div>\r\n            <div class=\"modal-footer\">\r\n                <button t" +
-"ype=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Cancel</button>\r\n     " +
-"           <button type=\"button\" class=\"btn btn-danger\" id=\"confirmCriticalLaunc" +
-"h\">Confirm & Launch</button>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</" +
-"div>\r\n\r\n<script>\r\n    // ====== VARIABLES GLOBALES ======\r\n    var currentMethod" +
-"s = [];        // array de MethodInfoDto\r\n    var dynamicJobsAvailable = false;\r" +
-"\n    var criticalQueues =  [];\r\n    var apiBaseUrl = \'");
+".btn {\r\n        margin-right: 5px;\r\n    }\r\n    .list-item, .dict-row {\r\n        " +
+"display: flex;\r\n        align-items: center;\r\n        gap: 5px;\r\n        margin-" +
+"bottom: 3px;\r\n    }\r\n    .list-item input, .dict-row input {\r\n        flex: 1;\r\n" +
+"    }\r\n    .list-item button, .dict-row button {\r\n        flex-shrink: 0;\r\n    }" +
+"\r\n</style>\r\n\r\n<ul class=\"nav nav-tabs\" role=\"tablist\">\r\n    <li role=\"presentati" +
+"on\" class=\"active\"><a href=\"#launchTab\" aria-controls=\"launchTab\" role=\"tab\" dat" +
+"a-toggle=\"tab\">Launch</a></li>\r\n    <li role=\"presentation\"><a href=\"#historyTab" +
+"\" aria-controls=\"historyTab\" role=\"tab\" data-toggle=\"tab\">History</a></li>\r\n    " +
+"<li role=\"presentation\"><a href=\"#templatesTab\" aria-controls=\"templatesTab\" rol" +
+"e=\"tab\" data-toggle=\"tab\">Templates</a></li>\r\n</ul>\r\n\r\n<div class=\"tab-content\" " +
+"style=\"padding-top:15px;\">\r\n    <!-- ==================== PESTAÑA LAUNCH =======" +
+"============= -->\r\n    <div role=\"tabpanel\" class=\"tab-pane fade in active\" id=\"" +
+"launchTab\">\r\n        <div class=\"row\">\r\n            <div class=\"col-md-6\">\r\n    " +
+"            <div class=\"panel panel-default\">\r\n                    <div class=\"p" +
+"anel-heading\">Job Configuration</div>\r\n                    <div class=\"panel-bod" +
+"y\">\r\n                        <div class=\"form-group\">\r\n                         " +
+"   <label>Mode</label>\r\n                            <div>\r\n                     " +
+"           <label class=\"radio-inline\"><input type=\"radio\" name=\"launchMode\" val" +
+"ue=\"assisted\" checked> Assisted (assembly)</label>\r\n                            " +
+"    <label class=\"radio-inline\"><input type=\"radio\" name=\"launchMode\" value=\"man" +
+"ual\"> Manual (JSON)</label>\r\n                            </div>\r\n               " +
+"         </div>\r\n                        <!-- Campos según modo -->\r\n           " +
+"             <div id=\"assistedFields\">\r\n                            <div class=\"" +
+"form-group\">\r\n                                <label>Class Name</label>\r\n       " +
+"                         <div class=\"input-group\">\r\n                            " +
+"        <input type=\"text\" id=\"classNameAssisted\" class=\"form-control\" placehold" +
+"er=\"Namespace.ClassName\">\r\n                                    <span class=\"inpu" +
+"t-group-btn\"><button class=\"btn btn-default\" id=\"btnLoadMethods\" type=\"button\">L" +
+"oad Methods</button></span>\r\n                                </div>\r\n           " +
+"                 </div>\r\n                            <div class=\"form-group\" id=" +
+"\"methodSelectGroup\" style=\"display:none;\">\r\n                                <lab" +
+"el>Method</label>\r\n                                <select id=\"methodSelect\" cla" +
+"ss=\"form-control\"><option value=\"\">-- Select method --</option></select>\r\n      " +
+"                      </div>\r\n                            <div id=\"paramsContain" +
+"er\"></div>\r\n                        </div>\r\n                        <div id=\"man" +
+"ualFields\" style=\"display:none;\">\r\n                            <div class=\"form-" +
+"group\">\r\n                                <label>Class Name</label>\r\n            " +
+"                    <input type=\"text\" id=\"classNameManual\" class=\"form-control\"" +
+" placeholder=\"Namespace.ClassName\">\r\n                            </div>\r\n       " +
+"                     <div class=\"form-group\">\r\n                                <" +
+"label>Method Name</label>\r\n                                <input type=\"text\" id" +
+"=\"methodNameManual\" class=\"form-control\" placeholder=\"MethodName\">\r\n            " +
+"                </div>\r\n                            <div class=\"form-group\">\r\n  " +
+"                              <label>Parameters (JSON)</label>\r\n                " +
+"                <textarea id=\"jsonParams\" class=\"form-control\" rows=\"6\"\r\n       " +
+"                                   placeholder=\'{\"to\":\"email@example.com\",\"subje" +
+"ct\":\"Test\"}\'></textarea>\r\n                                <div class=\"help-block" +
+"\">\r\n                                    <button type=\"button\" class=\"btn btn-xs " +
+"btn-default\" id=\"validateJsonBtn\">Validate</button>\r\n                           " +
+"         <button type=\"button\" class=\"btn btn-xs btn-default\" id=\"formatJsonBtn\"" +
+">Format</button>\r\n                                    <button type=\"button\" clas" +
+"s=\"btn btn-xs btn-info\" id=\"suggestJsonBtn\">Suggest JSON</button>\r\n             " +
+"                       <span id=\"jsonValidationMsg\" class=\"text-danger\" style=\"d" +
+"isplay:none;\">Invalid JSON</span>\r\n                                </div>\r\n     " +
+"                       </div>\r\n                        </div>\r\n                 " +
+"       <!-- Opciones avanzadas -->\r\n                        <div class=\"form-gro" +
+"up\">\r\n                            <a role=\"button\" data-toggle=\"collapse\" href=\"" +
+"#advancedOptions\" aria-expanded=\"false\">Advanced options ▾</a>\r\n                " +
+"            <div class=\"collapse\" id=\"advancedOptions\" style=\"margin-top:5px;\">\r" +
+"\n                                <div class=\"checkbox\">\r\n                       " +
+"             <label><input type=\"checkbox\" id=\"chkPerformContext\"> Include Perfo" +
+"rmContext</label>\r\n                                </div>\r\n                     " +
+"           <div class=\"checkbox\">\r\n                                    <label><i" +
+"nput type=\"checkbox\" id=\"chkCancellationToken\"> Include CancellationToken</label" +
+">\r\n                                </div>\r\n                            </div>\r\n " +
+"                       </div>\r\n                        <!-- Modo de ejecución --" +
+">\r\n                        <div class=\"form-group\">\r\n                           " +
+" <label>Execution Mode</label>\r\n                            <div id=\"executionMo" +
+"deGroup\">\r\n                                <label class=\"radio-inline\"><input ty" +
+"pe=\"radio\" name=\"execMode\" value=\"FireAndForget\" checked> Fire & Forget</label>\r" +
+"\n                                <label class=\"radio-inline\"><input type=\"radio\"" +
+" name=\"execMode\" value=\"Schedule\"> Schedule (minutes)</label>\r\n                 " +
+"               <label class=\"radio-inline\"><input type=\"radio\" name=\"execMode\" v" +
+"alue=\"ScheduleDateTime\"> Schedule (date)</label>\r\n                              " +
+"  <label class=\"radio-inline\"><input type=\"radio\" name=\"execMode\" value=\"Recurri" +
+"ng\"> Recurring</label>\r\n                                <label class=\"radio-inli" +
+"ne\"><input type=\"radio\" name=\"execMode\" value=\"Continuation\"> Continuation</labe" +
+"l>\r\n                            </div>\r\n                        </div>\r\n        " +
+"                <!-- Campos específicos del modo de ejecución -->\r\n             " +
+"           <div id=\"scheduleFields\" style=\"display:none;\">\r\n                    " +
+"        <div class=\"form-group\">\r\n                                <label>Delay (" +
+"minutes)</label>\r\n                                <input type=\"number\" id=\"delay" +
+"Minutes\" class=\"form-control\" min=\"1\" value=\"30\">\r\n                            <" +
+"/div>\r\n                        </div>\r\n                        <div id=\"schedule" +
+"DateTimeFields\" style=\"display:none;\">\r\n                            <div class=\"" +
+"form-group\">\r\n                                <label>Scheduled Date (UTC)</label" +
+">\r\n                                <input type=\"datetime-local\" id=\"scheduledDat" +
+"eTime\" class=\"form-control\">\r\n                            </div>\r\n              " +
+"          </div>\r\n                        <div id=\"recurringFields\" style=\"displ" +
+"ay:none;\">\r\n                            <div class=\"form-group\">\r\n              " +
+"                  <label>Cron Expression</label>\r\n                              " +
+"  <div class=\"input-group\">\r\n                                    <input type=\"te" +
+"xt\" id=\"cronExpression\" class=\"form-control\" placeholder=\"* * * * *\">\r\n         " +
+"                           <span class=\"input-group-btn\"><button class=\"btn btn-" +
+"default\" id=\"btnValidateCron\" type=\"button\">Validate</button></span>\r\n          " +
+"                      </div>\r\n                                <div id=\"cronPrevi" +
+"ew\" style=\"margin-top:5px; display:none;\" class=\"text-info\"></div>\r\n            " +
+"                </div>\r\n                            <!-- Motor recurrente (solo " +
+"visible en modo manual) -->\r\n                            <div class=\"form-group\"" +
+" id=\"recurringEngineGroup\" style=\"display:none;\">\r\n                             " +
+"   <label>Recurring Engine</label>\r\n                                <select id=\"" +
+"recurringEngine\" class=\"form-control\">\r\n                                    <opt" +
+"ion value=\"BuiltIn\">Built-in (lightweight)</option>\r\n                           " +
+"         <option value=\"DynamicJobs\">DynamicJobs (advanced)</option>\r\n          " +
+"                      </select>\r\n                                <span id=\"dynam" +
+"icJobsWarning\" class=\"text-warning\" style=\"display:none;\">DynamicJobs no está in" +
+"stalado en el dashboard o workers.</span>\r\n                            </div>\r\n " +
+"                       </div>\r\n                        <div id=\"continuationFiel" +
+"ds\" style=\"display:none;\">\r\n                            <div class=\"form-group\">" +
+"\r\n                                <label>Parent Job Id</label>\r\n                " +
+"                <input type=\"text\" id=\"parentJobId\" class=\"form-control\" placeho" +
+"lder=\"job-id\">\r\n                            </div>\r\n                        </di" +
+"v>\r\n                        <!-- Cola -->\r\n                        <div class=\"f" +
+"orm-group\">\r\n                            <label>Queue</label>\r\n                 " +
+"           <input type=\"text\" id=\"queue\" class=\"form-control\" list=\"queueList\" v" +
+"alue=\"default\">\r\n                            <datalist id=\"queueList\"></datalist" +
+">\r\n                            <span id=\"criticalQueueWarning\" class=\"text-warni" +
+"ng\" style=\"display:none;\">⚠ Esta cola requiere confirmación.</span>\r\n           " +
+"             </div>\r\n                    </div>\r\n                </div>\r\n       " +
+"     </div>\r\n            <div class=\"col-md-6\">\r\n                <div class=\"pan" +
+"el panel-default\">\r\n                    <div class=\"panel-heading\">Actions</div>" +
+"\r\n                    <div class=\"panel-body\">\r\n                        <button " +
+"type=\"button\" class=\"btn btn-info btn-block\" id=\"btnPreview\">Preview</button>\r\n " +
+"                       <button type=\"button\" class=\"btn btn-success btn-block\" i" +
+"d=\"btnLaunch\">Launch Job</button>\r\n                        <button type=\"button\"" +
+" class=\"btn btn-warning btn-block\" id=\"btnSaveAsTemplate\" style=\"margin-top:5px;" +
+"\">Save as Template</button>\r\n                        <div id=\"launchResult\" clas" +
+"s=\"alert\" style=\"margin-top:10px; display:none;\"></div>\r\n                    </d" +
+"iv>\r\n                </div>\r\n                <div class=\"panel panel-default\" id" +
+"=\"previewPanel\" style=\"display:none;\">\r\n                    <div class=\"panel-he" +
+"ading\">Preview</div>\r\n                    <div class=\"panel-body\"><pre id=\"previ" +
+"ewContent\"></pre></div>\r\n                </div>\r\n            </div>\r\n        </d" +
+"iv>\r\n    </div>\r\n\r\n    <!-- ==================== PESTAÑA HISTORY ===============" +
+"===== -->\r\n    <div role=\"tabpanel\" class=\"tab-pane fade\" id=\"historyTab\">\r\n    " +
+"    <div class=\"panel panel-default\">\r\n            <div class=\"panel-heading\">\r\n" +
+"                <div class=\"row\">\r\n                    <div class=\"col-sm-6\"><st" +
+"rong>Recent launches</strong></div>\r\n                    <div class=\"col-sm-6 te" +
+"xt-right\"><button class=\"btn btn-sm btn-danger\" id=\"btnClearHistory\">Clear histo" +
+"ry</button></div>\r\n                </div>\r\n            </div>\r\n            <div " +
+"class=\"panel-body\">\r\n                <table class=\"table table-condensed\" id=\"hi" +
+"storyTable\">\r\n                    <thead><tr><th>Timestamp</th><th>JobId</th><th" +
+">Class</th><th>Method</th><th>Queue</th><th>Mode</th><th>Engine</th><th></th></t" +
+"r></thead>\r\n                    <tbody></tbody>\r\n                </table>\r\n     " +
+"           <div class=\"alert alert-info\" style=\"margin-top:15px;\">\r\n            " +
+"        <strong>About the buttons:</strong>\r\n                    <ul style=\"marg" +
+"in-bottom:0;\">\r\n                        <li><strong>Relaunch:</strong> Loads thi" +
+"s job\'s parameters into the Launch tab so you can review or modify them before l" +
+"aunching.</li>\r\n                        <li><strong>Clone & Launch:</strong> Imm" +
+"ediately creates and enqueues an identical job without editing.</li>\r\n          " +
+"          </ul>\r\n                </div>\r\n            </div>\r\n        </div>\r\n   " +
+" </div>\r\n\r\n    <!-- ==================== PESTAÑA TEMPLATES ==================== " +
+"-->\r\n    <div role=\"tabpanel\" class=\"tab-pane fade\" id=\"templatesTab\">\r\n        " +
+"<div class=\"row\">\r\n            <div class=\"col-md-8\">\r\n                <div clas" +
+"s=\"panel panel-default\">\r\n                    <div class=\"panel-heading\">Saved t" +
+"emplates</div>\r\n                    <div class=\"panel-body\">\r\n                  " +
+"      <table class=\"table table-condensed\" id=\"templatesTable\">\r\n               " +
+"             <thead><tr><th>Name</th><th>Class</th><th>Method</th><th>Queue</th>" +
+"<th>Mode</th><th></th></tr></thead>\r\n                            <tbody></tbody>" +
+"\r\n                        </table>\r\n                    </div>\r\n                " +
+"</div>\r\n            </div>\r\n            <div class=\"col-md-4\">\r\n                " +
+"<div class=\"panel panel-default\">\r\n                    <div class=\"panel-heading" +
+"\">Manage</div>\r\n                    <div class=\"panel-body\">\r\n                  " +
+"      <p><small>You can also create a template from any job in the <strong>Histo" +
+"ry</strong> tab using the <em>Save as template</em> button.</small></p>\r\n       " +
+"                 <div class=\"form-group\" style=\"margin-top:10px;\">\r\n            " +
+"                <label>Import template</label>\r\n                            <inp" +
+"ut type=\"file\" id=\"importFile\" accept=\".json\">\r\n                            <but" +
+"ton id=\"btnImport\" class=\"btn btn-default btn-block\" style=\"margin-top:5px;\">Imp" +
+"ort</button>\r\n                        </div>\r\n                    </div>\r\n      " +
+"          </div>\r\n            </div>\r\n        </div>\r\n        <!-- Modal para vi" +
+"sta previa de plantilla -->\r\n        <div class=\"modal fade\" id=\"templatePreview" +
+"Modal\" tabindex=\"-1\" role=\"dialog\">\r\n            <div class=\"modal-dialog modal-" +
+"lg\" role=\"document\">\r\n                <div class=\"modal-content\">\r\n             " +
+"       <div class=\"modal-header\">\r\n                        <button type=\"button\"" +
+" class=\"close\" data-dismiss=\"modal\">&times;</button>\r\n                        <h" +
+"4 class=\"modal-title\">Template Preview: <span id=\"previewTemplateName\"></span></" +
+"h4>\r\n                    </div>\r\n                    <div class=\"modal-body\">\r\n " +
+"                       <dl class=\"dl-horizontal\">\r\n                            <" +
+"dt>Class</dt><dd id=\"prevClass\"></dd>\r\n                            <dt>Method</d" +
+"t><dd id=\"prevMethod\"></dd>\r\n                            <dt>Queue</dt><dd id=\"p" +
+"revQueue\"></dd>\r\n                            <dt>Execution Mode</dt><dd id=\"prev" +
+"ExecMode\"></dd>\r\n                            <dt>Cron Expression</dt><dd id=\"pre" +
+"vCron\"></dd>\r\n                            <dt>Recurring Engine</dt><dd id=\"prevE" +
+"ngine\"></dd>\r\n                            <dt>Mode</dt><dd id=\"prevMode\"></dd>\r\n" +
+"                            <dt>Perform Context</dt><dd id=\"prevPerformContext\">" +
+"</dd>\r\n                            <dt>Cancellation Token</dt><dd id=\"prevCancel" +
+"lationToken\"></dd>\r\n                            <dt>Params (raw JSON)</dt>\r\n    " +
+"                        <dd><pre id=\"prevParams\" style=\"max-height:300px; overfl" +
+"ow-y:auto; background:#f5f5f5; padding:10px;\"></pre></dd>\r\n                     " +
+"   </dl>\r\n                    </div>\r\n                    <div class=\"modal-foot" +
+"er\">\r\n                        <button type=\"button\" class=\"btn btn-default\" data" +
+"-dismiss=\"modal\">Close</button>\r\n                    </div>\r\n                </d" +
+"iv>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n\r\n<!-- Modal de Con" +
+"firmación para colas críticas -->\r\n<div class=\"modal fade\" id=\"criticalConfirmMo" +
+"dal\" tabindex=\"-1\" role=\"dialog\">\r\n    <div class=\"modal-dialog\" role=\"document\"" +
+">\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-header\"><h" +
+"4 class=\"modal-title\">Confirm Launch</h4></div>\r\n            <div class=\"modal-b" +
+"ody\">\r\n                <p>The queue <strong id=\"criticalQueueName\"></strong> is " +
+"marked as critical. Are you sure you want to launch this job?</p>\r\n             " +
+"   <div><pre id=\"criticalJobSummary\"></pre></div>\r\n            </div>\r\n         " +
+"   <div class=\"modal-footer\">\r\n                <button type=\"button\" class=\"btn " +
+"btn-default\" data-dismiss=\"modal\">Cancel</button>\r\n                <button type=" +
+"\"button\" class=\"btn btn-danger\" id=\"confirmCriticalLaunch\">Confirm & Launch</but" +
+"ton>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n\r\n<script>\r\n    //" +
+" ====== VARIABLES GLOBALES ======\r\n    var currentMethods = [];        // array " +
+"de MethodInfoDto\r\n    var dynamicJobsAvailable = false;\r\n    var criticalQueues " +
+"=  [];\r\n    var apiBaseUrl = \'");
 
 
             
-            #line 279 "..\..\Pages\JobLauncherPage.cshtml"
+            #line 294 "..\..\Pages\JobLauncherPage.cshtml"
                  Write(Url.To("/joblauncher"));
 
             
@@ -308,288 +315,350 @@ WriteLiteral("\';\r\n    var selectedMethod = null; // almacenará el MethodInfo
 "mport\').addEventListener(\'click\', importTemplate);\r\n\r\n        // Atajo Ctrl+Ente" +
 "r\r\n        document.addEventListener(\'keydown\', function(e) {\r\n            if (e" +
 ".ctrlKey && e.key === \'Enter\') { e.preventDefault(); submitJob(); }\r\n        });" +
-"\r\n\r\n        // Delegación para guardar como plantilla desde history\r\n        doc" +
-"ument.querySelectorAll(\'.save-as-template\').forEach(function(btn) {\r\n           " +
-" btn.addEventListener(\'click\', function() {\r\n                var entry = JSON.pa" +
-"rse(this.getAttribute(\'data-entry\').replace(/&quot;/g, \'\"\'));\r\n                s" +
-"aveEntryAsTemplate(entry);\r\n            });\r\n        });\r\n\r\n        $$(\'btnSaveA" +
-"sTemplate\').addEventListener(\'click\', saveCurrentAsTemplate);\r\n\r\n        // Most" +
-"rar/esconder campos de ejecución\r\n        toggleExecMode();\r\n        toggleMode(" +
-");\r\n\r\n    }\r\n\r\n    // ====== MODO ASISTIDO / MANUAL ======\r\n    function toggleM" +
-"ode() {\r\n        var mode = document.querySelector(\'input[name=\"launchMode\"]:che" +
-"cked\').value;\r\n        if (mode === \'assisted\') {\r\n            $$(\'assistedField" +
-"s\').style.display = \'block\';\r\n            $$(\'manualFields\').style.display = \'no" +
-"ne\';\r\n        } else {\r\n            $$(\'assistedFields\').style.display = \'none\';" +
-"\r\n            $$(\'manualFields\').style.display = \'block\';\r\n        }\r\n        to" +
-"ggleExecMode(); // para mostrar/ocultar motor recurrente según modo\r\n    }\r\n\r\n  " +
-"  // ====== MODO DE EJECUCIÓN ======\r\n    function toggleExecMode() {\r\n        v" +
-"ar mode = document.querySelector(\'input[name=\"execMode\"]:checked\').value;\r\n     " +
-"   $$(\'scheduleFields\').style.display = (mode === \'Schedule\') ? \'block\' : \'none\'" +
-";\r\n        $$(\'scheduleDateTimeFields\').style.display = (mode === \'ScheduleDateT" +
-"ime\') ? \'block\' : \'none\';\r\n        $$(\'recurringFields\').style.display = (mode =" +
-"== \'Recurring\') ? \'block\' : \'none\';\r\n        $$(\'continuationFields\').style.disp" +
-"lay = (mode === \'Continuation\') ? \'block\' : \'none\';\r\n\r\n        // Motor recurren" +
-"te visible solo si estamos en Recurring y en modo manual\r\n        adjustRecurrin" +
-"gEngineDisplay();\r\n    }\r\n\r\n    function adjustRecurringEngineDisplay() {\r\n     " +
-"   var mode = document.querySelector(\'input[name=\"launchMode\"]:checked\').value;\r" +
-"\n        var execMode = document.querySelector(\'input[name=\"execMode\"]:checked\')" +
-".value;\r\n        if (execMode === \'Recurring\' && mode === \'manual\') {\r\n         " +
-"   $$(\'recurringEngineGroup\').style.display = \'block\';\r\n            var optDynam" +
-"ic = $$(\'recurringEngine\').querySelector(\'option[value=\"DynamicJobs\"]\');\r\n      " +
-"      if (!dynamicJobsAvailable) {\r\n                optDynamic.disabled = true;\r" +
-"\n                $$(\'dynamicJobsWarning\').style.display = \'inline\';\r\n           " +
-" } else {\r\n                optDynamic.disabled = false;\r\n                $$(\'dyn" +
-"amicJobsWarning\').style.display = \'none\';\r\n            }\r\n        } else {\r\n    " +
-"        $$(\'recurringEngineGroup\').style.display = \'none\';\r\n        }\r\n    }\r\n\r\n" +
-"    // Ajusta cuando se cambie de ejecución o modo\r\n    document.querySelectorAl" +
-"l(\'input[name=\"execMode\"]\').forEach(r => r.addEventListener(\'change\', adjustRecu" +
-"rringEngineDisplay));\r\n    document.querySelectorAll(\'input[name=\"launchMode\"]\')" +
-".forEach(r => r.addEventListener(\'change\', adjustRecurringEngineDisplay));\r\n\r\n  " +
-"  // ====== CARGAR MÉTODOS (ASISTIDO) ======\r\n    function loadMethods() {\r\n    " +
-"    var className = $$(\'classNameAssisted\').value.trim();\r\n        if (!classNam" +
-"e) { alert(\'Class name required\'); return; }\r\n        fetchJson(apiBaseUrl + \'/a" +
-"pi/methods?className=\' + encodeURIComponent(className))\r\n            .then(funct" +
-"ion(resp) {\r\n                if (!resp.success) {\r\n                    alert(res" +
-"p.error + \' Switched to manual mode.\');\r\n                    document.querySelec" +
-"tor(\'input[name=\"launchMode\"][value=\"manual\"]\').checked = true;\r\n               " +
-"     toggleMode();\r\n                    return;\r\n                }\r\n            " +
-"    currentMethods = resp.methods;\r\n                var sel = $$(\'methodSelect\')" +
-";\r\n                sel.innerHTML = \'<option value=\"\">-- Select method --</option" +
-">\';\r\n                currentMethods.forEach(function(m, i) {\r\n                  " +
-"  var params = m.parameters.map(function(p) { return p.name; }).join(\', \');\r\n   " +
-"                 var display = m.methodName + \'(\' + params + \')\';\r\n             " +
-"       sel.innerHTML += \'<option value=\"\' + i + \'\">\' + display + \'</option>\';\r\n " +
-"               });\r\n                $$(\'methodSelectGroup\').style.display = \'blo" +
-"ck\';\r\n                $$(\'paramsContainer\').innerHTML = \'\';\r\n            });\r\n  " +
-"  }\r\n\r\n    // ====== GENERAR PARÁMETROS DINÁMICOS (ASISTIDO) ======\r\n    functio" +
-"n onMethodChange() {\r\n        var idx = $$(\'methodSelect\').value;\r\n        if (i" +
-"dx === \'\') { \r\n            $$(\'paramsContainer\').innerHTML = \'\'; \r\n            s" +
-"electedMethod = null; \r\n            return; \r\n        }\r\n        var method = cu" +
-"rrentMethods[parseInt(idx)];\r\n        selectedMethod = method;\r\n        var html" +
-" = \'\';\r\n    \r\n        method.parameters.forEach(function(p) {\r\n            html " +
-"+= \'<div class=\"form-group param-field\">\';\r\n            html += \'<label>\' + p.na" +
-"me + \' (\' + p.type + \')</label>\';\r\n        \r\n            if (p.isComplex) {\r\n   " +
-"             // Editor JSON para tipos complejos\r\n                html += \'<text" +
-"area class=\"form-control param-complex\" data-param-name=\"\' + p.name + \'\" rows=\"3" +
-"\" placeholder=\\\'Insert JSON for \' + p.type + \'\\\'></textarea>\';\r\n            } el" +
-"se {\r\n                html += generateInputForSimpleType(p);\r\n            }\r\n   " +
-"         html += \'</div>\';\r\n        });\r\n        $$(\'paramsContainer\').innerHTML" +
-" = html;\r\n    }\r\n\r\n    function generateInputForSimpleType(paramInfo) {\r\n       " +
-" var type = paramInfo.type;\r\n        var name = paramInfo.name;\r\n        var isN" +
-"ullable = type.endsWith(\'?\');\r\n        var underlyingType = isNullable ? type.sl" +
-"ice(0, -1).toLowerCase() : type.toLowerCase();\r\n    \r\n        var html = \'\';\r\n  " +
-"  \r\n        // Números enteros\r\n        if (underlyingType.includes(\'int\') || un" +
-"derlyingType.includes(\'long\') || \r\n            underlyingType.includes(\'short\') " +
-"|| underlyingType.includes(\'byte\')) {\r\n            html = \'<input type=\"number\" " +
-"class=\"form-control\" data-param-name=\"\' + name + \'\" step=\"1\" value=\"\' + (isNulla" +
-"ble ? \'\' : \'0\') + \'\" />\';\r\n        }\r\n        // Números flotantes\r\n        else" +
-" if (underlyingType.includes(\'double\') || underlyingType.includes(\'float\') || \r\n" +
-"                 underlyingType.includes(\'decimal\') || underlyingType.includes(\'" +
-"single\')) {\r\n            html = \'<input type=\"number\" class=\"form-control\" data-" +
-"param-name=\"\' + name + \'\" step=\"any\" value=\"\' + (isNullable ? \'\' : \'0.0\') + \'\" /" +
-">\';\r\n        }\r\n        // Booleanos (select True/False + opción vacía si anulab" +
-"le)\r\n        else if (underlyingType.includes(\'bool\')) {\r\n            html = \'<s" +
-"elect class=\"form-control\" data-param-name=\"\' + name + \'\">\';\r\n            if (is" +
-"Nullable) html += \'<option value=\"\">-- Not set --</option>\';\r\n            html +" +
-"= \'<option value=\"true\">True</option><option value=\"false\">False</option>\';\r\n   " +
-"         html += \'</select>\';\r\n        }\r\n        // Fechas y horas\r\n        els" +
-"e if (underlyingType.includes(\'datetime\') || underlyingType.includes(\'datetimeof" +
-"fset\')) {\r\n            var defaultDate = isNullable ? \'\' : new Date(new Date().g" +
-"etTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16);\r\n" +
-"            html = \'<input type=\"datetime-local\" class=\"form-control\" data-param" +
-"-name=\"\' + name + \'\" value=\"\' + defaultDate + \'\" />\';\r\n            html += \'<sma" +
-"ll class=\"help-block\">Click the calendar icon to select a date and time.</small>" +
-"\';\r\n        }\r\n        // Fecha sin hora (date)\r\n        else if (underlyingType" +
-" === \'system.datetime\' || underlyingType === \'datetime\') {\r\n            var defa" +
-"ultDate = isNullable ? \'\' : new Date().toISOString().slice(0, 10);\r\n            " +
-"html = \'<input type=\"date\" class=\"form-control\" data-param-name=\"\' + name + \'\" v" +
-"alue=\"\' + defaultDate + \'\" />\';\r\n        }\r\n        // GUID\r\n        else if (un" +
-"derlyingType === \'system.guid\' || underlyingType === \'guid\') {\r\n            html" +
-" = \'<input type=\"text\" class=\"form-control\" data-param-name=\"\' + name + \'\" place" +
-"holder=\"00000000-0000-0000-0000-000000000000\" value=\"\' + (isNullable ? \'\' : \'000" +
-"00000-0000-0000-0000-000000000000\') + \'\" />\';\r\n        }\r\n        // TimeSpan\r\n " +
-"       else if (underlyingType === \'system.timespan\' || underlyingType === \'time" +
-"span\') {\r\n            html = \'<input type=\"text\" class=\"form-control\" data-param" +
-"-name=\"\' + name + \'\" placeholder=\"hh:mm:ss\" value=\"\' + (isNullable ? \'\' : \'00:00" +
-":00\') + \'\" />\';\r\n        }\r\n        // Enum\r\n        else if (underlyingType.inc" +
-"ludes(\'.\') && !underlyingType.startsWith(\'system.\')) {\r\n            if (paramInf" +
-"o.enumValues && paramInfo.enumValues.length > 0) {\r\n                html += \'<se" +
-"lect class=\"form-control\" data-param-name=\"\' + name + \'\">\';\r\n                par" +
-"amInfo.enumValues.forEach(function(val) {\r\n                    html += \'<option " +
-"value=\"\' + val + \'\">\' + val + \'</option>\';\r\n                });\r\n               " +
-" html += \'</select>\';\r\n            } else {\r\n                // Fallback a input" +
-" de texto si no recibimos los valores\r\n                html = \'<input type=\"text" +
-"\" class=\"form-control\" data-param-name=\"\' + name + \'\" placeholder=\"Enum value of" +
-" \' + paramInfo.type + \'\" />\';\r\n            }\r\n        }\r\n        // Cadena y otr" +
-"os\r\n        else {\r\n            html = \'<input type=\"text\" class=\"form-control\" " +
-"data-param-name=\"\' + name + \'\" placeholder=\"\' + paramInfo.type + \'\" />\';\r\n      " +
-"  }\r\n    \r\n        if (isNullable) {\r\n            html += \'<small class=\"text-mu" +
-"ted\">(Optional, leave empty for null)</small>\';\r\n        }\r\n    \r\n        return" +
-" html;\r\n    }\r\n\r\n    // ====== JSON VALIDATE / FORMAT / SUGGEST ======\r\n    func" +
-"tion validateJson() {\r\n        var text = $$(\'jsonParams\').value.trim();\r\n      " +
-"  if (!text) return;\r\n        try { JSON.parse(text); $$(\'jsonValidationMsg\').st" +
-"yle.display = \'none\'; alert(\'Valid JSON.\'); }\r\n        catch(e) { $$(\'jsonValida" +
-"tionMsg\').style.display = \'inline\'; }\r\n    }\r\n    function formatJson() {\r\n     " +
-"   var text = $$(\'jsonParams\').value.trim();\r\n        try { var obj = JSON.parse" +
-"(text); $$(\'jsonParams\').value = JSON.stringify(obj, null, 2); $$(\'jsonValidatio" +
-"nMsg\').style.display = \'none\'; }\r\n        catch(e) { $$(\'jsonValidationMsg\').sty" +
-"le.display = \'inline\'; }\r\n    }\r\n\r\n    function suggestJsonStructure() {\r\n      " +
-"  var className = $$(\'classNameManual\').value.trim();\r\n        var methodName = " +
-"$$(\'methodNameManual\').value.trim();\r\n    \r\n        if (!className || !methodNam" +
-"e) {\r\n            alert(\'Please enter Class Name and Method Name first.\');\r\n    " +
-"        return;\r\n        }\r\n    \r\n        // Llamar a la API para obtener los mé" +
-"todos\r\n        fetchJson(apiBaseUrl + \'/api/methods?className=\' + encodeURICompo" +
-"nent(className))\r\n            .then(function(resp) {\r\n                if (!resp." +
-"success) {\r\n                    alert(\'Assembly no disponible: \' + resp.error);\r" +
-"\n                    return;\r\n                }\r\n                // Buscar el mé" +
-"todo especificado\r\n                var method = resp.methods.find(function(m) { " +
-"return m.methodName === methodName; });\r\n                if (!method) {\r\n       " +
-"             alert(\'Method not found.\');\r\n                    return;\r\n         " +
-"       }\r\n            \r\n                // Generar un objeto JSON con valores po" +
-"r defecto según los tipos\r\n                var suggestion = {};\r\n               " +
-" method.parameters.forEach(function(p) {\r\n                    suggestion[p.name]" +
-" = getDefaultValueForType(p.type, p.isComplex);\r\n                });\r\n          " +
-"  \r\n                // Formatear el JSON y mostrarlo en el textarea\r\n           " +
-"     $$(\'jsonParams\').value = JSON.stringify(suggestion, null, 2);\r\n            " +
-"})\r\n            .catch(function(err) {\r\n                alert(\'Error loading sug" +
-"gestion: \' + err.message);\r\n            });\r\n    }\r\n\r\n    function getDefaultVal" +
-"ueForType(type, isComplex) {\r\n        if (type.endsWith(\'?\')) {\r\n            ret" +
-"urn null; // anulable, sugerimos null\r\n        }\r\n        if (isComplex) {\r\n    " +
-"        return {}; // objeto vacío como placeholder\r\n        }\r\n        var t = " +
-"type.toLowerCase();\r\n        if (t.includes(\'int\') || t.includes(\'long\') || t.in" +
-"cludes(\'short\') || t.includes(\'byte\')) return 0;\r\n        if (t.includes(\'double" +
-"\') || t.includes(\'float\') || t.includes(\'decimal\') || t.includes(\'single\')) retu" +
-"rn 0.0;\r\n        if (t.includes(\'bool\')) return true;\r\n        if (t.includes(\'d" +
-"atetime\') || t.includes(\'datetimeoffset\')) return new Date().toISOString();\r\n   " +
-"     if (t === \'system.guid\' || t === \'guid\') return \'00000000-0000-0000-0000-00" +
-"0000000000\';\r\n        if (t === \'system.timespan\' || t === \'timespan\') return \'0" +
-"0:00:00\';\r\n        if (t === \'system.string\' || t === \'string\') return \'\';\r\n    " +
-"    // Para enums, intentamos extraer el primer valor posible (no disponible aqu" +
-"í, dejamos string vacío)\r\n        return \'\';\r\n}\r\n\r\n    // ====== VALIDATE CRON =" +
-"=====\r\n    function validateCron() {\r\n        var expr = $$(\'cronExpression\').va" +
-"lue.trim();\r\n        if (!expr) { alert(\'Cron expression required\'); return; }\r\n" +
-"        fetchJson(apiBaseUrl + \'/pi/validate-cron?expression=\' + encodeURICompon" +
-"ent(expr))\r\n            .then(function(resp) {\r\n                var div = $$(\'cr" +
-"onPreview\');\r\n                if (!resp.success) {\r\n                    div.inne" +
-"rHTML = \'<span class=\"text-danger\">\' + resp.error + \'</span>\';\r\n                " +
-"} else {\r\n                    div.innerHTML = \'Next occurrences: \' + resp.occurr" +
-"ences.join(\', \');\r\n                }\r\n                div.style.display = \'block" +
-"\';\r\n            });\r\n    }\r\n\r\n    // ====== COLAS CRÍTICAS ======\r\n    function " +
-"isQueueCritical(queue) {\r\n        return criticalQueues.indexOf(queue) >= 0;\r\n  " +
-"  }\r\n\r\n    function checkCriticalQueue(queue) {\r\n        if (isQueueCritical(que" +
-"ue)) {\r\n            $$(\'criticalQueueWarning\').style.display = \'block\';\r\n       " +
-"     return true;\r\n        } else {\r\n            $$(\'criticalQueueWarning\').styl" +
-"e.display = \'none\';\r\n            return false;\r\n        }\r\n    }\r\n\r\n    // Verif" +
-"icar al escribir\r\n    $$(\'queue\').addEventListener(\'input\', function() { checkCr" +
-"iticalQueue(this.value); });\r\n    $$(\'queue\').addEventListener(\'change\', functio" +
-"n() { checkCriticalQueue(this.value); });\r\n\r\n    // ====== CARGAR COLAS ======\r\n" +
-"    function loadQueues() {\r\n        fetchJson(apiBaseUrl + \'/api/queues\').then(" +
-"function(resp) {\r\n            var datalist = $$(\'queueList\');\r\n            datal" +
-"ist.innerHTML = \'\';\r\n            (resp.queues || []).forEach(function(q) {\r\n    " +
-"            datalist.innerHTML += \'<option value=\"\' + q + \'\">\';\r\n            });" +
-"\r\n        });\r\n    }\r\n\r\n    // ====== BUILD REQUEST OBJECT ======\r\n    function " +
-"convertToType(value, type, isComplex) {\r\n        // Detectar si el tipo es anula" +
-"ble (termina en \'?\')\r\n        var isNullable = type.endsWith(\'?\');\r\n        var " +
-"underlyingType = isNullable ? type.slice(0, -1).toLowerCase() : type.toLowerCase" +
-"();\r\n    \r\n        // Si el campo está vacío o es null y es anulable, retornar n" +
-"ull\r\n        if (isNullable && (value === \'\' || value === null || value === unde" +
-"fined)) {\r\n            return null;\r\n        }\r\n    \r\n        // Para tipos comp" +
-"lejos, ya se parsea el JSON\r\n        if (isComplex) {\r\n            if (value ===" +
-" \'\' && isNullable) return null;\r\n            try {\r\n                return JSON." +
-"parse(value);\r\n            } catch(e) {\r\n                return value; // fallba" +
-"ck\r\n            }\r\n        }\r\n    \r\n        // A continuación, la conversión nor" +
-"mal pero usando underlyingType\r\n        if (underlyingType.includes(\'int\') || un" +
-"derlyingType.includes(\'long\') || \r\n            underlyingType.includes(\'short\') " +
-"|| underlyingType.includes(\'byte\')) {\r\n            var num = parseInt(value, 10)" +
-";\r\n            return isNaN(num) ? (isNullable ? null : value) : num;\r\n        }" +
-"\r\n        if (underlyingType.includes(\'double\') || underlyingType.includes(\'floa" +
-"t\') || \r\n            underlyingType.includes(\'decimal\') || underlyingType.includ" +
-"es(\'single\')) {\r\n            var num = parseFloat(value);\r\n            return is" +
-"NaN(num) ? (isNullable ? null : value) : num;\r\n        }\r\n        if (underlying" +
-"Type.includes(\'bool\')) {\r\n            if (typeof value === \'boolean\') return val" +
-"ue;\r\n            if (value === \'\' && isNullable) return null;\r\n            retur" +
-"n value === \'true\' || value === \'1\' || value === \'on\';\r\n        }\r\n        // Fe" +
-"chas se envían como string ISO, se mantienen igual\r\n        // Para otros, strin" +
-"g\r\n        return value;\r\n    }\r\n\r\n\r\n    function buildRequest() {\r\n        var " +
-"mode = document.querySelector(\'input[name=\"launchMode\"]:checked\').value;\r\n      " +
-"  var className = mode === \'assisted\' ? $$(\'classNameAssisted\').value.trim() : $" +
-"$(\'classNameManual\').value.trim();\r\n        var methodName = mode === \'assisted\'" +
-" ? (function() {\r\n            var idx = $$(\'methodSelect\').value;\r\n            r" +
-"eturn idx === \'\' ? \'\' : currentMethods[parseInt(idx)].methodName;\r\n        })() " +
-": $$(\'methodNameManual\').value.trim();\r\n\r\n\r\n        var request = {\r\n           " +
-" mode: mode,\r\n            className: className,\r\n            methodName: methodN" +
-"ame,\r\n            queue: $$(\'queue\').value.trim() || \'default\',\r\n            exe" +
-"cutionMode: document.querySelector(\'input[name=\"execMode\"]:checked\').value,\r\n   " +
-"         includePerformContext: $$(\'chkPerformContext\').checked,\r\n            in" +
-"cludeCancellationToken: $$(\'chkCancellationToken\').checked,\r\n            paramet" +
-"ers: null,\r\n            rawParametersJson: null\r\n        };\r\n\r\n        // Si man" +
-"ual, rawParametersJson\r\n        if (mode === \'manual\') {\r\n            request.ra" +
-"wParametersJson = $$(\'jsonParams\').value.trim() || \'{}\';\r\n        } else {\r\n    " +
-"        // Modo asistido: construir objeto con valores tipados\r\n            var " +
-"paramsObj = {};\r\n            var paramFields = document.querySelectorAll(\'#param" +
-"sContainer .param-field\');\r\n            paramFields.forEach(function(field) {\r\n " +
-"               var input = field.querySelector(\'[data-param-name]\');\r\n          " +
-"      var name = input.getAttribute(\'data-param-name\');\r\n                var raw" +
-"Value;\r\n                if (input.type === \'checkbox\') {\r\n                    ra" +
-"wValue = input.checked;\r\n                } else {\r\n                    rawValue " +
-"= input.value;\r\n                }\r\n                // Buscar la definición del p" +
-"arámetro en el método seleccionado\r\n                var paramDef = selectedMetho" +
-"d ? selectedMethod.parameters.find(function(p) { return p.name === name; }) : nu" +
-"ll;\r\n                if (paramDef) {\r\n                    var convertedValue = c" +
-"onvertToType(rawValue, paramDef.type, paramDef.isComplex);\r\n                    " +
-"paramsObj[name] = convertedValue;\r\n                } else {\r\n                   " +
-" paramsObj[name] = rawValue; // fallback\r\n                }\r\n            });\r\n  " +
-"          request.rawParametersJson = JSON.stringify(paramsObj);\r\n            re" +
-"quest.parameters = null; // no usar el diccionario de strings\r\n        }\r\n\r\n    " +
-"    // Completion specific\r\n        if (request.executionMode === \'Schedule\') {\r" +
-"\n            request.delayMinutes = parseInt($$(\'delayMinutes\').value) || 30;\r\n " +
-"       }\r\n        if (request.executionMode === \'ScheduleDateTime\') {\r\n         " +
-"   request.scheduledDateTime = $$(\'scheduledDateTime\').value ? new Date($$(\'sche" +
-"duledDateTime\').value).toISOString() : null;\r\n        }\r\n        if (request.exe" +
-"cutionMode === \'Recurring\') {\r\n            request.cronExpression = $$(\'cronExpr" +
-"ession\').value.trim() || \'* * * * *\';\r\n            if (mode === \'manual\') {\r\n   " +
-"             request.recurringEngine = $$(\'recurringEngine\').value;\r\n           " +
-" }\r\n        }\r\n        if (request.executionMode === \'Continuation\') {\r\n        " +
-"    request.parentJobId = $$(\'parentJobId\').value.trim();\r\n        }\r\n        re" +
-"turn request;\r\n    }\r\n\r\n    // ====== PREVIEW ======\r\n    function showPreview()" +
-" {\r\n        var req = buildRequest();\r\n        var summary = \'Class: \' + req.cla" +
-"ssName + \'\\nMethod: \' + req.methodName + \'\\nQueue: \' + req.queue +\r\n            " +
-"          \'\\nMode: \' + req.executionMode + \'\\nEngine: \' + (req.recurringEngine |" +
-"| \'Direct\') +\r\n                      \'\\nParameters: \' + (req.rawParametersJson |" +
-"| JSON.stringify(req.parameters));\r\n        $$(\'previewContent\').textContent = s" +
-"ummary;\r\n        $$(\'previewPanel\').style.display = \'block\';\r\n    }\r\n\r\n    // ==" +
-"==== SUBMIT / LAUNCH ======\r\n    var pendingLaunchRequest = null; // para confir" +
-"mación de cola crítica\r\n\r\n    function submitJob() {\r\n        var req = buildReq" +
-"uest();\r\n        if (!req.className || !req.methodName) { alert(\'ClassName and M" +
-"ethodName are required.\'); return; }\r\n\r\n        if (isQueueCritical(req.queue)) " +
-"{\r\n            pendingLaunchRequest = req;\r\n            $$(\'criticalQueueName\')." +
-"textContent = req.queue;\r\n            $$(\'criticalJobSummary\').textContent = \'Cl" +
-"ass: \' + req.className + \'\\nMethod: \' + req.methodName + \'\\nMode: \' + req.execut" +
-"ionMode;\r\n            $(\'#criticalConfirmModal\').modal(\'show\');\r\n        } else " +
-"{\r\n            launchJob(req);\r\n        }\r\n    }\r\n\r\n    function confirmedLaunch" +
-"() {\r\n        $(\'#criticalConfirmModal\').modal(\'hide\');\r\n        if (pendingLaun" +
-"chRequest) launchJob(pendingLaunchRequest);\r\n    }\r\n\r\n    function launchJob(req" +
-") {\r\n        var formData = new FormData();\r\n        formData.append(\'json\', JSO" +
-"N.stringify(req));\r\n\r\n        fetch(apiBaseUrl + \'/api/launch\', {\r\n            m" +
-"ethod: \'POST\',\r\n            body: formData\r\n        })\r\n        .then(function(r" +
-") { return r.json(); })\r\n          .then(function(result) {\r\n              var a" +
-"lertDiv = $$(\'launchResult\');\r\n              alertDiv.style.display = \'block\';\r\n" +
-"              if (result.success) {\r\n                  alertDiv.className = \'ale" +
-"rt alert-success\';\r\n                  alertDiv.innerHTML = \'Job launched success" +
-"fully! <a href=\"\' + result.link + \'\" target=\"_blank\">\' + result.jobId + \'</a>\';\r" +
-"\n                  loadQueues(); // actualizar colas\r\n                  loadHist" +
-"ory(); // recargar historial\r\n              } else {\r\n                  alertDiv" +
-".className = \'alert alert-danger\';\r\n                  alertDiv.textContent = \'Er" +
-"ror: \' + (result.error || \'Unknown error\');\r\n              }\r\n          }).catch" +
-"(function(err) {\r\n              var alertDiv = $$(\'launchResult\');\r\n            " +
-"  alertDiv.style.display = \'block\';\r\n              alertDiv.className = \'alert a" +
-"lert-danger\';\r\n              alertDiv.textContent = \'Network error: \' + err.mess" +
-"age;\r\n          });\r\n    }\r\n\r\n    // ====== HISTORY ======\r\n    function loadHis" +
-"tory() {\r\n        var dashboardBaseUrl = \'");
+"\r\n\r\n        $$(\'btnSaveAsTemplate\').addEventListener(\'click\', saveCurrentAsTempl" +
+"ate);\r\n\r\n        // Mostrar/esconder campos de ejecución\r\n        toggleExecMode" +
+"();\r\n        toggleMode();\r\n    }\r\n\r\n    // ====== MODO ASISTIDO / MANUAL ======" +
+"\r\n    function toggleMode() {\r\n        var mode = document.querySelector(\'input[" +
+"name=\"launchMode\"]:checked\').value;\r\n        if (mode === \'assisted\') {\r\n       " +
+"     $$(\'assistedFields\').style.display = \'block\';\r\n            $$(\'manualFields" +
+"\').style.display = \'none\';\r\n        } else {\r\n            $$(\'assistedFields\').s" +
+"tyle.display = \'none\';\r\n            $$(\'manualFields\').style.display = \'block\';\r" +
+"\n        }\r\n        toggleExecMode();\r\n    }\r\n\r\n    // ====== MODO DE EJECUCIÓN " +
+"======\r\n    function toggleExecMode() {\r\n        var mode = document.querySelect" +
+"or(\'input[name=\"execMode\"]:checked\').value;\r\n        $$(\'scheduleFields\').style." +
+"display = (mode === \'Schedule\') ? \'block\' : \'none\';\r\n        $$(\'scheduleDateTim" +
+"eFields\').style.display = (mode === \'ScheduleDateTime\') ? \'block\' : \'none\';\r\n   " +
+"     $$(\'recurringFields\').style.display = (mode === \'Recurring\') ? \'block\' : \'n" +
+"one\';\r\n        $$(\'continuationFields\').style.display = (mode === \'Continuation\'" +
+") ? \'block\' : \'none\';\r\n        adjustRecurringEngineDisplay();\r\n    }\r\n\r\n    fun" +
+"ction adjustRecurringEngineDisplay() {\r\n        var mode = document.querySelecto" +
+"r(\'input[name=\"launchMode\"]:checked\').value;\r\n        var execMode = document.qu" +
+"erySelector(\'input[name=\"execMode\"]:checked\').value;\r\n        if (execMode === \'" +
+"Recurring\' && mode === \'manual\') {\r\n            $$(\'recurringEngineGroup\').style" +
+".display = \'block\';\r\n            var optDynamic = $$(\'recurringEngine\').querySel" +
+"ector(\'option[value=\"DynamicJobs\"]\');\r\n            if (!dynamicJobsAvailable) {\r" +
+"\n                optDynamic.disabled = true;\r\n                $$(\'dynamicJobsWar" +
+"ning\').style.display = \'inline\';\r\n            } else {\r\n                optDynam" +
+"ic.disabled = false;\r\n                $$(\'dynamicJobsWarning\').style.display = \'" +
+"none\';\r\n            }\r\n        } else {\r\n            $$(\'recurringEngineGroup\')." +
+"style.display = \'none\';\r\n        }\r\n    }\r\n\r\n    document.querySelectorAll(\'inpu" +
+"t[name=\"execMode\"]\').forEach(r => r.addEventListener(\'change\', adjustRecurringEn" +
+"gineDisplay));\r\n    document.querySelectorAll(\'input[name=\"launchMode\"]\').forEac" +
+"h(r => r.addEventListener(\'change\', adjustRecurringEngineDisplay));\r\n\r\n    // ==" +
+"==== CARGAR MÉTODOS (ASISTIDO) ======\r\n    function loadMethods() {\r\n        var" +
+" className = $$(\'classNameAssisted\').value.trim();\r\n        if (!className) { al" +
+"ert(\'Class name required\'); return; }\r\n        fetchJson(apiBaseUrl + \'/api/meth" +
+"ods?className=\' + encodeURIComponent(className))\r\n            .then(function(res" +
+"p) {\r\n                if (!resp.success) {\r\n                    alert(resp.error" +
+" + \' Switched to manual mode.\');\r\n                    document.querySelector(\'in" +
+"put[name=\"launchMode\"][value=\"manual\"]\').checked = true;\r\n                    to" +
+"ggleMode();\r\n                    return;\r\n                }\r\n                cur" +
+"rentMethods = resp.methods;\r\n                var sel = $$(\'methodSelect\');\r\n    " +
+"            sel.innerHTML = \'<option value=\"\">-- Select method --</option>\';\r\n  " +
+"              currentMethods.forEach(function(m, i) {\r\n                    var p" +
+"arams = m.parameters.map(function(p) { return p.name; }).join(\', \');\r\n          " +
+"          var display = m.methodName + \'(\' + params + \')\';\r\n                    " +
+"sel.innerHTML += \'<option value=\"\' + i + \'\">\' + display + \'</option>\';\r\n        " +
+"        });\r\n                $$(\'methodSelectGroup\').style.display = \'block\';\r\n " +
+"               $$(\'paramsContainer\').innerHTML = \'\';\r\n            });\r\n    }\r\n\r\n" +
+"    // ====== GENERAR PARÁMETROS DINÁMICOS (ASISTIDO) ======\r\n    function onMet" +
+"hodChange() {\r\n        var idx = $$(\'methodSelect\').value;\r\n        if (idx === " +
+"\'\') { \r\n            $$(\'paramsContainer\').innerHTML = \'\'; \r\n            selected" +
+"Method = null; \r\n            return; \r\n        }\r\n        var method = currentMe" +
+"thods[parseInt(idx)];\r\n        selectedMethod = method;\r\n        var html = \'\';\r" +
+"\n    \r\n        method.parameters.forEach(function(p) {\r\n            html += \'<di" +
+"v class=\"form-group param-field\">\';\r\n            html += \'<label>\' + p.name + \' " +
+"(\' + p.type + \')</label>\';\r\n        \r\n            if (p.isComplex) {\r\n          " +
+"      if (isListType(p.type)) {\r\n                    html += generateListInput(p" +
+");\r\n                } else if (isDictType(p.type)) {\r\n                    html +" +
+"= generateDictionaryInput(p);\r\n                } else {\r\n                    htm" +
+"l += \'<textarea class=\"form-control param-complex\" data-param-name=\"\' + p.name +" +
+" \'\" rows=\"3\" placeholder=\\\'Insert JSON for \' + p.type + \'\\\'></textarea>\';\r\n     " +
+"           }\r\n            } else {\r\n                html += generateInputForSimp" +
+"leType(p);\r\n            }\r\n            html += \'</div>\';\r\n        });\r\n        $" +
+"$(\'paramsContainer\').innerHTML = html;\r\n\r\n        // Bindear eventos para listas" +
+" y diccionarios\r\n        document.querySelectorAll(\'.add-list-item\').forEach(fun" +
+"ction(btn) {\r\n            btn.addEventListener(\'click\', function(e) {\r\n         " +
+"       e.preventDefault();\r\n                var container = this.closest(\'.list-" +
+"container\');\r\n                var elementType = container.getAttribute(\'data-ele" +
+"ment-type\');\r\n                var itemsDiv = container.querySelector(\'.list-item" +
+"s\');\r\n                var newItem = createListItem(elementType);\r\n              " +
+"  itemsDiv.insertAdjacentHTML(\'beforeend\', newItem);\r\n                bindRemove" +
+"Item(itemsDiv);\r\n            });\r\n        });\r\n        document.querySelectorAll" +
+"(\'.add-dict-item\').forEach(function(btn) {\r\n            btn.addEventListener(\'cl" +
+"ick\', function(e) {\r\n                e.preventDefault();\r\n                var co" +
+"ntainer = this.closest(\'.dict-container\');\r\n                var keyType = contai" +
+"ner.getAttribute(\'data-key-type\');\r\n                var valueType = container.ge" +
+"tAttribute(\'data-value-type\');\r\n                var tbody = container.querySelec" +
+"tor(\'.dict-items tbody\');\r\n                var newRow = createDictRow(keyType, v" +
+"alueType);\r\n                tbody.insertAdjacentHTML(\'beforeend\', newRow);\r\n    " +
+"            bindRemoveDictRow(tbody);\r\n            });\r\n        });\r\n        fun" +
+"ction bindRemoveItem(container) {\r\n            container.querySelectorAll(\'.remo" +
+"ve-list-item\').forEach(function(btn) {\r\n                btn.onclick = function()" +
+" { this.closest(\'.list-item\').remove(); };\r\n            });\r\n        }\r\n        " +
+"function bindRemoveDictRow(tbody) {\r\n            tbody.querySelectorAll(\'.remove" +
+"-dict-row\').forEach(function(btn) {\r\n                btn.onclick = function() { " +
+"this.closest(\'.dict-row\').remove(); };\r\n            });\r\n        }\r\n        // I" +
+"nicializar remove en items ya existentes (si se regeneran los campos)\r\n        d" +
+"ocument.querySelectorAll(\'.list-items\').forEach(bindRemoveItem);\r\n        docume" +
+"nt.querySelectorAll(\'.dict-items tbody\').forEach(bindRemoveDictRow);\r\n    }\r\n\r\n " +
+"   // Generadores de campos para listas y diccionarios\r\n    function generateLis" +
+"tInput(paramInfo) {\r\n        var name = paramInfo.name;\r\n        var elementType" +
+" = extractGenericArgument(paramInfo.type, 0) || \'string\';\r\n        var html = \'<" +
+"div class=\"list-container\" data-param-name=\"\' + name + \'\" data-element-type=\"\' +" +
+" elementType + \'\">\';\r\n        html += \'<label>\' + name + \' (List of \' + elementT" +
+"ype + \')</label>\';\r\n        html += \'<div class=\"list-items\"></div>\';\r\n        h" +
+"tml += \'<button type=\"button\" class=\"btn btn-xs btn-default add-list-item\">+ Add" +
+" item</button>\';\r\n        html += \'</div>\';\r\n        return html;\r\n    }\r\n\r\n    " +
+"function generateDictionaryInput(paramInfo) {\r\n        var name = paramInfo.name" +
+";\r\n        var keyType = extractGenericArgument(paramInfo.type, 0) || \'string\';\r" +
+"\n        var valueType = extractGenericArgument(paramInfo.type, 1) || \'string\';\r" +
+"\n        var html = \'<div class=\"dict-container\" data-param-name=\"\' + name + \'\" " +
+"data-key-type=\"\' + keyType + \'\" data-value-type=\"\' + valueType + \'\">\';\r\n        " +
+"html += \'<label>\' + name + \' (Dictionary<\' + keyType + \', \' + valueType + \'>)</l" +
+"abel>\';\r\n        html += \'<table class=\"table table-condensed dict-items\"><tbody" +
+"></tbody></table>\';\r\n        html += \'<button type=\"button\" class=\"btn btn-xs bt" +
+"n-default add-dict-item\">+ Add entry</button>\';\r\n        html += \'</div>\';\r\n    " +
+"    return html;\r\n    }\r\n\r\n    function createListItem(elementType) {\r\n        v" +
+"ar inputType = getInputTypeForSimple(elementType);\r\n        return \'<div class=\"" +
+"list-item\">\' +\r\n            \'<input type=\"\' + inputType + \'\" class=\"form-control" +
+" input-sm\" value=\"\" />\' +\r\n            \'<button type=\"button\" class=\"btn btn-xs " +
+"btn-danger remove-list-item\">×</button>\' +\r\n            \'</div>\';\r\n    }\r\n\r\n    " +
+"function createDictRow(keyType, valueType) {\r\n        var keyInputType = getInpu" +
+"tTypeForSimple(keyType);\r\n        var valueInputType = getInputTypeForSimple(val" +
+"ueType);\r\n        return \'<tr class=\"dict-row\">\' +\r\n            \'<td><input type" +
+"=\"\' + keyInputType + \'\" class=\"form-control input-sm dict-key\" placeholder=\"key\"" +
+" /></td>\' +\r\n            \'<td><input type=\"\' + valueInputType + \'\" class=\"form-c" +
+"ontrol input-sm dict-value\" placeholder=\"value\" /></td>\' +\r\n            \'<td><bu" +
+"tton type=\"button\" class=\"btn btn-xs btn-danger remove-dict-row\">×</button></td>" +
+"\' +\r\n            \'</tr>\';\r\n    }\r\n\r\n    function getInputTypeForSimple(typeName)" +
+" {\r\n        var t = typeName.toLowerCase();\r\n        if (t.includes(\'int\') || t." +
+"includes(\'long\') || t.includes(\'short\') || t.includes(\'byte\') ||\r\n            t." +
+"includes(\'double\') || t.includes(\'float\') || t.includes(\'decimal\')) return \'numb" +
+"er\';\r\n        if (t.includes(\'datetime\')) return \'datetime-local\';\r\n        if (" +
+"t.includes(\'bool\')) return \'checkbox\';\r\n        return \'text\';\r\n    }\r\n\r\n    fun" +
+"ction isListType(type) {\r\n        return type.startsWith(\'System.Collections.Gen" +
+"eric.List\') ||\r\n               type.startsWith(\'System.Collections.Generic.IList" +
+"\') ||\r\n               type.endsWith(\'[]\');\r\n    }\r\n\r\n    function isDictType(typ" +
+"e) {\r\n        return type.startsWith(\'System.Collections.Generic.Dictionary\');\r\n" +
+"    }\r\n\r\n    function extractGenericArgument(typeName, index) {\r\n        var mat" +
+"ch = typeName.match(/<(.+)>/);\r\n        if (match) {\r\n            var args = mat" +
+"ch[1].split(\',\');\r\n            return args[index] ? args[index].trim() : null;\r\n" +
+"        }\r\n        return null;\r\n    }\r\n\r\n    function generateInputForSimpleTyp" +
+"e(paramInfo) {\r\n        var type = paramInfo.type;\r\n        var name = paramInfo" +
+".name;\r\n        var isNullable = type.endsWith(\'?\');\r\n        var underlyingType" +
+" = isNullable ? type.slice(0, -1).toLowerCase() : type.toLowerCase();\r\n    \r\n   " +
+"     var html = \'\';\r\n    \r\n        if (underlyingType.includes(\'int\') || underly" +
+"ingType.includes(\'long\') || \r\n            underlyingType.includes(\'short\') || un" +
+"derlyingType.includes(\'byte\')) {\r\n            html = \'<input type=\"number\" class" +
+"=\"form-control\" data-param-name=\"\' + name + \'\" step=\"1\" value=\"\' + (isNullable ?" +
+" \'\' : \'0\') + \'\" />\';\r\n        }\r\n        else if (underlyingType.includes(\'doubl" +
+"e\') || underlyingType.includes(\'float\') || \r\n                 underlyingType.inc" +
+"ludes(\'decimal\') || underlyingType.includes(\'single\')) {\r\n            html = \'<i" +
+"nput type=\"number\" class=\"form-control\" data-param-name=\"\' + name + \'\" step=\"any" +
+"\" value=\"\' + (isNullable ? \'\' : \'0.0\') + \'\" />\';\r\n        }\r\n        else if (un" +
+"derlyingType.includes(\'bool\')) {\r\n            html = \'<select class=\"form-contro" +
+"l\" data-param-name=\"\' + name + \'\">\';\r\n            if (isNullable) html += \'<opti" +
+"on value=\"\">-- Not set --</option>\';\r\n            html += \'<option value=\"true\">" +
+"True</option><option value=\"false\">False</option>\';\r\n            html += \'</sele" +
+"ct>\';\r\n        }\r\n        else if (underlyingType.includes(\'datetime\') || underl" +
+"yingType.includes(\'datetimeoffset\')) {\r\n            var defaultDate = isNullable" +
+" ? \'\' : new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000)." +
+"toISOString().slice(0, 16);\r\n            html = \'<input type=\"datetime-local\" cl" +
+"ass=\"form-control\" data-param-name=\"\' + name + \'\" value=\"\' + defaultDate + \'\" />" +
+"\';\r\n            html += \'<small class=\"help-block\">Click the calendar icon to se" +
+"lect a date and time.</small>\';\r\n        }\r\n        else if (underlyingType === " +
+"\'system.datetime\' || underlyingType === \'datetime\') {\r\n            var defaultDa" +
+"te = isNullable ? \'\' : new Date().toISOString().slice(0, 10);\r\n            html " +
+"= \'<input type=\"date\" class=\"form-control\" data-param-name=\"\' + name + \'\" value=" +
+"\"\' + defaultDate + \'\" />\';\r\n        }\r\n        else if (underlyingType === \'syst" +
+"em.guid\' || underlyingType === \'guid\') {\r\n            html = \'<input type=\"text\"" +
+" class=\"form-control\" data-param-name=\"\' + name + \'\" placeholder=\"00000000-0000-" +
+"0000-0000-000000000000\" value=\"\' + (isNullable ? \'\' : \'00000000-0000-0000-0000-0" +
+"00000000000\') + \'\" />\';\r\n        }\r\n        else if (underlyingType === \'system." +
+"timespan\' || underlyingType === \'timespan\') {\r\n            html = \'<input type=\"" +
+"text\" class=\"form-control\" data-param-name=\"\' + name + \'\" placeholder=\"hh:mm:ss\"" +
+" value=\"\' + (isNullable ? \'\' : \'00:00:00\') + \'\" />\';\r\n        }\r\n        else if" +
+" (underlyingType.includes(\'.\') && !underlyingType.startsWith(\'system.\')) {\r\n    " +
+"        if (paramInfo.enumValues && paramInfo.enumValues.length > 0) {\r\n        " +
+"        html += \'<select class=\"form-control\" data-param-name=\"\' + name + \'\">\';\r" +
+"\n                paramInfo.enumValues.forEach(function(val) {\r\n                 " +
+"   html += \'<option value=\"\' + val + \'\">\' + val + \'</option>\';\r\n                " +
+"});\r\n                html += \'</select>\';\r\n            } else {\r\n               " +
+" html = \'<input type=\"text\" class=\"form-control\" data-param-name=\"\' + name + \'\" " +
+"placeholder=\"Enum value of \' + paramInfo.type + \'\" />\';\r\n            }\r\n        " +
+"}\r\n        else {\r\n            html = \'<input type=\"text\" class=\"form-control\" d" +
+"ata-param-name=\"\' + name + \'\" placeholder=\"\' + paramInfo.type + \'\" />\';\r\n       " +
+" }\r\n    \r\n        if (isNullable) {\r\n            html += \'<small class=\"text-mut" +
+"ed\">(Optional, leave empty for null)</small>\';\r\n        }\r\n    \r\n        return " +
+"html;\r\n    }\r\n\r\n    // ====== JSON VALIDATE / FORMAT / SUGGEST ======\r\n    funct" +
+"ion validateJson() {\r\n        var text = $$(\'jsonParams\').value.trim();\r\n       " +
+" if (!text) return;\r\n        try { JSON.parse(text); $$(\'jsonValidationMsg\').sty" +
+"le.display = \'none\'; alert(\'Valid JSON.\'); }\r\n        catch(e) { $$(\'jsonValidat" +
+"ionMsg\').style.display = \'inline\'; }\r\n    }\r\n    function formatJson() {\r\n      " +
+"  var text = $$(\'jsonParams\').value.trim();\r\n        try { var obj = JSON.parse(" +
+"text); $$(\'jsonParams\').value = JSON.stringify(obj, null, 2); $$(\'jsonValidation" +
+"Msg\').style.display = \'none\'; }\r\n        catch(e) { $$(\'jsonValidationMsg\').styl" +
+"e.display = \'inline\'; }\r\n    }\r\n\r\n    function suggestJsonStructure() {\r\n       " +
+" var className = $$(\'classNameManual\').value.trim();\r\n        var methodName = $" +
+"$(\'methodNameManual\').value.trim();\r\n    \r\n        if (!className || !methodName" +
+") {\r\n            alert(\'Please enter Class Name and Method Name first.\');\r\n     " +
+"       return;\r\n        }\r\n    \r\n        fetchJson(apiBaseUrl + \'/api/methods?cl" +
+"assName=\' + encodeURIComponent(className))\r\n            .then(function(resp) {\r\n" +
+"                if (!resp.success) {\r\n                    alert(\'Assembly no dis" +
+"ponible: \' + resp.error);\r\n                    return;\r\n                }\r\n     " +
+"           var method = resp.methods.find(function(m) { return m.methodName === " +
+"methodName; });\r\n                if (!method) {\r\n                    alert(\'Meth" +
+"od not found.\');\r\n                    return;\r\n                }\r\n              " +
+"  var suggestion = {};\r\n                method.parameters.forEach(function(p) {\r" +
+"\n                    suggestion[p.name] = getDefaultValueForType(p.type, p.isCom" +
+"plex);\r\n                });\r\n                $$(\'jsonParams\').value = JSON.strin" +
+"gify(suggestion, null, 2);\r\n            })\r\n            .catch(function(err) {\r\n" +
+"                alert(\'Error loading suggestion: \' + err.message);\r\n            " +
+"});\r\n    }\r\n\r\n    function getDefaultValueForType(type, isComplex) {\r\n        if" +
+" (type.endsWith(\'?\')) {\r\n            return null;\r\n        }\r\n        if (isComp" +
+"lex) {\r\n            return {};\r\n        }\r\n        var t = type.toLowerCase();\r\n" +
+"        if (t.includes(\'int\') || t.includes(\'long\') || t.includes(\'short\') || t." +
+"includes(\'byte\')) return 0;\r\n        if (t.includes(\'double\') || t.includes(\'flo" +
+"at\') || t.includes(\'decimal\') || t.includes(\'single\')) return 0.0;\r\n        if (" +
+"t.includes(\'bool\')) return true;\r\n        if (t.includes(\'datetime\') || t.includ" +
+"es(\'datetimeoffset\')) return new Date().toISOString();\r\n        if (t === \'syste" +
+"m.guid\' || t === \'guid\') return \'00000000-0000-0000-0000-000000000000\';\r\n       " +
+" if (t === \'system.timespan\' || t === \'timespan\') return \'00:00:00\';\r\n        if" +
+" (t === \'system.string\' || t === \'string\') return \'\';\r\n        return \'\';\r\n    }" +
+"\r\n\r\n    // ====== VALIDATE CRON ======\r\n    function validateCron() {\r\n        v" +
+"ar expr = $$(\'cronExpression\').value.trim();\r\n        if (!expr) { alert(\'Cron e" +
+"xpression required\'); return; }\r\n        fetchJson(apiBaseUrl + \'/api/validate-c" +
+"ron?expression=\' + encodeURIComponent(expr))\r\n            .then(function(resp) {" +
+"\r\n                var div = $$(\'cronPreview\');\r\n                if (!resp.succes" +
+"s) {\r\n                    div.innerHTML = \'<span class=\"text-danger\">\' + resp.er" +
+"ror + \'</span>\';\r\n                } else {\r\n                    div.innerHTML = " +
+"\'Next occurrences: \' + resp.occurrences.join(\', \');\r\n                }\r\n        " +
+"        div.style.display = \'block\';\r\n            });\r\n    }\r\n\r\n    // ====== CO" +
+"LAS CRÍTICAS ======\r\n    function isQueueCritical(queue) {\r\n        return criti" +
+"calQueues.indexOf(queue) >= 0;\r\n    }\r\n\r\n    function checkCriticalQueue(queue) " +
+"{\r\n        if (isQueueCritical(queue)) {\r\n            $$(\'criticalQueueWarning\')" +
+".style.display = \'block\';\r\n            return true;\r\n        } else {\r\n         " +
+"   $$(\'criticalQueueWarning\').style.display = \'none\';\r\n            return false;" +
+"\r\n        }\r\n    }\r\n\r\n    $$(\'queue\').addEventListener(\'input\', function() { che" +
+"ckCriticalQueue(this.value); });\r\n    $$(\'queue\').addEventListener(\'change\', fun" +
+"ction() { checkCriticalQueue(this.value); });\r\n\r\n    // ====== CARGAR COLAS ====" +
+"==\r\n    function loadQueues() {\r\n        fetchJson(apiBaseUrl + \'/api/queues\').t" +
+"hen(function(resp) {\r\n            var datalist = $$(\'queueList\');\r\n            d" +
+"atalist.innerHTML = \'\';\r\n            (resp.queues || []).forEach(function(q) {\r\n" +
+"                datalist.innerHTML += \'<option value=\"\' + q + \'\">\';\r\n           " +
+" });\r\n        });\r\n    }\r\n\r\n    // ====== BUILD REQUEST OBJECT ======\r\n    funct" +
+"ion convertToType(value, type, isComplex) {\r\n        var isNullable = type.endsW" +
+"ith(\'?\');\r\n        var underlyingType = isNullable ? type.slice(0, -1).toLowerCa" +
+"se() : type.toLowerCase();\r\n    \r\n        if (isNullable && (value === \'\' || val" +
+"ue === null || value === undefined)) {\r\n            return null;\r\n        }\r\n   " +
+" \r\n        if (isComplex) {\r\n            if (value === \'\' && isNullable) return " +
+"null;\r\n            try {\r\n                return JSON.parse(value);\r\n           " +
+" } catch(e) {\r\n                return value;\r\n            }\r\n        }\r\n    \r\n  " +
+"      if (underlyingType.includes(\'int\') || underlyingType.includes(\'long\') || \r" +
+"\n            underlyingType.includes(\'short\') || underlyingType.includes(\'byte\')" +
+") {\r\n            var num = parseInt(value, 10);\r\n            return isNaN(num) ?" +
+" (isNullable ? null : value) : num;\r\n        }\r\n        if (underlyingType.inclu" +
+"des(\'double\') || underlyingType.includes(\'float\') || \r\n            underlyingTyp" +
+"e.includes(\'decimal\') || underlyingType.includes(\'single\')) {\r\n            var n" +
+"um = parseFloat(value);\r\n            return isNaN(num) ? (isNullable ? null : va" +
+"lue) : num;\r\n        }\r\n        if (underlyingType.includes(\'bool\')) {\r\n        " +
+"    if (typeof value === \'boolean\') return value;\r\n            if (value === \'\' " +
+"&& isNullable) return null;\r\n            return value === \'true\' || value === \'1" +
+"\' || value === \'on\';\r\n        }\r\n        return value;\r\n    }\r\n\r\n    function bu" +
+"ildRequest() {\r\n        var mode = document.querySelector(\'input[name=\"launchMod" +
+"e\"]:checked\').value;\r\n        var className = mode === \'assisted\' ? $$(\'classNam" +
+"eAssisted\').value.trim() : $$(\'classNameManual\').value.trim();\r\n        var meth" +
+"odName = mode === \'assisted\' ? (function() {\r\n            var idx = $$(\'methodSe" +
+"lect\').value;\r\n            return idx === \'\' ? \'\' : currentMethods[parseInt(idx)" +
+"].methodName;\r\n        })() : $$(\'methodNameManual\').value.trim();\r\n\r\n        va" +
+"r request = {\r\n            mode: mode,\r\n            className: className,\r\n     " +
+"       methodName: methodName,\r\n            queue: $$(\'queue\').value.trim() || \'" +
+"default\',\r\n            executionMode: document.querySelector(\'input[name=\"execMo" +
+"de\"]:checked\').value,\r\n            includePerformContext: $$(\'chkPerformContext\'" +
+").checked,\r\n            includeCancellationToken: $$(\'chkCancellationToken\').che" +
+"cked,\r\n            parameters: null,\r\n            rawParametersJson: null\r\n     " +
+"   };\r\n\r\n        if (mode === \'manual\') {\r\n            request.rawParametersJson" +
+" = $$(\'jsonParams\').value.trim() || \'{}\';\r\n        } else {\r\n            var par" +
+"amsObj = {};\r\n            // Obtener todos los elementos con data-param-name den" +
+"tro del contenedor, ordenadamente\r\n            var allElements = document.queryS" +
+"electorAll(\'#paramsContainer [data-param-name]\');\r\n            allElements.forEa" +
+"ch(function(el) {\r\n                var name = el.getAttribute(\'data-param-name\')" +
+";\r\n                if (!name) return;\r\n                // Si es un contenedor de" +
+" lista\r\n                if (el.classList.contains(\'list-container\')) {\r\n        " +
+"            var elementType = el.getAttribute(\'data-element-type\');\r\n           " +
+"         var inputs = el.querySelectorAll(\'.list-item input\');\r\n                " +
+"    var values = [];\r\n                    inputs.forEach(function(inp) {\r\n      " +
+"                  if (inp.value.trim() !== \'\') {\r\n                            va" +
+"lues.push(convertToType(inp.value, elementType, false));\r\n                      " +
+"  }\r\n                    });\r\n                    paramsObj[name] = values;\r\n   " +
+"             }\r\n                // Si es un contenedor de diccionario\r\n         " +
+"       else if (el.classList.contains(\'dict-container\')) {\r\n                    " +
+"var rows = el.querySelectorAll(\'.dict-row\');\r\n                    var obj = {};\r" +
+"\n                    rows.forEach(function(row) {\r\n                        var k" +
+"eyInp = row.querySelector(\'.dict-key\');\r\n                        var valInp = ro" +
+"w.querySelector(\'.dict-value\');\r\n                        if (keyInp && valInp &&" +
+" keyInp.value.trim() !== \'\') {\r\n                            obj[keyInp.value] = " +
+"valInp.value;\r\n                        }\r\n                    });\r\n             " +
+"       paramsObj[name] = obj;\r\n                }\r\n                // Caso normal" +
+" (input, textarea, select)\r\n                else {\r\n                    var valu" +
+"e;\r\n                    if (el.type === \'checkbox\') {\r\n                        v" +
+"alue = el.checked;\r\n                    } else {\r\n                        value " +
+"= el.value;\r\n                    }\r\n                    // Intentar obtener la d" +
+"efinición del parámetro para convertir correctamente\r\n                    var pa" +
+"ramDef = selectedMethod ? selectedMethod.parameters.find(function(p) { return p." +
+"name === name; }) : null;\r\n                    if (paramDef) {\r\n                " +
+"        value = convertToType(value, paramDef.type, paramDef.isComplex);\r\n      " +
+"              }\r\n                    paramsObj[name] = value;\r\n                }" +
+"\r\n            });\r\n            request.rawParametersJson = JSON.stringify(params" +
+"Obj);\r\n            request.parameters = null;\r\n        }\r\n\r\n        if (request." +
+"executionMode === \'Schedule\') {\r\n            request.delayMinutes = parseInt($$(" +
+"\'delayMinutes\').value) || 30;\r\n        }\r\n        if (request.executionMode === " +
+"\'ScheduleDateTime\') {\r\n            request.scheduledDateTime = $$(\'scheduledDate" +
+"Time\').value ? new Date($$(\'scheduledDateTime\').value).toISOString() : null;\r\n  " +
+"      }\r\n        if (request.executionMode === \'Recurring\') {\r\n            reque" +
+"st.cronExpression = $$(\'cronExpression\').value.trim() || \'* * * * *\';\r\n         " +
+"   if (mode === \'manual\') {\r\n                request.recurringEngine = $$(\'recur" +
+"ringEngine\').value;\r\n            }\r\n        }\r\n        if (request.executionMode" +
+" === \'Continuation\') {\r\n            request.parentJobId = $$(\'parentJobId\').valu" +
+"e.trim();\r\n        }\r\n        return request;\r\n    }\r\n\r\n    // ====== PREVIEW ==" +
+"====\r\n    function showPreview() {\r\n        var req = buildRequest();\r\n        v" +
+"ar summary = \'Class: \' + req.className + \'\\nMethod: \' + req.methodName + \'\\nQueu" +
+"e: \' + req.queue +\r\n                      \'\\nMode: \' + req.executionMode + \'\\nEn" +
+"gine: \' + (req.recurringEngine || \'Direct\') +\r\n                      \'\\nParamete" +
+"rs: \' + (req.rawParametersJson || JSON.stringify(req.parameters));\r\n        $$(\'" +
+"previewContent\').textContent = summary;\r\n        $$(\'previewPanel\').style.displa" +
+"y = \'block\';\r\n    }\r\n\r\n    // ====== SUBMIT / LAUNCH ======\r\n    var pendingLaun" +
+"chRequest = null;\r\n\r\n    function submitJob() {\r\n        var req = buildRequest(" +
+");\r\n        if (!req.className || !req.methodName) { alert(\'ClassName and Method" +
+"Name are required.\'); return; }\r\n\r\n        if (isQueueCritical(req.queue)) {\r\n  " +
+"          pendingLaunchRequest = req;\r\n            $$(\'criticalQueueName\').textC" +
+"ontent = req.queue;\r\n            $$(\'criticalJobSummary\').textContent = \'Class: " +
+"\' + req.className + \'\\nMethod: \' + req.methodName + \'\\nMode: \' + req.executionMo" +
+"de;\r\n            $(\'#criticalConfirmModal\').modal(\'show\');\r\n        } else {\r\n  " +
+"          launchJob(req);\r\n        }\r\n    }\r\n\r\n    function confirmedLaunch() {\r" +
+"\n        $(\'#criticalConfirmModal\').modal(\'hide\');\r\n        if (pendingLaunchReq" +
+"uest) launchJob(pendingLaunchRequest);\r\n    }\r\n\r\n    function launchJob(req) {\r\n" +
+"        var formData = new FormData();\r\n        formData.append(\'json\', JSON.str" +
+"ingify(req));\r\n\r\n        fetch(apiBaseUrl + \'/api/launch\', {\r\n            method" +
+": \'POST\',\r\n            body: formData\r\n        })\r\n        .then(function(r) { r" +
+"eturn r.json(); })\r\n          .then(function(result) {\r\n              var alertD" +
+"iv = $$(\'launchResult\');\r\n              alertDiv.style.display = \'block\';\r\n     " +
+"         if (result.success) {\r\n                  alertDiv.className = \'alert al" +
+"ert-success\';\r\n                  alertDiv.innerHTML = \'Job launched successfully" +
+"! <a href=\"\' + result.link + \'\" target=\"_blank\">\' + result.jobId + \'</a>\';\r\n    " +
+"              loadQueues();\r\n                  loadHistory();\r\n              } e" +
+"lse {\r\n                  alertDiv.className = \'alert alert-danger\';\r\n           " +
+"       alertDiv.textContent = \'Error: \' + (result.error || \'Unknown error\');\r\n  " +
+"            }\r\n          }).catch(function(err) {\r\n              var alertDiv = " +
+"$$(\'launchResult\');\r\n              alertDiv.style.display = \'block\';\r\n          " +
+"    alertDiv.className = \'alert alert-danger\';\r\n              alertDiv.textConte" +
+"nt = \'Network error: \' + err.message;\r\n          });\r\n    }\r\n\r\n    // ====== HIS" +
+"TORY ======\r\n    function loadHistory() {\r\n        var dashboardBaseUrl = \'");
 
 
             
-            #line 811 "..\..\Pages\JobLauncherPage.cshtml"
+            #line 925 "..\..\Pages\JobLauncherPage.cshtml"
                            Write(Url.To("/"));
 
             
@@ -598,316 +667,331 @@ WriteLiteral("\';\r\n    var selectedMethod = null; // almacenará el MethodInfo
 WriteLiteral("\';\r\n        fetchJson(apiBaseUrl + \'/api/history\').then(function(entries) {\r\n    " +
 "        var tbody = $$(\'historyTable\').querySelector(\'tbody\');\r\n            tbod" +
 "y.innerHTML = \'\';\r\n            entries.forEach(function(e) {\r\n                va" +
-"r entryJson = JSON.stringify(e).replace(/\'/g, \"&#39;\").replace(/\"/g, \"&quot;\"); " +
-"// Escapamos también comillas\r\n                var row = \'<tr>\' +\r\n             " +
-"       \'<td>\' + new Date(e.timestamp).toLocaleString() + \'</td>\' +\r\n            " +
-"        \'<td><a href=\"\' + dashboardBaseUrl + \'jobs/details/\' + e.jobId + \'\" targ" +
-"et=\"_blank\">\' + e.jobId + \'</a></td>\' +\r\n                    \'<td>\' + e.classNam" +
-"e + \'</td>\' +\r\n                    \'<td>\' + e.methodName + \'</td>\' +\r\n          " +
-"          \'<td>\' + e.queue + \'</td>\' +\r\n                    \'<td>\' + e.mode + \'<" +
-"/td>\' +\r\n                    \'<td>\' + e.engine + \'</td>\' +\r\n                    " +
-"\'<td>\' +\r\n                    \'<button class=\"btn btn-xs btn-default relaunch\" t" +
-"itle=\"Load parameters into Launch tab for editing\" data-entry=\\\'\' + entryJson + " +
-"\'\\\'>Relaunch</button> \' +\r\n                    \'<button class=\"btn btn-xs btn-de" +
-"fault clone-launch\" title=\"Clone and launch immediately without editing\" data-en" +
-"try=\\\'\' + entryJson + \'\\\'>Clone & Launch</button> \' +\r\n                    \'<but" +
-"ton class=\"btn btn-xs btn-primary save-as-template\" title=\"Save this job configu" +
-"ration as a template\" data-entry=\\\'\' + entryJson + \'\\\'>Save as template</button>" +
-"\' +\r\n                    \'</td>\' +\r\n                    \'</tr>\';\r\n              " +
-"  tbody.innerHTML += row;\r\n            });\r\n            // Bind events\r\n        " +
-"    document.querySelectorAll(\'.relaunch\').forEach(function(btn) {\r\n            " +
-"    btn.addEventListener(\'click\', function() {\r\n                    var entry = " +
-"JSON.parse(this.getAttribute(\'data-entry\'));\r\n                    loadEntryToFor" +
-"m(entry);\r\n                    document.querySelector(\'.nav-tabs a[href=\"#launch" +
-"Tab\"]\').click();\r\n                });\r\n            });\r\n            document.que" +
-"rySelectorAll(\'.clone-launch\').forEach(function(btn) {\r\n                btn.addE" +
-"ventListener(\'click\', function() {\r\n                    var entry = JSON.parse(t" +
-"his.getAttribute(\'data-entry\'));\r\n                    if (confirm(\'Clone and lau" +
-"nch job with same parameters?\')) {\r\n                        var req = buildReque" +
-"stFromHistory(entry);\r\n                        launchJob(req);\r\n                " +
-"    }\r\n                });\r\n            });\r\n        });\r\n    }\r\n\r\n    function " +
-"clearHistory() {\r\n        if (!confirm(\'Clear history?\')) return;\r\n        fetch" +
-"(apiBaseUrl + \'/api/history\', { method: \'DELETE\' }).then(function() { loadHistor" +
-"y(); });\r\n    }\r\n\r\n    function loadEntryToForm(entry) {\r\n        // 1. Determin" +
-"ar el modo (campo \'mode\' que ya guarda el backend)\r\n        var mode = entry.mod" +
-"e || (entry.rawParametersJson && !entry.parameters ? \'manual\' : \'assisted\');\r\n\r\n" +
-"        // 2. Activar el radio correspondiente\r\n        var radio = document.que" +
-"rySelector(\'input[name=\"launchMode\"][value=\"\' + mode + \'\"]\');\r\n        if (radio" +
-") radio.checked = true;\r\n        toggleMode();\r\n\r\n        // 3. Rellenar campos " +
-"comunes\r\n        $$(\'queue\').value = entry.queue || \'default\';\r\n        $$(\'chkP" +
-"erformContext\').checked = entry.includePerformContext || false;\r\n        $$(\'chk" +
-"CancellationToken\').checked = entry.includeCancellationToken || false;\r\n\r\n      " +
-"  // 4. Modo de ejecución\r\n        if (entry.executionMode) {\r\n            var e" +
-"xecRadio = document.querySelector(\'input[name=\"execMode\"][value=\"\' + entry.execu" +
-"tionMode + \'\"]\');\r\n            if (execRadio) execRadio.checked = true;\r\n       " +
-"     toggleExecMode();\r\n        }\r\n\r\n        // 5. Rellenar campos específicos d" +
-"el modo de ejecución\r\n        if (entry.cronExpression) $$(\'cronExpression\').val" +
-"ue = entry.cronExpression;\r\n        if (entry.delayMinutes) $$(\'delayMinutes\').v" +
-"alue = entry.delayMinutes;\r\n        if (entry.scheduledDateTime) {\r\n            " +
-"var dt = new Date(entry.scheduledDateTime);\r\n            if (!isNaN(dt)) {\r\n    " +
-"            var local = new Date(dt.getTime() - dt.getTimezoneOffset() * 60000)." +
-"toISOString().slice(0, 16);\r\n                $$(\'scheduledDateTime\').value = loc" +
-"al;\r\n            }\r\n        }\r\n        if (entry.parentJobId) $$(\'parentJobId\')." +
-"value = entry.parentJobId;\r\n        if (entry.recurringEngine) {\r\n            va" +
-"r engineSelect = $$(\'recurringEngine\');\r\n            if (engineSelect) engineSel" +
-"ect.value = entry.recurringEngine;\r\n        }\r\n\r\n        // 6. Rellenar según el" +
-" modo\r\n        if (mode === \'manual\') {\r\n            $$(\'classNameManual\').value" +
-" = entry.className || \'\';\r\n            $$(\'methodNameManual\').value = entry.meth" +
-"odName || \'\';\r\n            $$(\'jsonParams\').value = entry.parametersJson || \'{}\'" +
-";\r\n        } else {\r\n            $$(\'classNameAssisted\').value = entry.className" +
-" || \'\';\r\n            // Si tenemos className y methodName, cargar métodos y rest" +
-"aurar parámetros\r\n            if (entry.className && entry.methodName) {\r\n      " +
-"          loadMethodsForTemplate(entry.className, entry.methodName, entry.parame" +
-"tersJson);\r\n            } else {\r\n                $$(\'methodSelectGroup\').style." +
-"display = \'none\';\r\n                $$(\'paramsContainer\').innerHTML = \'\';\r\n      " +
-"      }\r\n        }\r\n    }\r\n\r\n    function buildRequestFromHistory(entry) {\r\n    " +
-"    return {\r\n            mode: entry.mode,\r\n            className: entry.classN" +
-"ame,\r\n            methodName: entry.methodName,\r\n            queue: entry.queue," +
-"\r\n            executionMode: entry.executionMode,\r\n            cronExpression: e" +
-"ntry.cronExpression,\r\n            delayMinutes: entry.delayMinutes,\r\n           " +
-" scheduledDateTime: entry.scheduledDateTime,\r\n            parentJobId: entry.par" +
-"entJobId,\r\n            recurringEngine: entry.engine === \'DynamicJobs\' ? \'Dynami" +
-"cJobs\' : \'BuiltIn\',\r\n            includePerformContext: entry.includePerformCont" +
-"ext,\r\n            includeCancellationToken: entry.includeCancellationToken,\r\n   " +
-"         rawParametersJson: entry.parametersJson,\r\n            parameters: null\r" +
-"\n        };\r\n    }\r\n\r\n    // ====== TEMPLATES ======\r\n    function loadTemplates" +
-"() {\r\n        fetchJson(apiBaseUrl + \'/api/templates\').then(function(templates) " +
-"{\r\n            var tbody = $$(\'templatesTable\').querySelector(\'tbody\');\r\n       " +
-"     tbody.innerHTML = \'\';\r\n            templates.forEach(function(t) {\r\n       " +
-"         var row = \'<tr>\' +\r\n                    \'<td>\' + t.name + \'</td>\' +\r\n  " +
-"                  \'<td>\' + t.className + \'</td>\' +\r\n                    \'<td>\' +" +
-" t.methodName + \'</td>\' +\r\n                    \'<td>\' + t.queue + \'</td>\' +\r\n   " +
-"                 \'<td>\' + t.executionMode + \'</td>\' +\r\n                    \'<td>" +
-"\' +\r\n                    \'<button class=\"btn btn-xs btn-default load-template\" d" +
-"ata-name=\"\' + t.name + \'\">Load</button> \' +\r\n                    \'<button class=" +
-"\"btn btn-xs btn-default clone-template\" data-name=\"\' + t.name + \'\">Clone & Launc" +
-"h</button> \' +\r\n                    \'<button class=\"btn btn-xs btn-danger delete" +
-"-template\" data-name=\"\' + t.name + \'\">Delete</button> \' +\r\n                    \'" +
-"<button class=\"btn btn-xs btn-info export-template\" data-name=\"\' + t.name + \'\">E" +
-"xport</button>\' +\r\n                    \'<button class=\"btn btn-xs btn-default pr" +
-"eview-template\" data-name=\"\' + t.name + \'\">Preview</button> \' +\r\n               " +
-"     \'</td>\' +\r\n                    \'</tr>\';\r\n                tbody.innerHTML +=" +
-" row;\r\n            });\r\n            bindTemplateEvents();\r\n        });\r\n    }\r\n\r" +
-"\n    function bindTemplateEvents() {\r\n        document.querySelectorAll(\'.load-t" +
-"emplate\').forEach(function(btn) {\r\n            btn.addEventListener(\'click\', fun" +
-"ction() {\r\n                var name = this.getAttribute(\'data-name\');\r\n         " +
-"       fetchJson(apiBaseUrl + \'/api/templates?name=\' + encodeURIComponent(name))" +
-"\r\n                    .then(function(t) { loadTemplateToForm(t); document.queryS" +
-"elector(\'.nav-tabs a[href=\"#launchTab\"]\').click(); });\r\n            });\r\n       " +
-" });\r\n        document.querySelectorAll(\'.clone-template\').forEach(function(btn)" +
-" {\r\n            btn.addEventListener(\'click\', function() {\r\n                var " +
-"name = this.getAttribute(\'data-name\');\r\n                fetchJson(apiBaseUrl + \'" +
-"/api/templates?name=\' + encodeURIComponent(name))\r\n                    .then(fun" +
-"ction(t) {\r\n                        var req = buildRequestFromTemplate(t);\r\n    " +
-"                    if (confirm(\'Clone and launch?\')) launchJob(req);\r\n         " +
-"           });\r\n            });\r\n        });\r\n        document.querySelectorAll(" +
-"\'.delete-template\').forEach(function(btn) {\r\n            btn.addEventListener(\'c" +
-"lick\', function() {\r\n                var name = this.getAttribute(\'data-name\');\r" +
-"\n                if (confirm(\'Delete template \' + name + \'?\')) {\r\n              " +
-"      fetch(apiBaseUrl + \'/api/templates?name=\' + encodeURIComponent(name), { me" +
-"thod: \'DELETE\' })\r\n                        .then(function() { loadTemplates(); }" +
-");\r\n                }\r\n            });\r\n        });\r\n        document.querySelec" +
-"torAll(\'.export-template\').forEach(function(btn) {\r\n            btn.addEventList" +
-"ener(\'click\', function() {\r\n                var name = this.getAttribute(\'data-n" +
-"ame\');\r\n                var downloadUrl = apiBaseUrl + \'/api/export-import?actio" +
-"n=export&templateName=\' + encodeURIComponent(name);\r\n        \r\n                /" +
-"/ Usar fetch + Blob para forzar la descarga\r\n                fetch(downloadUrl)\r" +
-"\n                    .then(function(response) {\r\n                        if (!re" +
-"sponse.ok) throw new Error(\'Network error\');\r\n                        return res" +
-"ponse.blob();\r\n                    })\r\n                    .then(function(blob) " +
-"{\r\n                        var url = URL.createObjectURL(blob);\r\n               " +
-"         var a = document.createElement(\'a\');\r\n                        a.href = " +
-"url;\r\n                        a.download = name + \'.json\';\r\n                    " +
-"    document.body.appendChild(a);\r\n                        a.click();\r\n         " +
-"               document.body.removeChild(a);\r\n                        URL.revoke" +
-"ObjectURL(url);\r\n                    })\r\n                    .catch(function(err" +
-") {\r\n                        alert(\'Error downloading template: \' + err.message)" +
-";\r\n                });\r\n            });\r\n        });\r\n\r\n        document.querySe" +
-"lectorAll(\'.preview-template\').forEach(function(btn) {\r\n            btn.addEvent" +
-"Listener(\'click\', function() {\r\n                var name = this.getAttribute(\'da" +
-"ta-name\');\r\n                fetchJson(apiBaseUrl + \'/api/templates?name=\' + enco" +
-"deURIComponent(name))\r\n                    .then(function(template) {\r\n         " +
-"               // Llenar el modal\r\n                        $$(\'previewTemplateNa" +
-"me\').textContent = template.name;\r\n                        $$(\'prevClass\').textC" +
-"ontent = template.className;\r\n                        $$(\'prevMethod\').textConte" +
-"nt = template.methodName;\r\n                        $$(\'prevQueue\').textContent =" +
-" template.queue || \'default\';\r\n                        $$(\'prevExecMode\').textCo" +
-"ntent = template.executionMode;\r\n                        $$(\'prevEngine\').textCo" +
-"ntent = template.recurringEngine || \'N/A\';\r\n                        $$(\'prevMode" +
-"\').textContent = template.mode || \'N/A\';\r\n                        // Formatear J" +
-"SON de parámetros\r\n                        var params = template.rawParametersJs" +
-"on ? JSON.stringify(JSON.parse(template.rawParametersJson), null, 2) : \'{}\';\r\n  " +
-"                      $$(\'prevParams\').textContent = params;\r\n                  " +
-"      $(\'#templatePreviewModal\').modal(\'show\');\r\n                    });\r\n      " +
-"      });\r\n        });\r\n    }\r\n\r\n    function saveCurrentAsTemplate() {\r\n       " +
-" var req = buildRequest();\r\n        if (!req.className || !req.methodName) {\r\n  " +
-"          alert(\'Please configure a class and method before saving as template.\'" +
-");\r\n            return;\r\n        }\r\n        var name = prompt(\'Template name:\', " +
-"req.className + \'.\' + req.methodName);\r\n        if (!name) return;\r\n\r\n        va" +
-"r template = {\r\n            name: name,\r\n            mode: req.mode,\r\n          " +
-"  className: req.className,\r\n            methodName: req.methodName,\r\n          " +
-"  queue: req.queue,\r\n            executionMode: req.executionMode,\r\n            " +
-"cronExpression: req.cronExpression,\r\n            delayMinutes: req.delayMinutes," +
-"\r\n            scheduledDateTime: req.scheduledDateTime,\r\n            parentJobId" +
-": req.parentJobId,\r\n            recurringEngine: req.recurringEngine,\r\n         " +
-"   includePerformContext: req.includePerformContext,\r\n            includeCancell" +
-"ationToken: req.includeCancellationToken,\r\n            rawParametersJson: req.ra" +
-"wParametersJson,\r\n            parameters: req.parameters\r\n        };\r\n\r\n        " +
-"var formData = new FormData();\r\n        formData.append(\'json\', JSON.stringify(t" +
-"emplate));\r\n        fetch(apiBaseUrl + \'/api/templates\', { method: \'POST\', body:" +
-" formData })\r\n            .then(function(r) { return r.json(); })\r\n            ." +
-"then(function(res) {\r\n                if (res.success) {\r\n                    al" +
-"ert(\'Template \"\' + name + \'\" saved.\');\r\n                    loadTemplates();\r\n  " +
-"              } else {\r\n                    alert(\'Error: \' + (res.error || res." +
-"message));\r\n                }\r\n            });\r\n    }\r\n\r\n    function loadTempla" +
-"teToForm(template) {\r\n        // 1. Determinar el modo\r\n        var mode = templ" +
-"ate.mode;\r\n        if (!mode) {\r\n            // Si no hay campo \'mode\' (plantill" +
-"a antigua), intentamos inferirlo llamando a la API\r\n            inferModeAndLoad" +
-"(template);\r\n            return; // inferModeAndLoad se encargará de todo asíncr" +
-"onamente\r\n        }\r\n\r\n        // 2. Activar el radio correspondiente\r\n        v" +
-"ar radio = document.querySelector(\'input[name=\"launchMode\"][value=\"\' + mode + \'\"" +
-"]\');\r\n        if (radio) radio.checked = true;\r\n        toggleMode();\r\n\r\n       " +
-" // 3. Rellenar campos comunes\r\n        fillCommonFields(template);\r\n\r\n        /" +
-"/ 4. Modo de ejecución\r\n        if (template.executionMode) {\r\n            var e" +
-"xecRadio = document.querySelector(\'input[name=\"execMode\"][value=\"\' + template.ex" +
+"r entryJson = JSON.stringify(e).replace(/\'/g, \"&#39;\").replace(/\"/g, \"&quot;\");\r" +
+"\n                var row = \'<tr>\' +\r\n                    \'<td>\' + new Date(e.tim" +
+"estamp).toLocaleString() + \'</td>\' +\r\n                    \'<td><a href=\"\' + dash" +
+"boardBaseUrl + \'jobs/details/\' + e.jobId + \'\" target=\"_blank\">\' + e.jobId + \'</a" +
+"></td>\' +\r\n                    \'<td>\' + e.className + \'</td>\' +\r\n               " +
+"     \'<td>\' + e.methodName + \'</td>\' +\r\n                    \'<td>\' + e.queue + \'" +
+"</td>\' +\r\n                    \'<td>\' + e.mode + \'</td>\' +\r\n                    \'" +
+"<td>\' + e.engine + \'</td>\' +\r\n                    \'<td>\' +\r\n                    " +
+"\'<button class=\"btn btn-xs btn-default relaunch\" title=\"Load parameters into Lau" +
+"nch tab for editing\" data-entry=\\\'\' + entryJson + \'\\\'>Relaunch</button> \' +\r\n   " +
+"                 \'<button class=\"btn btn-xs btn-default clone-launch\" title=\"Clo" +
+"ne and launch immediately without editing\" data-entry=\\\'\' + entryJson + \'\\\'>Clon" +
+"e & Launch</button> \' +\r\n                    \'<button class=\"btn btn-xs btn-prim" +
+"ary save-as-template\" title=\"Save this job configuration as a template\" data-ent" +
+"ry=\\\'\' + entryJson + \'\\\'>Save as template</button>\' +\r\n                    \'</td" +
+">\' +\r\n                    \'</tr>\';\r\n                tbody.innerHTML += row;\r\n   " +
+"         });\r\n            // Bind events\r\n            document.querySelectorAll(" +
+"\'.relaunch\').forEach(function(btn) {\r\n                btn.addEventListener(\'clic" +
+"k\', function() {\r\n                    var entry = JSON.parse(this.getAttribute(\'" +
+"data-entry\'));\r\n                    loadEntryToForm(entry);\r\n                   " +
+" document.querySelector(\'.nav-tabs a[href=\"#launchTab\"]\').click();\r\n            " +
+"    });\r\n            });\r\n            document.querySelectorAll(\'.clone-launch\')" +
+".forEach(function(btn) {\r\n                btn.addEventListener(\'click\', function" +
+"() {\r\n                    var entry = JSON.parse(this.getAttribute(\'data-entry\')" +
+");\r\n                    if (confirm(\'Clone and launch job with same parameters?\'" +
+")) {\r\n                        var req = buildRequestFromHistory(entry);\r\n       " +
+"                 launchJob(req);\r\n                    }\r\n                });\r\n  " +
+"          });\r\n            document.querySelectorAll(\'.save-as-template\').forEac" +
+"h(function(btn) {\r\n                btn.addEventListener(\'click\', function() {\r\n " +
+"                   var entry = JSON.parse(this.getAttribute(\'data-entry\'));\r\n   " +
+"                 saveEntryAsTemplate(entry);\r\n                });\r\n            }" +
+");\r\n        });\r\n    }\r\n\r\n    function clearHistory() {\r\n        if (!confirm(\'C" +
+"lear history?\')) return;\r\n        fetch(apiBaseUrl + \'/api/history\', { method: \'" +
+"DELETE\' }).then(function() { loadHistory(); });\r\n    }\r\n\r\n    function loadEntry" +
+"ToForm(entry) {\r\n        var mode = entry.mode || (entry.rawParametersJson && !e" +
+"ntry.parameters ? \'manual\' : \'assisted\');\r\n        var radio = document.querySel" +
+"ector(\'input[name=\"launchMode\"][value=\"\' + mode + \'\"]\');\r\n        if (radio) rad" +
+"io.checked = true;\r\n        toggleMode();\r\n\r\n        $$(\'queue\').value = entry.q" +
+"ueue || \'default\';\r\n        $$(\'chkPerformContext\').checked = entry.includePerfo" +
+"rmContext || false;\r\n        $$(\'chkCancellationToken\').checked = entry.includeC" +
+"ancellationToken || false;\r\n\r\n        if (entry.executionMode) {\r\n            va" +
+"r execRadio = document.querySelector(\'input[name=\"execMode\"][value=\"\' + entry.ex" +
 "ecutionMode + \'\"]\');\r\n            if (execRadio) execRadio.checked = true;\r\n    " +
-"        toggleExecMode();\r\n            fillExecModeFields(template);\r\n        }\r" +
-"\n\r\n        // 5. Rellenar según el modo\r\n        if (mode === \'manual\') {\r\n     " +
-"       fillManualFields(template);\r\n        } else {\r\n            fillAssistedFi" +
-"eldsForTemplate(template);\r\n        }\r\n    }\r\n\r\n    function loadMethodsForTempl" +
-"ate(className, methodName, rawParametersJson) {\r\n        fetchJson(apiBaseUrl + " +
-"\'/api/methods?className=\' + encodeURIComponent(className))\r\n            .then(fu" +
-"nction(resp) {\r\n                if (!resp.success) {\r\n                    // Si " +
-"falla, pasamos a modo manual\r\n                    document.querySelector(\'input[" +
-"name=\"launchMode\"][value=\"manual\"]\').checked = true;\r\n                    toggle" +
-"Mode();\r\n                    $$(\'classNameManual\').value = className;\r\n         " +
-"           $$(\'methodNameManual\').value = methodName;\r\n                    $$(\'j" +
-"sonParams\').value = rawParametersJson || \'{}\';\r\n                    return;\r\n   " +
-"             }\r\n                // Guardar métodos\r\n                currentMetho" +
-"ds = resp.methods;\r\n                var sel = $$(\'methodSelect\');\r\n             " +
-"   sel.innerHTML = \'<option value=\"\">-- Select method --</option>\';\r\n           " +
-"     var targetIndex = -1;\r\n                currentMethods.forEach(function(m, i" +
-") {\r\n                    var params = m.parameters.map(function(p) { return p.na" +
-"me; }).join(\', \');\r\n                    var display = m.methodName + \'(\' + param" +
-"s + \')\';\r\n                    sel.innerHTML += \'<option value=\"\' + i + \'\">\' + di" +
-"splay + \'</option>\';\r\n                    if (m.methodName === methodName) targe" +
-"tIndex = i;\r\n                });\r\n                $$(\'methodSelectGroup\').style." +
-"display = \'block\';\r\n            \r\n                if (targetIndex >= 0) {\r\n     " +
-"               sel.value = targetIndex;\r\n                    selectedMethod = cu" +
-"rrentMethods[targetIndex];\r\n                    onMethodChange(); // genera los " +
-"campos dinámicos\r\n                \r\n                    // Si tenemos parámetros" +
-" guardados (rawParametersJson), rellenamos los campos\r\n                    if (r" +
-"awParametersJson) {\r\n                        try {\r\n                            " +
-"var paramsObj = JSON.parse(rawParametersJson);\r\n                            fill" +
-"AssistedFields(paramsObj);\r\n                        } catch(e) {}\r\n             " +
-"       }\r\n                } else {\r\n                    $$(\'paramsContainer\').in" +
-"nerHTML = \'\';\r\n                }\r\n            });\r\n    }\r\n\r\n    function inferMo" +
-"deAndLoad(template) {\r\n        // Si no hay className o methodName, no podemos i" +
-"nferir -> asumimos manual\r\n        if (!template.className || !template.methodNa" +
-"me) {\r\n            template.mode = \'manual\';\r\n            loadTemplateToForm(tem" +
-"plate); // reintentar con modo forzado\r\n            return;\r\n        }\r\n\r\n      " +
-"  // Intentar cargar métodos para ver si la clase existe\r\n        fetchJson(apiB" +
-"aseUrl + \'/api/methods?className=\' + encodeURIComponent(template.className))\r\n  " +
-"          .then(function(resp) {\r\n                if (resp.success) {\r\n         " +
-"           template.mode = \'assisted\';\r\n                    // Opcional: actuali" +
-"zar la plantilla en el storage con el modo correcto\r\n                    updateT" +
-"emplateModeSilently(template.name, \'assisted\');\r\n                } else {\r\n     " +
-"               template.mode = \'manual\';\r\n                    updateTemplateMode" +
-"Silently(template.name, \'manual\');\r\n                }\r\n            })\r\n         " +
-"   .catch(function() {\r\n                template.mode = \'manual\';\r\n            }" +
-")\r\n            .finally(function() {\r\n                loadTemplateToForm(templat" +
-"e); // ahora sí, con el modo definido\r\n            });\r\n    }\r\n\r\n    function up" +
-"dateTemplateModeSilently(templateName, mode) {\r\n        // Solo si tiene nombre " +
-"y existe la plantilla, la actualizamos sin molestar al usuario\r\n        if (!tem" +
-"plateName) return;\r\n        fetchJson(apiBaseUrl + \'/api/templates?name=\' + enco" +
-"deURIComponent(templateName))\r\n            .then(function(t) {\r\n                " +
-"t.mode = mode;\r\n                var formData = new FormData();\r\n                " +
-"formData.append(\'json\', JSON.stringify(t));\r\n                fetch(apiBaseUrl + " +
-"\'/api/templates\', { method: \'POST\', body: formData });\r\n            })\r\n        " +
-"    .catch(function() { /* ignorar errores */ });\r\n    }\r\n\r\n    function fillCom" +
-"monFields(template) {\r\n        $$(\'queue\').value = template.queue || \'default\';\r" +
-"\n        $$(\'chkPerformContext\').checked = template.includePerformContext || fal" +
-"se;\r\n        $$(\'chkCancellationToken\').checked = template.includeCancellationTo" +
-"ken || false;\r\n    }\r\n\r\n    function fillExecModeFields(template) {\r\n        if " +
-"(template.cronExpression) $$(\'cronExpression\').value = template.cronExpression;\r" +
-"\n        if (template.delayMinutes) $$(\'delayMinutes\').value = template.delayMin" +
-"utes;\r\n        if (template.scheduledDateTime) {\r\n            var dt = new Date(" +
-"template.scheduledDateTime);\r\n            if (!isNaN(dt)) {\r\n                var" +
-" local = new Date(dt.getTime() - dt.getTimezoneOffset() * 60000).toISOString().s" +
-"lice(0, 16);\r\n                $$(\'scheduledDateTime\').value = local;\r\n          " +
-"  }\r\n        }\r\n        if (template.parentJobId) $$(\'parentJobId\').value = temp" +
-"late.parentJobId;\r\n        if (template.recurringEngine) {\r\n            var engi" +
-"neSelect = $$(\'recurringEngine\');\r\n            if (engineSelect) engineSelect.va" +
-"lue = template.recurringEngine;\r\n        }\r\n    }\r\n\r\n    function fillManualFiel" +
-"ds(template) {\r\n        $$(\'classNameManual\').value = template.className || \'\';\r" +
-"\n        $$(\'methodNameManual\').value = template.methodName || \'\';\r\n        $$(\'" +
-"jsonParams\').value = template.rawParametersJson || \'{}\';\r\n    }\r\n\r\n    function " +
-"fillAssistedFieldsForTemplate(template) {\r\n        $$(\'classNameAssisted\').value" +
-" = template.className || \'\';\r\n        if (template.className && template.methodN" +
-"ame) {\r\n            loadMethodsForTemplate(template.className, template.methodNa" +
-"me, template.rawParametersJson);\r\n        } else {\r\n            $$(\'methodSelect" +
-"Group\').style.display = \'none\';\r\n            $$(\'paramsContainer\').innerHTML = \'" +
-"\';\r\n        }\r\n    }\r\n\r\n    function fillAssistedFields(paramsObj) {\r\n        va" +
-"r fields = document.querySelectorAll(\'#paramsContainer .param-field\');\r\n        " +
-"fields.forEach(function(field) {\r\n            var input = field.querySelector(\'[" +
-"data-param-name]\');\r\n            if (!input) return;\r\n            var name = inp" +
-"ut.getAttribute(\'data-param-name\');\r\n            if (paramsObj.hasOwnProperty(na" +
-"me)) {\r\n                var value = paramsObj[name];\r\n                if (input." +
-"type === \'checkbox\') {\r\n                    input.checked = (value === true || v" +
-"alue === \'true\');\r\n                } else if (input.type === \'number\') {\r\n      " +
-"              input.value = value;\r\n                } else if (input.type === \'d" +
-"atetime-local\') {\r\n                    if (value) {\r\n                        var" +
-" dt = new Date(value);\r\n                        if (!isNaN(dt)) {\r\n             " +
-"               input.value = new Date(dt.getTime() - dt.getTimezoneOffset() * 60" +
-"000).toISOString().slice(0, 16);\r\n                        }\r\n                   " +
-" }\r\n                } else if (input.tagName === \'TEXTAREA\') {\r\n                " +
-"    input.value = typeof value === \'string\' ? value : JSON.stringify(value);\r\n  " +
-"              } else {\r\n                    input.value = value;\r\n              " +
-"  }\r\n            }\r\n        });\r\n    }\r\n\r\n    function buildRequestFromTemplate(" +
-"template) {\r\n        return {\r\n            mode: template.mode,\r\n            cla" +
-"ssName: template.className,\r\n            methodName: template.methodName,\r\n     " +
-"       queue: template.queue,\r\n            executionMode: template.executionMode" +
-",\r\n            cronExpression: template.cronExpression,\r\n            delayMinute" +
-"s: template.delayMinutes,\r\n            scheduledDateTime: template.scheduledDate" +
-"Time,\r\n            parentJobId: template.parentJobId,\r\n            recurringEngi" +
-"ne: template.recurringEngine,\r\n            includePerformContext: template.inclu" +
-"dePerformContext,\r\n            includeCancellationToken: template.includeCancell" +
-"ationToken,\r\n            rawParametersJson: template.rawParametersJson,\r\n       " +
-"     parameters: template.parameters\r\n        };\r\n    }\r\n\r\n    function saveEntr" +
-"yAsTemplate(entry) {\r\n        var name = prompt(\'Template name:\', entry.classNam" +
-"e + \'.\' + entry.methodName);\r\n        if (!name) return;\r\n\r\n        // Construir" +
-" un objeto JobTemplate a partir de la entrada del historial\r\n        var templat" +
-"e = {\r\n            name: name,\r\n            mode: entry.mode,\r\n            class" +
-"Name: entry.className,\r\n            methodName: entry.methodName,\r\n            q" +
-"ueue: entry.queue,\r\n            executionMode: entry.executionMode,\r\n           " +
-" cronExpression: entry.cronExpression,\r\n            delayMinutes: entry.delayMin" +
-"utes,\r\n            scheduledDateTime: entry.scheduledDateTime,\r\n            pare" +
-"ntJobId: entry.parentJobId,\r\n            recurringEngine: entry.engine === \'Dyna" +
-"micJobs\' ? \'DynamicJobs\' : (entry.engine === \'Direct\' ? null : entry.engine),\r\n " +
-"           includePerformContext: entry.includePerformContext,\r\n            incl" +
-"udeCancellationToken: entry.includeCancellationToken,\r\n            rawParameters" +
-"Json: entry.parametersJson,\r\n            parameters: null\r\n        };\r\n\r\n       " +
-" var formData = new FormData();\r\n        formData.append(\'json\', JSON.stringify(" +
-"template));\r\n\r\n        fetch(apiBaseUrl + \'/api/templates\', { method: \'POST\', bo" +
-"dy: formData })\r\n            .then(function(r) { return r.json(); })\r\n          " +
-"  .then(function(res) {\r\n                if (res.success) {\r\n                   " +
-" alert(\'Template \"\' + name + \'\" saved.\');\r\n                    loadTemplates(); " +
-"// actualizar la lista de templates\r\n                } else {\r\n                 " +
-"   alert(\'Error: \' + (res.error || res.message));\r\n                }\r\n          " +
-"  });\r\n    }\r\n\r\n    function importTemplate() {\r\n    var fileInput = $$(\'importF" +
-"ile\');\r\n    if (!fileInput.files[0]) { alert(\'Select a file.\'); return; }\r\n    v" +
-"ar reader = new FileReader();\r\n    reader.onload = function(e) {\r\n        var te" +
-"mplate = JSON.parse(e.target.result);\r\n        var formData = new FormData();\r\n " +
-"       formData.append(\'json\', JSON.stringify(template));\r\n        fetch(apiBase" +
-"Url + \'/api/templates\', { method: \'POST\', body: formData })\r\n            .then(f" +
-"unction(r) { return r.json(); })\r\n            .then(function(res) {\r\n           " +
-"     if (res.conflict) {\r\n                    if (confirm(res.message + \' Overwr" +
-"ite?\')) {\r\n                        fetch(apiBaseUrl + \'/api/templates\', { method" +
-": \'POST\', body: formData })\r\n                            .then(function() { load" +
-"Templates(); });\r\n                    }\r\n                } else {\r\n             " +
-"       alert(res.message || \'Imported.\');\r\n                    loadTemplates();\r" +
-"\n                }\r\n            });\r\n    };\r\n    reader.readAsText(fileInput.fil" +
-"es[0]);\r\n}\r\n</script>");
+"        toggleExecMode();\r\n        }\r\n\r\n        if (entry.cronExpression) $$(\'cr" +
+"onExpression\').value = entry.cronExpression;\r\n        if (entry.delayMinutes) $$" +
+"(\'delayMinutes\').value = entry.delayMinutes;\r\n        if (entry.scheduledDateTim" +
+"e) {\r\n            var dt = new Date(entry.scheduledDateTime);\r\n            if (!" +
+"isNaN(dt)) {\r\n                var local = new Date(dt.getTime() - dt.getTimezone" +
+"Offset() * 60000).toISOString().slice(0, 16);\r\n                $$(\'scheduledDate" +
+"Time\').value = local;\r\n            }\r\n        }\r\n        if (entry.parentJobId) " +
+"$$(\'parentJobId\').value = entry.parentJobId;\r\n        if (entry.recurringEngine)" +
+" {\r\n            var engineSelect = $$(\'recurringEngine\');\r\n            if (engin" +
+"eSelect) engineSelect.value = entry.recurringEngine;\r\n        }\r\n\r\n        if (m" +
+"ode === \'manual\') {\r\n            $$(\'classNameManual\').value = entry.className |" +
+"| \'\';\r\n            $$(\'methodNameManual\').value = entry.methodName || \'\';\r\n     " +
+"       $$(\'jsonParams\').value = entry.parametersJson || \'{}\';\r\n        } else {\r" +
+"\n            $$(\'classNameAssisted\').value = entry.className || \'\';\r\n           " +
+" if (entry.className && entry.methodName) {\r\n                loadMethodsForTempl" +
+"ate(entry.className, entry.methodName, entry.parametersJson);\r\n            } els" +
+"e {\r\n                $$(\'methodSelectGroup\').style.display = \'none\';\r\n          " +
+"      $$(\'paramsContainer\').innerHTML = \'\';\r\n            }\r\n        }\r\n    }\r\n\r\n" +
+"    function buildRequestFromHistory(entry) {\r\n        return {\r\n            mod" +
+"e: entry.mode,\r\n            className: entry.className,\r\n            methodName:" +
+" entry.methodName,\r\n            queue: entry.queue,\r\n            executionMode: " +
+"entry.executionMode,\r\n            cronExpression: entry.cronExpression,\r\n       " +
+"     delayMinutes: entry.delayMinutes,\r\n            scheduledDateTime: entry.sch" +
+"eduledDateTime,\r\n            parentJobId: entry.parentJobId,\r\n            recurr" +
+"ingEngine: entry.engine === \'DynamicJobs\' ? \'DynamicJobs\' : \'BuiltIn\',\r\n        " +
+"    includePerformContext: entry.includePerformContext,\r\n            includeCanc" +
+"ellationToken: entry.includeCancellationToken,\r\n            rawParametersJson: e" +
+"ntry.parametersJson,\r\n            parameters: null\r\n        };\r\n    }\r\n\r\n    // " +
+"====== TEMPLATES ======\r\n    function loadTemplates() {\r\n        fetchJson(apiBa" +
+"seUrl + \'/api/templates\').then(function(templates) {\r\n            var tbody = $$" +
+"(\'templatesTable\').querySelector(\'tbody\');\r\n            tbody.innerHTML = \'\';\r\n " +
+"           templates.forEach(function(t) {\r\n                var row = \'<tr>\' +\r\n" +
+"                    \'<td>\' + t.name + \'</td>\' +\r\n                    \'<td>\' + t." +
+"className + \'</td>\' +\r\n                    \'<td>\' + t.methodName + \'</td>\' +\r\n  " +
+"                  \'<td>\' + t.queue + \'</td>\' +\r\n                    \'<td>\' + t.e" +
+"xecutionMode + \'</td>\' +\r\n                    \'<td>\' +\r\n                    \'<bu" +
+"tton class=\"btn btn-xs btn-default load-template\" data-name=\"\' + t.name + \'\">Loa" +
+"d</button> \' +\r\n                    \'<button class=\"btn btn-xs btn-default clone" +
+"-template\" data-name=\"\' + t.name + \'\">Clone & Launch</button> \' +\r\n             " +
+"       \'<button class=\"btn btn-xs btn-danger delete-template\" data-name=\"\' + t.n" +
+"ame + \'\">Delete</button> \' +\r\n                    \'<button class=\"btn btn-xs btn" +
+"-info export-template\" data-name=\"\' + t.name + \'\">Export</button> \' +\r\n         " +
+"           \'<button class=\"btn btn-xs btn-default preview-template\" data-name=\"\'" +
+" + t.name + \'\">Preview</button>\' +\r\n                    \'</td>\' +\r\n             " +
+"       \'</tr>\';\r\n                tbody.innerHTML += row;\r\n            });\r\n     " +
+"       bindTemplateEvents();\r\n        });\r\n    }\r\n\r\n    function bindTemplateEve" +
+"nts() {\r\n        document.querySelectorAll(\'.load-template\').forEach(function(bt" +
+"n) {\r\n            btn.addEventListener(\'click\', function() {\r\n                va" +
+"r name = this.getAttribute(\'data-name\');\r\n                fetchJson(apiBaseUrl +" +
+" \'/api/templates?name=\' + encodeURIComponent(name))\r\n                    .then(f" +
+"unction(t) { loadTemplateToForm(t); document.querySelector(\'.nav-tabs a[href=\"#l" +
+"aunchTab\"]\').click(); });\r\n            });\r\n        });\r\n        document.queryS" +
+"electorAll(\'.clone-template\').forEach(function(btn) {\r\n            btn.addEventL" +
+"istener(\'click\', function() {\r\n                var name = this.getAttribute(\'dat" +
+"a-name\');\r\n                fetchJson(apiBaseUrl + \'/api/templates?name=\' + encod" +
+"eURIComponent(name))\r\n                    .then(function(t) {\r\n                 " +
+"       var req = buildRequestFromTemplate(t);\r\n                        if (confi" +
+"rm(\'Clone and launch?\')) launchJob(req);\r\n                    });\r\n            }" +
+");\r\n        });\r\n        document.querySelectorAll(\'.delete-template\').forEach(f" +
+"unction(btn) {\r\n            btn.addEventListener(\'click\', function() {\r\n        " +
+"        var name = this.getAttribute(\'data-name\');\r\n                if (confirm(" +
+"\'Delete template \' + name + \'?\')) {\r\n                    fetch(apiBaseUrl + \'/ap" +
+"i/templates?name=\' + encodeURIComponent(name), { method: \'DELETE\' })\r\n          " +
+"              .then(function() { loadTemplates(); });\r\n                }\r\n      " +
+"      });\r\n        });\r\n        document.querySelectorAll(\'.export-template\').fo" +
+"rEach(function(btn) {\r\n            btn.addEventListener(\'click\', function() {\r\n " +
+"               var name = this.getAttribute(\'data-name\');\r\n                var d" +
+"ownloadUrl = apiBaseUrl + \'/api/export-import?action=export&templateName=\' + enc" +
+"odeURIComponent(name);\r\n                fetch(downloadUrl)\r\n                    " +
+".then(function(response) { return response.blob(); })\r\n                    .then" +
+"(function(blob) {\r\n                        var url = URL.createObjectURL(blob);\r" +
+"\n                        var a = document.createElement(\'a\');\r\n                 " +
+"       a.href = url;\r\n                        a.download = name + \'.json\';\r\n    " +
+"                    document.body.appendChild(a);\r\n                        a.cli" +
+"ck();\r\n                        document.body.removeChild(a);\r\n                  " +
+"      URL.revokeObjectURL(url);\r\n                    })\r\n                    .ca" +
+"tch(function(err) { alert(\'Error downloading template: \' + err.message); });\r\n  " +
+"          });\r\n        });\r\n        document.querySelectorAll(\'.preview-template" +
+"\').forEach(function(btn) {\r\n            btn.addEventListener(\'click\', function()" +
+" {\r\n                var name = this.getAttribute(\'data-name\');\r\n                " +
+"fetchJson(apiBaseUrl + \'/api/templates?name=\' + encodeURIComponent(name))\r\n     " +
+"               .then(function(template) {\r\n                        $$(\'previewTe" +
+"mplateName\').textContent = template.name;\r\n                        $$(\'prevClass" +
+"\').textContent = template.className || \'\';\r\n                        $$(\'prevMeth" +
+"od\').textContent = template.methodName || \'\';\r\n                        $$(\'prevQ" +
+"ueue\').textContent = template.queue || \'default\';\r\n                        $$(\'p" +
+"revExecMode\').textContent = template.executionMode || \'\';\r\n                     " +
+"   $$(\'prevCron\').textContent = template.cronExpression || \'N/A\';\r\n             " +
+"           $$(\'prevEngine\').textContent = template.recurringEngine || (template." +
+"engine || \'N/A\');\r\n                        $$(\'prevMode\').textContent = template" +
+".mode || \'N/A\';\r\n                        $$(\'prevPerformContext\').textContent = " +
+"template.includePerformContext ? \'Yes\' : \'No\';\r\n                        $$(\'prev" +
+"CancellationToken\').textContent = template.includeCancellationToken ? \'Yes\' : \'N" +
+"o\';\r\n\r\n                        // Parámetros en JSON formateado\r\n               " +
+"         var rawParams = template.rawParametersJson || \'{}\';\r\n                  " +
+"      try {\r\n                            var parsed = JSON.parse(rawParams);\r\n  " +
+"                          $$(\'prevParams\').textContent = JSON.stringify(parsed, " +
+"null, 2);\r\n                        } catch(e) {\r\n                            $$(" +
+"\'prevParams\').textContent = rawParams;\r\n                        }\r\n             " +
+"           $(\'#templatePreviewModal\').modal(\'show\');\r\n                    });\r\n " +
+"           });\r\n        });\r\n    }\r\n\r\n    function saveCurrentAsTemplate() {\r\n  " +
+"      var req = buildRequest();\r\n        if (!req.className || !req.methodName) " +
+"{\r\n            alert(\'Please configure a class and method before saving as templ" +
+"ate.\');\r\n            return;\r\n        }\r\n        var name = prompt(\'Template nam" +
+"e:\', req.className + \'.\' + req.methodName);\r\n        if (!name) return;\r\n\r\n     " +
+"   var template = {\r\n            name: name,\r\n            mode: req.mode,\r\n     " +
+"       className: req.className,\r\n            methodName: req.methodName,\r\n     " +
+"       queue: req.queue,\r\n            executionMode: req.executionMode,\r\n       " +
+"     cronExpression: req.cronExpression,\r\n            delayMinutes: req.delayMin" +
+"utes,\r\n            scheduledDateTime: req.scheduledDateTime,\r\n            parent" +
+"JobId: req.parentJobId,\r\n            recurringEngine: req.recurringEngine,\r\n    " +
+"        includePerformContext: req.includePerformContext,\r\n            includeCa" +
+"ncellationToken: req.includeCancellationToken,\r\n            rawParametersJson: r" +
+"eq.rawParametersJson,\r\n            parameters: req.parameters\r\n        };\r\n\r\n   " +
+"     var formData = new FormData();\r\n        formData.append(\'json\', JSON.string" +
+"ify(template));\r\n        fetch(apiBaseUrl + \'/api/templates\', { method: \'POST\', " +
+"body: formData })\r\n            .then(function(r) { return r.json(); })\r\n        " +
+"    .then(function(res) {\r\n                if (res.success) {\r\n                 " +
+"   alert(\'Template \"\' + name + \'\" saved.\');\r\n                    loadTemplates()" +
+";\r\n                } else {\r\n                    alert(\'Error: \' + (res.error ||" +
+" res.message));\r\n                }\r\n            });\r\n    }\r\n\r\n    function loadT" +
+"emplateToForm(template) {\r\n        var mode = template.mode;\r\n        if (!mode)" +
+" {\r\n            inferModeAndLoad(template);\r\n            return;\r\n        }\r\n   " +
+"     var radio = document.querySelector(\'input[name=\"launchMode\"][value=\"\' + mod" +
+"e + \'\"]\');\r\n        if (radio) radio.checked = true;\r\n        toggleMode();\r\n   " +
+"     fillCommonFields(template);\r\n        if (template.executionMode) {\r\n       " +
+"     var execRadio = document.querySelector(\'input[name=\"execMode\"][value=\"\' + t" +
+"emplate.executionMode + \'\"]\');\r\n            if (execRadio) execRadio.checked = t" +
+"rue;\r\n            toggleExecMode();\r\n            fillExecModeFields(template);\r\n" +
+"        }\r\n        if (mode === \'manual\') {\r\n            fillManualFields(templa" +
+"te);\r\n        } else {\r\n            fillAssistedFieldsForTemplate(template);\r\n  " +
+"      }\r\n    }\r\n\r\n    function loadMethodsForTemplate(className, methodName, raw" +
+"ParametersJson) {\r\n        fetchJson(apiBaseUrl + \'/api/methods?className=\' + en" +
+"codeURIComponent(className))\r\n            .then(function(resp) {\r\n              " +
+"  if (!resp.success) {\r\n                    document.querySelector(\'input[name=\"" +
+"launchMode\"][value=\"manual\"]\').checked = true;\r\n                    toggleMode()" +
+";\r\n                    $$(\'classNameManual\').value = className;\r\n               " +
+"     $$(\'methodNameManual\').value = methodName;\r\n                    $$(\'jsonPar" +
+"ams\').value = rawParametersJson || \'{}\';\r\n                    return;\r\n         " +
+"       }\r\n                currentMethods = resp.methods;\r\n                var se" +
+"l = $$(\'methodSelect\');\r\n                sel.innerHTML = \'<option value=\"\">-- Se" +
+"lect method --</option>\';\r\n                var targetIndex = -1;\r\n              " +
+"  currentMethods.forEach(function(m, i) {\r\n                    var params = m.pa" +
+"rameters.map(function(p) { return p.name; }).join(\', \');\r\n                    va" +
+"r display = m.methodName + \'(\' + params + \')\';\r\n                    sel.innerHTM" +
+"L += \'<option value=\"\' + i + \'\">\' + display + \'</option>\';\r\n                    " +
+"if (m.methodName === methodName) targetIndex = i;\r\n                });\r\n        " +
+"        $$(\'methodSelectGroup\').style.display = \'block\';\r\n                if (ta" +
+"rgetIndex >= 0) {\r\n                    sel.value = targetIndex;\r\n               " +
+"     selectedMethod = currentMethods[targetIndex];\r\n                    onMethod" +
+"Change();\r\n                    if (rawParametersJson) {\r\n                       " +
+" try {\r\n                            var paramsObj = JSON.parse(rawParametersJson" +
+");\r\n                            fillAssistedFields(paramsObj);\r\n                " +
+"        } catch(e) {}\r\n                    }\r\n                } else {\r\n        " +
+"            $$(\'paramsContainer\').innerHTML = \'\';\r\n                }\r\n          " +
+"  });\r\n    }\r\n\r\n    function inferModeAndLoad(template) {\r\n        if (!template" +
+".className || !template.methodName) {\r\n            template.mode = \'manual\';\r\n  " +
+"          loadTemplateToForm(template);\r\n            return;\r\n        }\r\n       " +
+" fetchJson(apiBaseUrl + \'/api/methods?className=\' + encodeURIComponent(template." +
+"className))\r\n            .then(function(resp) {\r\n                if (resp.succes" +
+"s) {\r\n                    template.mode = \'assisted\';\r\n                    updat" +
+"eTemplateModeSilently(template.name, \'assisted\');\r\n                } else {\r\n   " +
+"                 template.mode = \'manual\';\r\n                    updateTemplateMo" +
+"deSilently(template.name, \'manual\');\r\n                }\r\n            })\r\n       " +
+"     .catch(function() {\r\n                template.mode = \'manual\';\r\n           " +
+" })\r\n            .finally(function() {\r\n                loadTemplateToForm(templ" +
+"ate);\r\n            });\r\n    }\r\n\r\n    function updateTemplateModeSilently(templat" +
+"eName, mode) {\r\n        if (!templateName) return;\r\n        fetchJson(apiBaseUrl" +
+" + \'/api/templates?name=\' + encodeURIComponent(templateName))\r\n            .then" +
+"(function(t) {\r\n                t.mode = mode;\r\n                var formData = n" +
+"ew FormData();\r\n                formData.append(\'json\', JSON.stringify(t));\r\n   " +
+"             fetch(apiBaseUrl + \'/api/templates\', { method: \'POST\', body: formDa" +
+"ta });\r\n            })\r\n            .catch(function() {});\r\n    }\r\n\r\n    functio" +
+"n fillCommonFields(template) {\r\n        $$(\'queue\').value = template.queue || \'d" +
+"efault\';\r\n        $$(\'chkPerformContext\').checked = template.includePerformConte" +
+"xt || false;\r\n        $$(\'chkCancellationToken\').checked = template.includeCance" +
+"llationToken || false;\r\n    }\r\n\r\n    function fillExecModeFields(template) {\r\n  " +
+"      if (template.cronExpression) $$(\'cronExpression\').value = template.cronExp" +
+"ression;\r\n        if (template.delayMinutes) $$(\'delayMinutes\').value = template" +
+".delayMinutes;\r\n        if (template.scheduledDateTime) {\r\n            var dt = " +
+"new Date(template.scheduledDateTime);\r\n            if (!isNaN(dt)) {\r\n          " +
+"      var local = new Date(dt.getTime() - dt.getTimezoneOffset() * 60000).toISOS" +
+"tring().slice(0, 16);\r\n                $$(\'scheduledDateTime\').value = local;\r\n " +
+"           }\r\n        }\r\n        if (template.parentJobId) $$(\'parentJobId\').val" +
+"ue = template.parentJobId;\r\n        if (template.recurringEngine) {\r\n           " +
+" var engineSelect = $$(\'recurringEngine\');\r\n            if (engineSelect) engine" +
+"Select.value = template.recurringEngine;\r\n        }\r\n    }\r\n\r\n    function fillM" +
+"anualFields(template) {\r\n        $$(\'classNameManual\').value = template.classNam" +
+"e || \'\';\r\n        $$(\'methodNameManual\').value = template.methodName || \'\';\r\n   " +
+"     $$(\'jsonParams\').value = template.rawParametersJson || \'{}\';\r\n    }\r\n\r\n    " +
+"function fillAssistedFieldsForTemplate(template) {\r\n        $$(\'classNameAssiste" +
+"d\').value = template.className || \'\';\r\n        if (template.className && templat" +
+"e.methodName) {\r\n            loadMethodsForTemplate(template.className, template" +
+".methodName, template.rawParametersJson);\r\n        } else {\r\n            $$(\'met" +
+"hodSelectGroup\').style.display = \'none\';\r\n            $$(\'paramsContainer\').inne" +
+"rHTML = \'\';\r\n        }\r\n    }\r\n\r\n    function fillAssistedFields(paramsObj) {\r\n " +
+"       // Primero procesar listas y diccionarios\r\n        document.querySelector" +
+"All(\'#paramsContainer .list-container\').forEach(function(container) {\r\n         " +
+"   var name = container.getAttribute(\'data-param-name\');\r\n            var arr = " +
+"paramsObj[name];\r\n            if (arr && Array.isArray(arr)) {\r\n                " +
+"var elementType = container.getAttribute(\'data-element-type\');\r\n                " +
+"var itemsDiv = container.querySelector(\'.list-items\');\r\n                itemsDiv" +
+".innerHTML = \'\';\r\n                arr.forEach(function(val) {\r\n                 " +
+"   var html = createListItem(elementType);\r\n                    itemsDiv.insertA" +
+"djacentHTML(\'beforeend\', html);\r\n                    var lastInput = itemsDiv.la" +
+"stElementChild.querySelector(\'input\');\r\n                    if (lastInput) lastI" +
+"nput.value = val != null ? val : \'\';\r\n                });\r\n            }\r\n      " +
+"  });\r\n        document.querySelectorAll(\'#paramsContainer .dict-container\').for" +
+"Each(function(container) {\r\n            var name = container.getAttribute(\'data-" +
+"param-name\');\r\n            var obj = paramsObj[name];\r\n            if (obj && ty" +
+"peof obj === \'object\' && !Array.isArray(obj)) {\r\n                var keyType = c" +
+"ontainer.getAttribute(\'data-key-type\');\r\n                var valueType = contain" +
+"er.getAttribute(\'data-value-type\');\r\n                var tbody = container.query" +
+"Selector(\'.dict-items tbody\');\r\n                tbody.innerHTML = \'\';\r\n         " +
+"       Object.keys(obj).forEach(function(key) {\r\n                    var html = " +
+"createDictRow(keyType, valueType);\r\n                    tbody.insertAdjacentHTML" +
+"(\'beforeend\', html);\r\n                    var row = tbody.lastElementChild;\r\n   " +
+"                 row.querySelector(\'.dict-key\').value = key;\r\n                  " +
+"  row.querySelector(\'.dict-value\').value = obj[key] != null ? obj[key] : \'\';\r\n  " +
+"              });\r\n            }\r\n        });\r\n        // Luego los campos norma" +
+"les (inputs, selects, textareas)\r\n        var fields = document.querySelectorAll" +
+"(\'#paramsContainer .param-field\');\r\n        fields.forEach(function(field) {\r\n  " +
+"          var input = field.querySelector(\'[data-param-name]:not(.list-container" +
+"):not(.dict-container)\');\r\n            if (!input) return;\r\n            var name" +
+" = input.getAttribute(\'data-param-name\');\r\n            if (paramsObj.hasOwnPrope" +
+"rty(name)) {\r\n                var value = paramsObj[name];\r\n                if (" +
+"input.type === \'checkbox\') {\r\n                    input.checked = (value === tru" +
+"e || value === \'true\');\r\n                } else if (input.type === \'number\') {\r\n" +
+"                    input.value = value != null ? value : \'\';\r\n                }" +
+" else if (input.type === \'datetime-local\') {\r\n                    if (value) {\r\n" +
+"                        var dt = new Date(value);\r\n                        if (!" +
+"isNaN(dt)) {\r\n                            input.value = new Date(dt.getTime() - " +
+"dt.getTimezoneOffset() * 60000).toISOString().slice(0, 16);\r\n                   " +
+"     }\r\n                    }\r\n                } else if (input.tagName === \'TEX" +
+"TAREA\') {\r\n                    input.value = typeof value === \'string\' ? value :" +
+" JSON.stringify(value);\r\n                } else if (input.tagName === \'SELECT\') " +
+"{\r\n                    input.value = value != null ? value : \'\';\r\n              " +
+"  } else {\r\n                    input.value = value != null ? value : \'\';\r\n     " +
+"           }\r\n            }\r\n        });\r\n    }\r\n\r\n    function buildRequestFrom" +
+"Template(template) {\r\n        return {\r\n            mode: template.mode,\r\n      " +
+"      className: template.className,\r\n            methodName: template.methodNam" +
+"e,\r\n            queue: template.queue,\r\n            executionMode: template.exec" +
+"utionMode,\r\n            cronExpression: template.cronExpression,\r\n            de" +
+"layMinutes: template.delayMinutes,\r\n            scheduledDateTime: template.sche" +
+"duledDateTime,\r\n            parentJobId: template.parentJobId,\r\n            recu" +
+"rringEngine: template.recurringEngine,\r\n            includePerformContext: templ" +
+"ate.includePerformContext,\r\n            includeCancellationToken: template.inclu" +
+"deCancellationToken,\r\n            rawParametersJson: template.rawParametersJson," +
+"\r\n            parameters: template.parameters\r\n        };\r\n    }\r\n\r\n    function" +
+" saveEntryAsTemplate(entry) {\r\n        var name = prompt(\'Template name:\', entry" +
+".className + \'.\' + entry.methodName);\r\n        if (!name) return;\r\n        var t" +
+"emplate = {\r\n            name: name,\r\n            mode: entry.mode,\r\n           " +
+" className: entry.className,\r\n            methodName: entry.methodName,\r\n       " +
+"     queue: entry.queue,\r\n            executionMode: entry.executionMode,\r\n     " +
+"       cronExpression: entry.cronExpression,\r\n            delayMinutes: entry.de" +
+"layMinutes,\r\n            scheduledDateTime: entry.scheduledDateTime,\r\n          " +
+"  parentJobId: entry.parentJobId,\r\n            recurringEngine: entry.engine ===" +
+" \'DynamicJobs\' ? \'DynamicJobs\' : (entry.engine === \'Direct\' ? null : entry.engin" +
+"e),\r\n            includePerformContext: entry.includePerformContext,\r\n          " +
+"  includeCancellationToken: entry.includeCancellationToken,\r\n            rawPara" +
+"metersJson: entry.parametersJson,\r\n            parameters: null\r\n        };\r\n   " +
+"     var formData = new FormData();\r\n        formData.append(\'json\', JSON.string" +
+"ify(template));\r\n        fetch(apiBaseUrl + \'/api/templates\', { method: \'POST\', " +
+"body: formData })\r\n            .then(function(r) { return r.json(); })\r\n        " +
+"    .then(function(res) {\r\n                if (res.success) {\r\n                 " +
+"   alert(\'Template \"\' + name + \'\" saved.\');\r\n                    loadTemplates()" +
+";\r\n                } else {\r\n                    alert(\'Error: \' + (res.error ||" +
+" res.message));\r\n                }\r\n            });\r\n    }\r\n\r\n    function impor" +
+"tTemplate() {\r\n        var fileInput = $$(\'importFile\');\r\n        if (!fileInput" +
+".files[0]) { alert(\'Select a file.\'); return; }\r\n        var reader = new FileRe" +
+"ader();\r\n        reader.onload = function(e) {\r\n            var template = JSON." +
+"parse(e.target.result);\r\n            var formData = new FormData();\r\n           " +
+" formData.append(\'json\', JSON.stringify(template));\r\n            fetch(apiBaseUr" +
+"l + \'/api/templates\', { method: \'POST\', body: formData })\r\n                .then" +
+"(function(r) { return r.json(); })\r\n                .then(function(res) {\r\n     " +
+"               if (res.conflict) {\r\n                        if (confirm(res.mess" +
+"age + \' Overwrite?\')) {\r\n                            fetch(apiBaseUrl + \'/api/te" +
+"mplates\', { method: \'POST\', body: formData })\r\n                                ." +
+"then(function() { loadTemplates(); });\r\n                        }\r\n             " +
+"       } else {\r\n                        alert(res.message || \'Imported.\');\r\n   " +
+"                     loadTemplates();\r\n                    }\r\n                })" +
+";\r\n        };\r\n        reader.readAsText(fileInput.files[0]);\r\n    }\r\n</script>");
 
 
         }

@@ -24,6 +24,18 @@
     .help-block .btn {
         margin-right: 5px;
     }
+    .list-item, .dict-row {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 3px;
+    }
+    .list-item input, .dict-row input {
+        flex: 1;
+    }
+    .list-item button, .dict-row button {
+        flex-shrink: 0;
+    }
 </style>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -239,8 +251,11 @@
                             <dt>Method</dt><dd id="prevMethod"></dd>
                             <dt>Queue</dt><dd id="prevQueue"></dd>
                             <dt>Execution Mode</dt><dd id="prevExecMode"></dd>
+                            <dt>Cron Expression</dt><dd id="prevCron"></dd>
                             <dt>Recurring Engine</dt><dd id="prevEngine"></dd>
                             <dt>Mode</dt><dd id="prevMode"></dd>
+                            <dt>Perform Context</dt><dd id="prevPerformContext"></dd>
+                            <dt>Cancellation Token</dt><dd id="prevCancellationToken"></dd>
                             <dt>Params (raw JSON)</dt>
                             <dd><pre id="prevParams" style="max-height:300px; overflow-y:auto; background:#f5f5f5; padding:10px;"></pre></dd>
                         </dl>
@@ -334,20 +349,11 @@
             if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); submitJob(); }
         });
 
-        // Delegación para guardar como plantilla desde history
-        document.querySelectorAll('.save-as-template').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                var entry = JSON.parse(this.getAttribute('data-entry').replace(/&quot;/g, '"'));
-                saveEntryAsTemplate(entry);
-            });
-        });
-
         $$('btnSaveAsTemplate').addEventListener('click', saveCurrentAsTemplate);
 
         // Mostrar/esconder campos de ejecución
         toggleExecMode();
         toggleMode();
-
     }
 
     // ====== MODO ASISTIDO / MANUAL ======
@@ -360,7 +366,7 @@
             $$('assistedFields').style.display = 'none';
             $$('manualFields').style.display = 'block';
         }
-        toggleExecMode(); // para mostrar/ocultar motor recurrente según modo
+        toggleExecMode();
     }
 
     // ====== MODO DE EJECUCIÓN ======
@@ -370,8 +376,6 @@
         $$('scheduleDateTimeFields').style.display = (mode === 'ScheduleDateTime') ? 'block' : 'none';
         $$('recurringFields').style.display = (mode === 'Recurring') ? 'block' : 'none';
         $$('continuationFields').style.display = (mode === 'Continuation') ? 'block' : 'none';
-
-        // Motor recurrente visible solo si estamos en Recurring y en modo manual
         adjustRecurringEngineDisplay();
     }
 
@@ -393,7 +397,6 @@
         }
     }
 
-    // Ajusta cuando se cambie de ejecución o modo
     document.querySelectorAll('input[name="execMode"]').forEach(r => r.addEventListener('change', adjustRecurringEngineDisplay));
     document.querySelectorAll('input[name="launchMode"]').forEach(r => r.addEventListener('change', adjustRecurringEngineDisplay));
 
@@ -439,14 +442,127 @@
             html += '<label>' + p.name + ' (' + p.type + ')</label>';
         
             if (p.isComplex) {
-                // Editor JSON para tipos complejos
-                html += '<textarea class="form-control param-complex" data-param-name="' + p.name + '" rows="3" placeholder=\'Insert JSON for ' + p.type + '\'></textarea>';
+                if (isListType(p.type)) {
+                    html += generateListInput(p);
+                } else if (isDictType(p.type)) {
+                    html += generateDictionaryInput(p);
+                } else {
+                    html += '<textarea class="form-control param-complex" data-param-name="' + p.name + '" rows="3" placeholder=\'Insert JSON for ' + p.type + '\'></textarea>';
+                }
             } else {
                 html += generateInputForSimpleType(p);
             }
             html += '</div>';
         });
         $$('paramsContainer').innerHTML = html;
+
+        // Bindear eventos para listas y diccionarios
+        document.querySelectorAll('.add-list-item').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                var container = this.closest('.list-container');
+                var elementType = container.getAttribute('data-element-type');
+                var itemsDiv = container.querySelector('.list-items');
+                var newItem = createListItem(elementType);
+                itemsDiv.insertAdjacentHTML('beforeend', newItem);
+                bindRemoveItem(itemsDiv);
+            });
+        });
+        document.querySelectorAll('.add-dict-item').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                var container = this.closest('.dict-container');
+                var keyType = container.getAttribute('data-key-type');
+                var valueType = container.getAttribute('data-value-type');
+                var tbody = container.querySelector('.dict-items tbody');
+                var newRow = createDictRow(keyType, valueType);
+                tbody.insertAdjacentHTML('beforeend', newRow);
+                bindRemoveDictRow(tbody);
+            });
+        });
+        function bindRemoveItem(container) {
+            container.querySelectorAll('.remove-list-item').forEach(function(btn) {
+                btn.onclick = function() { this.closest('.list-item').remove(); };
+            });
+        }
+        function bindRemoveDictRow(tbody) {
+            tbody.querySelectorAll('.remove-dict-row').forEach(function(btn) {
+                btn.onclick = function() { this.closest('.dict-row').remove(); };
+            });
+        }
+        // Inicializar remove en items ya existentes (si se regeneran los campos)
+        document.querySelectorAll('.list-items').forEach(bindRemoveItem);
+        document.querySelectorAll('.dict-items tbody').forEach(bindRemoveDictRow);
+    }
+
+    // Generadores de campos para listas y diccionarios
+    function generateListInput(paramInfo) {
+        var name = paramInfo.name;
+        var elementType = extractGenericArgument(paramInfo.type, 0) || 'string';
+        var html = '<div class="list-container" data-param-name="' + name + '" data-element-type="' + elementType + '">';
+        html += '<label>' + name + ' (List of ' + elementType + ')</label>';
+        html += '<div class="list-items"></div>';
+        html += '<button type="button" class="btn btn-xs btn-default add-list-item">+ Add item</button>';
+        html += '</div>';
+        return html;
+    }
+
+    function generateDictionaryInput(paramInfo) {
+        var name = paramInfo.name;
+        var keyType = extractGenericArgument(paramInfo.type, 0) || 'string';
+        var valueType = extractGenericArgument(paramInfo.type, 1) || 'string';
+        var html = '<div class="dict-container" data-param-name="' + name + '" data-key-type="' + keyType + '" data-value-type="' + valueType + '">';
+        html += '<label>' + name + ' (Dictionary<' + keyType + ', ' + valueType + '>)</label>';
+        html += '<table class="table table-condensed dict-items"><tbody></tbody></table>';
+        html += '<button type="button" class="btn btn-xs btn-default add-dict-item">+ Add entry</button>';
+        html += '</div>';
+        return html;
+    }
+
+    function createListItem(elementType) {
+        var inputType = getInputTypeForSimple(elementType);
+        return '<div class="list-item">' +
+            '<input type="' + inputType + '" class="form-control input-sm" value="" />' +
+            '<button type="button" class="btn btn-xs btn-danger remove-list-item">×</button>' +
+            '</div>';
+    }
+
+    function createDictRow(keyType, valueType) {
+        var keyInputType = getInputTypeForSimple(keyType);
+        var valueInputType = getInputTypeForSimple(valueType);
+        return '<tr class="dict-row">' +
+            '<td><input type="' + keyInputType + '" class="form-control input-sm dict-key" placeholder="key" /></td>' +
+            '<td><input type="' + valueInputType + '" class="form-control input-sm dict-value" placeholder="value" /></td>' +
+            '<td><button type="button" class="btn btn-xs btn-danger remove-dict-row">×</button></td>' +
+            '</tr>';
+    }
+
+    function getInputTypeForSimple(typeName) {
+        var t = typeName.toLowerCase();
+        if (t.includes('int') || t.includes('long') || t.includes('short') || t.includes('byte') ||
+            t.includes('double') || t.includes('float') || t.includes('decimal')) return 'number';
+        if (t.includes('datetime')) return 'datetime-local';
+        if (t.includes('bool')) return 'checkbox';
+        return 'text';
+    }
+
+    function isListType(type) {
+        return type.startsWith('System.Collections.Generic.List') ||
+               type.startsWith('System.Collections.Generic.IList') ||
+               type.endsWith('[]');
+    }
+
+    function isDictType(type) {
+        return type.startsWith('System.Collections.Generic.Dictionary');
+    }
+
+    function extractGenericArgument(typeName, index) {
+        var match = typeName.match(/<(.+)>/);
+        if (match) {
+            var args = match[1].split(',');
+            return args[index] ? args[index].trim() : null;
+        }
+        return null;
     }
 
     function generateInputForSimpleType(paramInfo) {
@@ -457,43 +573,35 @@
     
         var html = '';
     
-        // Números enteros
         if (underlyingType.includes('int') || underlyingType.includes('long') || 
             underlyingType.includes('short') || underlyingType.includes('byte')) {
             html = '<input type="number" class="form-control" data-param-name="' + name + '" step="1" value="' + (isNullable ? '' : '0') + '" />';
         }
-        // Números flotantes
         else if (underlyingType.includes('double') || underlyingType.includes('float') || 
                  underlyingType.includes('decimal') || underlyingType.includes('single')) {
             html = '<input type="number" class="form-control" data-param-name="' + name + '" step="any" value="' + (isNullable ? '' : '0.0') + '" />';
         }
-        // Booleanos (select True/False + opción vacía si anulable)
         else if (underlyingType.includes('bool')) {
             html = '<select class="form-control" data-param-name="' + name + '">';
             if (isNullable) html += '<option value="">-- Not set --</option>';
             html += '<option value="true">True</option><option value="false">False</option>';
             html += '</select>';
         }
-        // Fechas y horas
         else if (underlyingType.includes('datetime') || underlyingType.includes('datetimeoffset')) {
             var defaultDate = isNullable ? '' : new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16);
             html = '<input type="datetime-local" class="form-control" data-param-name="' + name + '" value="' + defaultDate + '" />';
             html += '<small class="help-block">Click the calendar icon to select a date and time.</small>';
         }
-        // Fecha sin hora (date)
         else if (underlyingType === 'system.datetime' || underlyingType === 'datetime') {
             var defaultDate = isNullable ? '' : new Date().toISOString().slice(0, 10);
             html = '<input type="date" class="form-control" data-param-name="' + name + '" value="' + defaultDate + '" />';
         }
-        // GUID
         else if (underlyingType === 'system.guid' || underlyingType === 'guid') {
             html = '<input type="text" class="form-control" data-param-name="' + name + '" placeholder="00000000-0000-0000-0000-000000000000" value="' + (isNullable ? '' : '00000000-0000-0000-0000-000000000000') + '" />';
         }
-        // TimeSpan
         else if (underlyingType === 'system.timespan' || underlyingType === 'timespan') {
             html = '<input type="text" class="form-control" data-param-name="' + name + '" placeholder="hh:mm:ss" value="' + (isNullable ? '' : '00:00:00') + '" />';
         }
-        // Enum
         else if (underlyingType.includes('.') && !underlyingType.startsWith('system.')) {
             if (paramInfo.enumValues && paramInfo.enumValues.length > 0) {
                 html += '<select class="form-control" data-param-name="' + name + '">';
@@ -502,11 +610,9 @@
                 });
                 html += '</select>';
             } else {
-                // Fallback a input de texto si no recibimos los valores
                 html = '<input type="text" class="form-control" data-param-name="' + name + '" placeholder="Enum value of ' + paramInfo.type + '" />';
             }
         }
-        // Cadena y otros
         else {
             html = '<input type="text" class="form-control" data-param-name="' + name + '" placeholder="' + paramInfo.type + '" />';
         }
@@ -540,27 +646,21 @@
             return;
         }
     
-        // Llamar a la API para obtener los métodos
         fetchJson(apiBaseUrl + '/api/methods?className=' + encodeURIComponent(className))
             .then(function(resp) {
                 if (!resp.success) {
                     alert('Assembly no disponible: ' + resp.error);
                     return;
                 }
-                // Buscar el método especificado
                 var method = resp.methods.find(function(m) { return m.methodName === methodName; });
                 if (!method) {
                     alert('Method not found.');
                     return;
                 }
-            
-                // Generar un objeto JSON con valores por defecto según los tipos
                 var suggestion = {};
                 method.parameters.forEach(function(p) {
                     suggestion[p.name] = getDefaultValueForType(p.type, p.isComplex);
                 });
-            
-                // Formatear el JSON y mostrarlo en el textarea
                 $$('jsonParams').value = JSON.stringify(suggestion, null, 2);
             })
             .catch(function(err) {
@@ -570,10 +670,10 @@
 
     function getDefaultValueForType(type, isComplex) {
         if (type.endsWith('?')) {
-            return null; // anulable, sugerimos null
+            return null;
         }
         if (isComplex) {
-            return {}; // objeto vacío como placeholder
+            return {};
         }
         var t = type.toLowerCase();
         if (t.includes('int') || t.includes('long') || t.includes('short') || t.includes('byte')) return 0;
@@ -583,15 +683,14 @@
         if (t === 'system.guid' || t === 'guid') return '00000000-0000-0000-0000-000000000000';
         if (t === 'system.timespan' || t === 'timespan') return '00:00:00';
         if (t === 'system.string' || t === 'string') return '';
-        // Para enums, intentamos extraer el primer valor posible (no disponible aquí, dejamos string vacío)
         return '';
-}
+    }
 
     // ====== VALIDATE CRON ======
     function validateCron() {
         var expr = $$('cronExpression').value.trim();
         if (!expr) { alert('Cron expression required'); return; }
-        fetchJson(apiBaseUrl + '/pi/validate-cron?expression=' + encodeURIComponent(expr))
+        fetchJson(apiBaseUrl + '/api/validate-cron?expression=' + encodeURIComponent(expr))
             .then(function(resp) {
                 var div = $$('cronPreview');
                 if (!resp.success) {
@@ -618,7 +717,6 @@
         }
     }
 
-    // Verificar al escribir
     $$('queue').addEventListener('input', function() { checkCriticalQueue(this.value); });
     $$('queue').addEventListener('change', function() { checkCriticalQueue(this.value); });
 
@@ -635,26 +733,22 @@
 
     // ====== BUILD REQUEST OBJECT ======
     function convertToType(value, type, isComplex) {
-        // Detectar si el tipo es anulable (termina en '?')
         var isNullable = type.endsWith('?');
         var underlyingType = isNullable ? type.slice(0, -1).toLowerCase() : type.toLowerCase();
     
-        // Si el campo está vacío o es null y es anulable, retornar null
         if (isNullable && (value === '' || value === null || value === undefined)) {
             return null;
         }
     
-        // Para tipos complejos, ya se parsea el JSON
         if (isComplex) {
             if (value === '' && isNullable) return null;
             try {
                 return JSON.parse(value);
             } catch(e) {
-                return value; // fallback
+                return value;
             }
         }
     
-        // A continuación, la conversión normal pero usando underlyingType
         if (underlyingType.includes('int') || underlyingType.includes('long') || 
             underlyingType.includes('short') || underlyingType.includes('byte')) {
             var num = parseInt(value, 10);
@@ -670,11 +764,8 @@
             if (value === '' && isNullable) return null;
             return value === 'true' || value === '1' || value === 'on';
         }
-        // Fechas se envían como string ISO, se mantienen igual
-        // Para otros, string
         return value;
     }
-
 
     function buildRequest() {
         var mode = document.querySelector('input[name="launchMode"]:checked').value;
@@ -683,7 +774,6 @@
             var idx = $$('methodSelect').value;
             return idx === '' ? '' : currentMethods[parseInt(idx)].methodName;
         })() : $$('methodNameManual').value.trim();
-
 
         var request = {
             mode: mode,
@@ -697,36 +787,60 @@
             rawParametersJson: null
         };
 
-        // Si manual, rawParametersJson
         if (mode === 'manual') {
             request.rawParametersJson = $$('jsonParams').value.trim() || '{}';
         } else {
-            // Modo asistido: construir objeto con valores tipados
             var paramsObj = {};
-            var paramFields = document.querySelectorAll('#paramsContainer .param-field');
-            paramFields.forEach(function(field) {
-                var input = field.querySelector('[data-param-name]');
-                var name = input.getAttribute('data-param-name');
-                var rawValue;
-                if (input.type === 'checkbox') {
-                    rawValue = input.checked;
-                } else {
-                    rawValue = input.value;
+            // Obtener todos los elementos con data-param-name dentro del contenedor, ordenadamente
+            var allElements = document.querySelectorAll('#paramsContainer [data-param-name]');
+            allElements.forEach(function(el) {
+                var name = el.getAttribute('data-param-name');
+                if (!name) return;
+                // Si es un contenedor de lista
+                if (el.classList.contains('list-container')) {
+                    var elementType = el.getAttribute('data-element-type');
+                    var inputs = el.querySelectorAll('.list-item input');
+                    var values = [];
+                    inputs.forEach(function(inp) {
+                        if (inp.value.trim() !== '') {
+                            values.push(convertToType(inp.value, elementType, false));
+                        }
+                    });
+                    paramsObj[name] = values;
                 }
-                // Buscar la definición del parámetro en el método seleccionado
-                var paramDef = selectedMethod ? selectedMethod.parameters.find(function(p) { return p.name === name; }) : null;
-                if (paramDef) {
-                    var convertedValue = convertToType(rawValue, paramDef.type, paramDef.isComplex);
-                    paramsObj[name] = convertedValue;
-                } else {
-                    paramsObj[name] = rawValue; // fallback
+                // Si es un contenedor de diccionario
+                else if (el.classList.contains('dict-container')) {
+                    var rows = el.querySelectorAll('.dict-row');
+                    var obj = {};
+                    rows.forEach(function(row) {
+                        var keyInp = row.querySelector('.dict-key');
+                        var valInp = row.querySelector('.dict-value');
+                        if (keyInp && valInp && keyInp.value.trim() !== '') {
+                            obj[keyInp.value] = valInp.value;
+                        }
+                    });
+                    paramsObj[name] = obj;
+                }
+                // Caso normal (input, textarea, select)
+                else {
+                    var value;
+                    if (el.type === 'checkbox') {
+                        value = el.checked;
+                    } else {
+                        value = el.value;
+                    }
+                    // Intentar obtener la definición del parámetro para convertir correctamente
+                    var paramDef = selectedMethod ? selectedMethod.parameters.find(function(p) { return p.name === name; }) : null;
+                    if (paramDef) {
+                        value = convertToType(value, paramDef.type, paramDef.isComplex);
+                    }
+                    paramsObj[name] = value;
                 }
             });
             request.rawParametersJson = JSON.stringify(paramsObj);
-            request.parameters = null; // no usar el diccionario de strings
+            request.parameters = null;
         }
 
-        // Completion specific
         if (request.executionMode === 'Schedule') {
             request.delayMinutes = parseInt($$('delayMinutes').value) || 30;
         }
@@ -756,7 +870,7 @@
     }
 
     // ====== SUBMIT / LAUNCH ======
-    var pendingLaunchRequest = null; // para confirmación de cola crítica
+    var pendingLaunchRequest = null;
 
     function submitJob() {
         var req = buildRequest();
@@ -792,8 +906,8 @@
               if (result.success) {
                   alertDiv.className = 'alert alert-success';
                   alertDiv.innerHTML = 'Job launched successfully! <a href="' + result.link + '" target="_blank">' + result.jobId + '</a>';
-                  loadQueues(); // actualizar colas
-                  loadHistory(); // recargar historial
+                  loadQueues();
+                  loadHistory();
               } else {
                   alertDiv.className = 'alert alert-danger';
                   alertDiv.textContent = 'Error: ' + (result.error || 'Unknown error');
@@ -813,7 +927,7 @@
             var tbody = $$('historyTable').querySelector('tbody');
             tbody.innerHTML = '';
             entries.forEach(function(e) {
-                var entryJson = JSON.stringify(e).replace(/'/g, "&#39;").replace(/"/g, "&quot;"); // Escapamos también comillas
+                var entryJson = JSON.stringify(e).replace(/'/g, "&#39;").replace(/"/g, "&quot;");
                 var row = '<tr>' +
                     '<td>' + new Date(e.timestamp).toLocaleString() + '</td>' +
                     '<td><a href="' + dashboardBaseUrl + 'jobs/details/' + e.jobId + '" target="_blank">' + e.jobId + '</a></td>' +
@@ -847,6 +961,12 @@
                     }
                 });
             });
+            document.querySelectorAll('.save-as-template').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var entry = JSON.parse(this.getAttribute('data-entry'));
+                    saveEntryAsTemplate(entry);
+                });
+            });
         });
     }
 
@@ -856,27 +976,21 @@
     }
 
     function loadEntryToForm(entry) {
-        // 1. Determinar el modo (campo 'mode' que ya guarda el backend)
         var mode = entry.mode || (entry.rawParametersJson && !entry.parameters ? 'manual' : 'assisted');
-
-        // 2. Activar el radio correspondiente
         var radio = document.querySelector('input[name="launchMode"][value="' + mode + '"]');
         if (radio) radio.checked = true;
         toggleMode();
 
-        // 3. Rellenar campos comunes
         $$('queue').value = entry.queue || 'default';
         $$('chkPerformContext').checked = entry.includePerformContext || false;
         $$('chkCancellationToken').checked = entry.includeCancellationToken || false;
 
-        // 4. Modo de ejecución
         if (entry.executionMode) {
             var execRadio = document.querySelector('input[name="execMode"][value="' + entry.executionMode + '"]');
             if (execRadio) execRadio.checked = true;
             toggleExecMode();
         }
 
-        // 5. Rellenar campos específicos del modo de ejecución
         if (entry.cronExpression) $$('cronExpression').value = entry.cronExpression;
         if (entry.delayMinutes) $$('delayMinutes').value = entry.delayMinutes;
         if (entry.scheduledDateTime) {
@@ -892,14 +1006,12 @@
             if (engineSelect) engineSelect.value = entry.recurringEngine;
         }
 
-        // 6. Rellenar según el modo
         if (mode === 'manual') {
             $$('classNameManual').value = entry.className || '';
             $$('methodNameManual').value = entry.methodName || '';
             $$('jsonParams').value = entry.parametersJson || '{}';
         } else {
             $$('classNameAssisted').value = entry.className || '';
-            // Si tenemos className y methodName, cargar métodos y restaurar parámetros
             if (entry.className && entry.methodName) {
                 loadMethodsForTemplate(entry.className, entry.methodName, entry.parametersJson);
             } else {
@@ -944,8 +1056,8 @@
                     '<button class="btn btn-xs btn-default load-template" data-name="' + t.name + '">Load</button> ' +
                     '<button class="btn btn-xs btn-default clone-template" data-name="' + t.name + '">Clone & Launch</button> ' +
                     '<button class="btn btn-xs btn-danger delete-template" data-name="' + t.name + '">Delete</button> ' +
-                    '<button class="btn btn-xs btn-info export-template" data-name="' + t.name + '">Export</button>' +
-                    '<button class="btn btn-xs btn-default preview-template" data-name="' + t.name + '">Preview</button> ' +
+                    '<button class="btn btn-xs btn-info export-template" data-name="' + t.name + '">Export</button> ' +
+                    '<button class="btn btn-xs btn-default preview-template" data-name="' + t.name + '">Preview</button>' +
                     '</td>' +
                     '</tr>';
                 tbody.innerHTML += row;
@@ -985,13 +1097,8 @@
             btn.addEventListener('click', function() {
                 var name = this.getAttribute('data-name');
                 var downloadUrl = apiBaseUrl + '/api/export-import?action=export&templateName=' + encodeURIComponent(name);
-        
-                // Usar fetch + Blob para forzar la descarga
                 fetch(downloadUrl)
-                    .then(function(response) {
-                        if (!response.ok) throw new Error('Network error');
-                        return response.blob();
-                    })
+                    .then(function(response) { return response.blob(); })
                     .then(function(blob) {
                         var url = URL.createObjectURL(blob);
                         var a = document.createElement('a');
@@ -1002,28 +1109,33 @@
                         document.body.removeChild(a);
                         URL.revokeObjectURL(url);
                     })
-                    .catch(function(err) {
-                        alert('Error downloading template: ' + err.message);
-                });
+                    .catch(function(err) { alert('Error downloading template: ' + err.message); });
             });
         });
-
         document.querySelectorAll('.preview-template').forEach(function(btn) {
             btn.addEventListener('click', function() {
                 var name = this.getAttribute('data-name');
                 fetchJson(apiBaseUrl + '/api/templates?name=' + encodeURIComponent(name))
                     .then(function(template) {
-                        // Llenar el modal
                         $$('previewTemplateName').textContent = template.name;
-                        $$('prevClass').textContent = template.className;
-                        $$('prevMethod').textContent = template.methodName;
+                        $$('prevClass').textContent = template.className || '';
+                        $$('prevMethod').textContent = template.methodName || '';
                         $$('prevQueue').textContent = template.queue || 'default';
-                        $$('prevExecMode').textContent = template.executionMode;
-                        $$('prevEngine').textContent = template.recurringEngine || 'N/A';
+                        $$('prevExecMode').textContent = template.executionMode || '';
+                        $$('prevCron').textContent = template.cronExpression || 'N/A';
+                        $$('prevEngine').textContent = template.recurringEngine || (template.engine || 'N/A');
                         $$('prevMode').textContent = template.mode || 'N/A';
-                        // Formatear JSON de parámetros
-                        var params = template.rawParametersJson ? JSON.stringify(JSON.parse(template.rawParametersJson), null, 2) : '{}';
-                        $$('prevParams').textContent = params;
+                        $$('prevPerformContext').textContent = template.includePerformContext ? 'Yes' : 'No';
+                        $$('prevCancellationToken').textContent = template.includeCancellationToken ? 'Yes' : 'No';
+
+                        // Parámetros en JSON formateado
+                        var rawParams = template.rawParametersJson || '{}';
+                        try {
+                            var parsed = JSON.parse(rawParams);
+                            $$('prevParams').textContent = JSON.stringify(parsed, null, 2);
+                        } catch(e) {
+                            $$('prevParams').textContent = rawParams;
+                        }
                         $('#templatePreviewModal').modal('show');
                     });
             });
@@ -1072,31 +1184,21 @@
     }
 
     function loadTemplateToForm(template) {
-        // 1. Determinar el modo
         var mode = template.mode;
         if (!mode) {
-            // Si no hay campo 'mode' (plantilla antigua), intentamos inferirlo llamando a la API
             inferModeAndLoad(template);
-            return; // inferModeAndLoad se encargará de todo asíncronamente
+            return;
         }
-
-        // 2. Activar el radio correspondiente
         var radio = document.querySelector('input[name="launchMode"][value="' + mode + '"]');
         if (radio) radio.checked = true;
         toggleMode();
-
-        // 3. Rellenar campos comunes
         fillCommonFields(template);
-
-        // 4. Modo de ejecución
         if (template.executionMode) {
             var execRadio = document.querySelector('input[name="execMode"][value="' + template.executionMode + '"]');
             if (execRadio) execRadio.checked = true;
             toggleExecMode();
             fillExecModeFields(template);
         }
-
-        // 5. Rellenar según el modo
         if (mode === 'manual') {
             fillManualFields(template);
         } else {
@@ -1108,7 +1210,6 @@
         fetchJson(apiBaseUrl + '/api/methods?className=' + encodeURIComponent(className))
             .then(function(resp) {
                 if (!resp.success) {
-                    // Si falla, pasamos a modo manual
                     document.querySelector('input[name="launchMode"][value="manual"]').checked = true;
                     toggleMode();
                     $$('classNameManual').value = className;
@@ -1116,7 +1217,6 @@
                     $$('jsonParams').value = rawParametersJson || '{}';
                     return;
                 }
-                // Guardar métodos
                 currentMethods = resp.methods;
                 var sel = $$('methodSelect');
                 sel.innerHTML = '<option value="">-- Select method --</option>';
@@ -1128,13 +1228,10 @@
                     if (m.methodName === methodName) targetIndex = i;
                 });
                 $$('methodSelectGroup').style.display = 'block';
-            
                 if (targetIndex >= 0) {
                     sel.value = targetIndex;
                     selectedMethod = currentMethods[targetIndex];
-                    onMethodChange(); // genera los campos dinámicos
-                
-                    // Si tenemos parámetros guardados (rawParametersJson), rellenamos los campos
+                    onMethodChange();
                     if (rawParametersJson) {
                         try {
                             var paramsObj = JSON.parse(rawParametersJson);
@@ -1148,19 +1245,15 @@
     }
 
     function inferModeAndLoad(template) {
-        // Si no hay className o methodName, no podemos inferir -> asumimos manual
         if (!template.className || !template.methodName) {
             template.mode = 'manual';
-            loadTemplateToForm(template); // reintentar con modo forzado
+            loadTemplateToForm(template);
             return;
         }
-
-        // Intentar cargar métodos para ver si la clase existe
         fetchJson(apiBaseUrl + '/api/methods?className=' + encodeURIComponent(template.className))
             .then(function(resp) {
                 if (resp.success) {
                     template.mode = 'assisted';
-                    // Opcional: actualizar la plantilla en el storage con el modo correcto
                     updateTemplateModeSilently(template.name, 'assisted');
                 } else {
                     template.mode = 'manual';
@@ -1171,12 +1264,11 @@
                 template.mode = 'manual';
             })
             .finally(function() {
-                loadTemplateToForm(template); // ahora sí, con el modo definido
+                loadTemplateToForm(template);
             });
     }
 
     function updateTemplateModeSilently(templateName, mode) {
-        // Solo si tiene nombre y existe la plantilla, la actualizamos sin molestar al usuario
         if (!templateName) return;
         fetchJson(apiBaseUrl + '/api/templates?name=' + encodeURIComponent(templateName))
             .then(function(t) {
@@ -1185,7 +1277,7 @@
                 formData.append('json', JSON.stringify(t));
                 fetch(apiBaseUrl + '/api/templates', { method: 'POST', body: formData });
             })
-            .catch(function() { /* ignorar errores */ });
+            .catch(function() {});
     }
 
     function fillCommonFields(template) {
@@ -1228,9 +1320,43 @@
     }
 
     function fillAssistedFields(paramsObj) {
+        // Primero procesar listas y diccionarios
+        document.querySelectorAll('#paramsContainer .list-container').forEach(function(container) {
+            var name = container.getAttribute('data-param-name');
+            var arr = paramsObj[name];
+            if (arr && Array.isArray(arr)) {
+                var elementType = container.getAttribute('data-element-type');
+                var itemsDiv = container.querySelector('.list-items');
+                itemsDiv.innerHTML = '';
+                arr.forEach(function(val) {
+                    var html = createListItem(elementType);
+                    itemsDiv.insertAdjacentHTML('beforeend', html);
+                    var lastInput = itemsDiv.lastElementChild.querySelector('input');
+                    if (lastInput) lastInput.value = val != null ? val : '';
+                });
+            }
+        });
+        document.querySelectorAll('#paramsContainer .dict-container').forEach(function(container) {
+            var name = container.getAttribute('data-param-name');
+            var obj = paramsObj[name];
+            if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
+                var keyType = container.getAttribute('data-key-type');
+                var valueType = container.getAttribute('data-value-type');
+                var tbody = container.querySelector('.dict-items tbody');
+                tbody.innerHTML = '';
+                Object.keys(obj).forEach(function(key) {
+                    var html = createDictRow(keyType, valueType);
+                    tbody.insertAdjacentHTML('beforeend', html);
+                    var row = tbody.lastElementChild;
+                    row.querySelector('.dict-key').value = key;
+                    row.querySelector('.dict-value').value = obj[key] != null ? obj[key] : '';
+                });
+            }
+        });
+        // Luego los campos normales (inputs, selects, textareas)
         var fields = document.querySelectorAll('#paramsContainer .param-field');
         fields.forEach(function(field) {
-            var input = field.querySelector('[data-param-name]');
+            var input = field.querySelector('[data-param-name]:not(.list-container):not(.dict-container)');
             if (!input) return;
             var name = input.getAttribute('data-param-name');
             if (paramsObj.hasOwnProperty(name)) {
@@ -1238,7 +1364,7 @@
                 if (input.type === 'checkbox') {
                     input.checked = (value === true || value === 'true');
                 } else if (input.type === 'number') {
-                    input.value = value;
+                    input.value = value != null ? value : '';
                 } else if (input.type === 'datetime-local') {
                     if (value) {
                         var dt = new Date(value);
@@ -1248,8 +1374,10 @@
                     }
                 } else if (input.tagName === 'TEXTAREA') {
                     input.value = typeof value === 'string' ? value : JSON.stringify(value);
+                } else if (input.tagName === 'SELECT') {
+                    input.value = value != null ? value : '';
                 } else {
-                    input.value = value;
+                    input.value = value != null ? value : '';
                 }
             }
         });
@@ -1277,8 +1405,6 @@
     function saveEntryAsTemplate(entry) {
         var name = prompt('Template name:', entry.className + '.' + entry.methodName);
         if (!name) return;
-
-        // Construir un objeto JobTemplate a partir de la entrada del historial
         var template = {
             name: name,
             mode: entry.mode,
@@ -1296,16 +1422,14 @@
             rawParametersJson: entry.parametersJson,
             parameters: null
         };
-
         var formData = new FormData();
         formData.append('json', JSON.stringify(template));
-
         fetch(apiBaseUrl + '/api/templates', { method: 'POST', body: formData })
             .then(function(r) { return r.json(); })
             .then(function(res) {
                 if (res.success) {
                     alert('Template "' + name + '" saved.');
-                    loadTemplates(); // actualizar la lista de templates
+                    loadTemplates();
                 } else {
                     alert('Error: ' + (res.error || res.message));
                 }
@@ -1313,27 +1437,27 @@
     }
 
     function importTemplate() {
-    var fileInput = $$('importFile');
-    if (!fileInput.files[0]) { alert('Select a file.'); return; }
-    var reader = new FileReader();
-    reader.onload = function(e) {
-        var template = JSON.parse(e.target.result);
-        var formData = new FormData();
-        formData.append('json', JSON.stringify(template));
-        fetch(apiBaseUrl + '/api/templates', { method: 'POST', body: formData })
-            .then(function(r) { return r.json(); })
-            .then(function(res) {
-                if (res.conflict) {
-                    if (confirm(res.message + ' Overwrite?')) {
-                        fetch(apiBaseUrl + '/api/templates', { method: 'POST', body: formData })
-                            .then(function() { loadTemplates(); });
+        var fileInput = $$('importFile');
+        if (!fileInput.files[0]) { alert('Select a file.'); return; }
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var template = JSON.parse(e.target.result);
+            var formData = new FormData();
+            formData.append('json', JSON.stringify(template));
+            fetch(apiBaseUrl + '/api/templates', { method: 'POST', body: formData })
+                .then(function(r) { return r.json(); })
+                .then(function(res) {
+                    if (res.conflict) {
+                        if (confirm(res.message + ' Overwrite?')) {
+                            fetch(apiBaseUrl + '/api/templates', { method: 'POST', body: formData })
+                                .then(function() { loadTemplates(); });
+                        }
+                    } else {
+                        alert(res.message || 'Imported.');
+                        loadTemplates();
                     }
-                } else {
-                    alert(res.message || 'Imported.');
-                    loadTemplates();
-                }
-            });
-    };
-    reader.readAsText(fileInput.files[0]);
-}
+                });
+        };
+        reader.readAsText(fileInput.files[0]);
+    }
 </script>

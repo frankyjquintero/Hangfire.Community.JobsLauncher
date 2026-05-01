@@ -12,39 +12,39 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
     {
         public async Task Dispatch(DashboardContext context)
         {
-            //var expression = context.Request.GetQuery("expression");
-            //if (string.IsNullOrWhiteSpace(expression))
-            //{
-            //    await WriteJson(context, new { success = false, error = "El parámetro 'expression' es obligatorio." });
-            //    return;
-            //}
+            var expression = context.Request.GetQuery("expression");
+            if (string.IsNullOrWhiteSpace(expression))
+            {
+                await WriteJson(context, new { success = false, error = "El parámetro 'expression' es obligatorio." });
+                return;
+            }
 
-            //try
-            //{
-            //    CronExpression cronExpression = CronExpression.Parse(expression);
-            //    var now = DateTime.UtcNow;
-            //    var occurrences = new List<string>();
+            try
+            {
+                CronExpression cronExpression = CronExpression.Parse(expression);
+                var now = DateTime.UtcNow;
+                var occurrences = new List<string>();
 
-            //    DateTime? next = now;
-            //    for (int i = 0; i < 5; i++)
-            //    {
-            //        next = cronExpression.GetNextOccurrence(next.Value, inclusive: false);
-            //        if (next.HasValue)
-            //        {
-            //            occurrences.Add(next.Value.ToString("O")); // formato ISO 8601
-            //        }
-            //        else
-            //        {
-            //            break;
-            //        }
-            //    }
+                DateTime? next = now;
+                for (int i = 0; i < 5; i++)
+                {
+                    next = cronExpression.GetNextOccurrence(next.Value, inclusive: false);
+                    if (next.HasValue)
+                    {
+                        occurrences.Add(next.Value.ToString("O")); // formato ISO 8601
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
 
-            //    await WriteJson(context, new { success = true, occurrences });
-            //}
-            //catch (CronFormatException ex)
-            //{
-            //    await WriteJson(context, new { success = false, error = $"Expresión cron inválida: {ex.Message}" });
-            //}
+                await WriteJson(context, new { success = true, occurrences });
+            }
+            catch (CronFormatException ex)
+            {
+                await WriteJson(context, new { success = false, error = $"Expresión cron inválida: {ex.Message}" });
+            }
         }
 
         private static async Task WriteJson(DashboardContext context, object data)

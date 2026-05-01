@@ -59,7 +59,7 @@ namespace Hangfire.Community.JobLauncher.Common
 
         public static object ConvertJsonElement(JsonElement element, Type targetType)
         {
-            // Tipos simples
+            // Tipos primitivos (string, int, etc.)
             if (targetType == typeof(string)) return element.GetString();
             if (targetType == typeof(int)) return element.GetInt32();
             if (targetType == typeof(long)) return element.GetInt64();
@@ -83,30 +83,39 @@ namespace Hangfire.Community.JobLauncher.Common
             if (targetType.IsEnum)
                 return Enum.Parse(targetType, element.GetString() ?? element.GetRawText());
 
-            // Arrays y listas
-            if (typeof(IEnumerable).IsAssignableFrom(targetType) && targetType != typeof(string))
+            // Listas, arrays y colecciones
+            if (targetType.IsGenericType &&
+                (targetType.GetGenericTypeDefinition() == typeof(List<>) ||
+                 targetType.GetGenericTypeDefinition() == typeof(IList<>) ||
+                 targetType.GetGenericTypeDefinition() == typeof(IEnumerable<>)) ||
+                (targetType.IsArray))
             {
                 Type elementType = targetType.IsArray
                     ? targetType.GetElementType()
-                    : targetType.GetGenericArguments().FirstOrDefault();
-                if (elementType == null)
-                    throw new InvalidOperationException($"Cannot determine element type for {targetType}");
-                var items = element.EnumerateArray()
-                    .Select(el => ConvertJsonElement(el, elementType))
-                    .ToList();
-                // Convertir a array o lista genérica según corresponda
+                    : targetType.GetGenericArguments()[0];
+
+                var items = new List<object>();
+                foreach (var jsonItem in element.EnumerateArray())
+                {
+                    items.Add(ConvertJsonElement(jsonItem, elementType));
+                }
+
                 if (targetType.IsArray)
                 {
                     Array array = Array.CreateInstance(elementType, items.Count);
-                    for (int i = 0; i < items.Count; i++) array.SetValue(items[i], i);
+                    for (int i = 0; i < items.Count; i++)
+                        array.SetValue(items[i], i);
                     return array;
                 }
-                // Lista genérica
-                Type listType = typeof(List<>).MakeGenericType(elementType);
-                object list = Activator.CreateInstance(listType);
-                var addMethod = listType.GetMethod("Add");
-                foreach (var item in items) addMethod.Invoke(list, new[] { item });
-                return list;
+                else
+                {
+                    // Crear List<T>
+                    Type listType = typeof(List<>).MakeGenericType(elementType);
+                    var list = (System.Collections.IList)Activator.CreateInstance(listType);
+                    foreach (var item in items)
+                        list.Add(item);
+                    return list;
+                }
             }
 
             // Diccionarios
@@ -114,19 +123,18 @@ namespace Hangfire.Community.JobLauncher.Common
             {
                 var keyType = targetType.GetGenericArguments()[0];
                 var valueType = targetType.GetGenericArguments()[1];
-                var dict = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(element.GetRawText());
-                object result = Activator.CreateInstance(targetType);
+                var dictObj = Activator.CreateInstance(targetType);
                 var addMethod = targetType.GetMethod("Add");
-                foreach (var kvp in dict)
+                foreach (var property in element.EnumerateObject())
                 {
-                    object key = Convert.ChangeType(kvp.Key, keyType);
-                    object value = ConvertJsonElement(kvp.Value, valueType);
-                    addMethod.Invoke(result, new[] { key, value });
+                    var key = Convert.ChangeType(property.Name, keyType);
+                    var value = ConvertJsonElement(property.Value, valueType);
+                    addMethod.Invoke(dictObj, new[] { key, value });
                 }
-                return result;
+                return dictObj;
             }
 
-            // Fallback: deserialización JSON completa
+            // Objetos complejos (clases)
             return JsonSerializer.Deserialize(element.GetRawText(), targetType);
         }
 
