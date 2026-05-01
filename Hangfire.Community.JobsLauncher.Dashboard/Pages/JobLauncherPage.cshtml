@@ -143,13 +143,10 @@
                                 </div>
                                 <div id="cronPreview" style="margin-top:5px; display:none;" class="text-info"></div>
                             </div>
-                            <!-- Motor recurrente (solo visible en modo manual) -->
-                            <div class="form-group" id="recurringEngineGroup" style="display:none;">
+                            <!-- Motor recurrente (ahora visible en ambos modos) -->
+                            <div class="form-group" id="recurringEngineGroup">
                                 <label>Recurring Engine</label>
-                                <select id="recurringEngine" class="form-control">
-                                    <option value="BuiltIn">Built-in (lightweight)</option>
-                                    <option value="DynamicJobs">DynamicJobs (advanced)</option>
-                                </select>
+                                <select id="recurringEngine" class="form-control"></select>
                                 <span id="dynamicJobsWarning" class="text-warning" style="display:none;">DynamicJobs no está instalado en el dashboard o workers.</span>
                             </div>
                         </div>
@@ -443,7 +440,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label>Specific days (comma separated, 0-7, SUN-SAT)</label>
+                                    <label>Specific days (comma separated, SST, 0-7, SUN-SAT)</label>
                                     <input type="text" id="weekdaySpecific" class="form-control" placeholder="1,3,5">
                                 </div>
                                 <div class="form-group">
@@ -521,13 +518,44 @@
     document.addEventListener('DOMContentLoaded', function() {
         fetchJson(apiBaseUrl + '/api/capabilities').then(function(caps) {
             dynamicJobsAvailable = caps.dynamicJobsAvailable;
-            adjustRecurringEngineDisplay();
+            buildRecurringEngineOptions(); // construir opciones según modo actual
         });
         loadQueues();
         bindEvents();
         loadHistory();
         loadTemplates();
     });
+
+    // Configura las opciones del <select> del motor recurrente según el modo actual y disponibilidad de DynamicJobs
+    function buildRecurringEngineOptions() {
+        var mode = document.querySelector('input[name="launchMode"]:checked').value;
+        var sel = $$('recurringEngine');
+        sel.innerHTML = '';
+
+        if (mode === 'assisted') {
+            addOption(sel, 'Direct', 'Direct', true); // siempre disponible en asistido (si no carga clase fallará en backend)
+            addOption(sel, 'BuiltIn', 'Built-in (lightweight)', true);
+            addOption(sel, 'DynamicJobs', 'DynamicJobs (advanced)', dynamicJobsAvailable);
+        } else { // manual
+            addOption(sel, 'BuiltIn', 'Built-in (lightweight)', true);
+            addOption(sel, 'DynamicJobs', 'DynamicJobs (advanced)', dynamicJobsAvailable);
+        }
+
+        // Mostrar advertencia si DynamicJobs no está disponible y está seleccionado
+        if (!dynamicJobsAvailable && sel.value === 'DynamicJobs') {
+            $$('dynamicJobsWarning').style.display = 'inline';
+        } else {
+            $$('dynamicJobsWarning').style.display = 'none';
+        }
+    }
+
+    function addOption(sel, value, text, enabled) {
+        var opt = document.createElement('option');
+        opt.value = value;
+        opt.textContent = text;
+        if (!enabled) opt.disabled = true;
+        sel.appendChild(opt);
+    }
 
     function bindEvents() {
         // Modo
@@ -544,7 +572,7 @@
         var execRadios = document.querySelectorAll('input[name="execMode"]');
         execRadios.forEach(function(r) { r.addEventListener('change', toggleExecMode); });
 
-        // Validate/format JSON/ suggest
+        // Validate/format JSON/suggest
         $$('validateJsonBtn').addEventListener('click', validateJson);
         $$('formatJsonBtn').addEventListener('click', formatJson);
         $$('suggestJsonBtn').addEventListener('click', suggestJsonStructure);
@@ -573,7 +601,7 @@
 
         $$('btnSaveAsTemplate').addEventListener('click', saveCurrentAsTemplate);
 
-        // Mostrar/esconder campos de ejecución
+        // Mostrar/esconder campos de ejecución y opciones de motor
         toggleExecMode();
         toggleMode();
     }
@@ -588,7 +616,8 @@
             $$('assistedFields').style.display = 'none';
             $$('manualFields').style.display = 'block';
         }
-        toggleExecMode();
+        buildRecurringEngineOptions(); // Reconstruir opciones al cambiar modo
+        toggleExecMode(); // Para asegurar visibilidad de recurringFields y motor
     }
 
     // ====== MODO DE EJECUCIÓN ======
@@ -598,29 +627,14 @@
         $$('scheduleDateTimeFields').style.display = (mode === 'ScheduleDateTime') ? 'block' : 'none';
         $$('recurringFields').style.display = (mode === 'Recurring') ? 'block' : 'none';
         $$('continuationFields').style.display = (mode === 'Continuation') ? 'block' : 'none';
-        adjustRecurringEngineDisplay();
-    }
 
-    function adjustRecurringEngineDisplay() {
-        var mode = document.querySelector('input[name="launchMode"]:checked').value;
-        var execMode = document.querySelector('input[name="execMode"]:checked').value;
-        if (execMode === 'Recurring' && mode === 'manual') {
-            $$('recurringEngineGroup').style.display = 'block';
-            var optDynamic = $$('recurringEngine').querySelector('option[value="DynamicJobs"]');
-            if (!dynamicJobsAvailable) {
-                optDynamic.disabled = true;
-                $$('dynamicJobsWarning').style.display = 'inline';
-            } else {
-                optDynamic.disabled = false;
-                $$('dynamicJobsWarning').style.display = 'none';
-            }
-        } else {
-            $$('recurringEngineGroup').style.display = 'none';
+        // El grupo del motor recurrente ahora siempre está visible cuando recurringFields está visible
+        // pero se mostrará/ocultará junto con recurringFields; no necesita lógica adicional.
+        // Sólo actualizamos opciones por si cambió dinámicamente la disponibilidad.
+        if (mode === 'Recurring') {
+            buildRecurringEngineOptions();
         }
     }
-
-    document.querySelectorAll('input[name="execMode"]').forEach(r => r.addEventListener('change', adjustRecurringEngineDisplay));
-    document.querySelectorAll('input[name="launchMode"]').forEach(r => r.addEventListener('change', adjustRecurringEngineDisplay));
 
     // ====== CARGAR MÉTODOS (ASISTIDO) ======
     function loadMethods() {
@@ -932,7 +946,6 @@
         var month = '*';
         var dayWeek = '*';
 
-        // Minutos (si el usuario no especifica nada, se queda '0')
         var minEveryN = document.getElementById('minEveryN').value;
         var minSpecific = document.getElementById('minSpecific').value.trim();
         var minRangeFrom = document.getElementById('minRangeFrom').value;
@@ -945,7 +958,6 @@
             minute = minRangeFrom + '-' + minRangeTo;
         }
 
-        // Horas (análogo)
         var hourEveryN = document.getElementById('hourEveryN').value;
         var hourSpecific = document.getElementById('hourSpecific').value.trim();
         var hourRangeFrom = document.getElementById('hourRangeFrom').value;
@@ -958,7 +970,6 @@
             hour = hourRangeFrom + '-' + hourRangeTo;
         }
 
-        // Día del mes
         var dayMonthSpecific = document.getElementById('dayMonthSpecific').value.trim();
         var dayMonthEveryN = document.getElementById('dayMonthEveryN').value;
         var dayMonthStart = document.getElementById('dayMonthStart').value;
@@ -972,7 +983,6 @@
             dayMonth = (dayMonthStart ? dayMonthStart + '/' + dayMonthEveryN : '*/' + dayMonthEveryN);
         }
 
-        // Mes
         var monthSpecific = document.getElementById('monthSpecific').value.trim();
         var checkedMonths = [];
         document.querySelectorAll('.month-check:checked').forEach(function(cb) { checkedMonths.push(cb.value); });
@@ -982,7 +992,6 @@
             month = monthSpecific;
         }
 
-        // Día de la semana
         var checkedWeekdays = [];
         document.querySelectorAll('.weekday-check:checked').forEach(function(cb) { checkedWeekdays.push(cb.value); });
         var weekdaySpecific = document.getElementById('weekdaySpecific').value.trim();
@@ -1023,7 +1032,7 @@
                     return m.local().format('ddd, MMM Do YYYY, h:mm:ss A');
                 });
                 var firstMoment = moment.utc(resp.occurrences[0]);
-                var fromNow = firstMoment.fromNow(); // e.g., "in 2 days"
+                var fromNow = firstMoment.fromNow();
                 var html = '<strong>Next executions:</strong><br>';
                 html += '<span style="font-weight:bold; color:#337ab7;">' + fromNow + '</span><br>';
                 html += occurrences.join('<br>');
@@ -1040,17 +1049,14 @@
         var minute = parts[0], hour = parts[1], dayM = parts[2], month = parts[3], dayW = parts[4];
         var desc = [];
 
-        // Minutos
         if (minute === '*') desc.push('every minute');
         else if (minute.startsWith('*/')) desc.push('every ' + minute.slice(2) + ' minutes');
         else desc.push('at minute ' + minute);
 
-        // Horas
         if (hour === '*') desc.push('of every hour');
         else if (hour.startsWith('*/')) desc.push('every ' + hour.slice(2) + ' hours');
         else desc.push('at ' + formatTime(hour, minute));
 
-        // Día del mes
         if (dayM !== '*') {
             if (dayM.includes('/')) {
                 var dmParts = dayM.split('/');
@@ -1059,9 +1065,7 @@
                 desc.push('on day(s) ' + dayM);
             }
         }
-        // Mes
         if (month !== '*') desc.push('in month(s) ' + month);
-        // Día de semana
         if (dayW !== '*') {
             var days = dayW.split(',').map(function(d) {
                 return moment().day(parseInt(d)).format('dddd');
@@ -1079,38 +1083,31 @@
     }
 
     function resetCronGenerator() {
-        // Minutos
-        document.getElementById('minEveryN').value = '';   // no se usa si specific o range están definidos
+        document.getElementById('minEveryN').value = '';
         document.getElementById('minSpecific').value = '';
         document.getElementById('minRangeFrom').value = '';
         document.getElementById('minRangeTo').value = '';
 
-        // Horas
         document.getElementById('hourEveryN').value = '';
         document.getElementById('hourSpecific').value = '';
         document.getElementById('hourRangeFrom').value = '';
         document.getElementById('hourRangeTo').value = '';
 
-        // Día del mes
         document.getElementById('dayMonthSpecific').value = '';
         document.getElementById('dayMonthEveryN').value = '1';
         document.getElementById('dayMonthStart').value = '1';
         document.querySelectorAll('.day-month-check').forEach(function(cb) { cb.checked = false; });
 
-        // Mes
         document.getElementById('monthSpecific').value = '';
         document.querySelectorAll('.month-check').forEach(function(cb) { cb.checked = false; });
 
-        // Día de la semana
         document.getElementById('weekdaySpecific').value = '';
         document.getElementById('weekdayEveryN').value = '1';
         document.getElementById('weekdayStart').value = '1';
         document.querySelectorAll('.weekday-check').forEach(function(cb) { cb.checked = false; });
     }
 
-    // Inicialización única cuando el DOM esté listo
     document.addEventListener('DOMContentLoaded', function() {
-        // Botón Generate dentro del modal
         $('#btnGenerateCron').on('click', function() {
             var expression = buildCronExpressionFromModal();
             if (expression) {
@@ -1120,25 +1117,20 @@
             }
         });
 
-        // Configuración al mostrar el modal
         $('#cronGeneratorModal').on('shown.bs.modal', function () {
             resetCronGenerator();
-            // Activar la primera pestaña
             $('.nav-tabs a[href="#tabMinutes"]').tab('show');
             updateCronPreview();
         });
 
-        // Delegación de eventos para cambios en cualquier input/select del modal
         $('#cronGeneratorModal').on('change input', 'input, select', function() {
             updateCronPreview();
         });
 
-        // Al cambiar de pestaña, actualizar también
         $('a[data-toggle="tab"]').on('shown.bs.tab', function () {
             updateCronPreview();
         });
 
-        // Botón "Show next executions"
         $('#btnShowExecutions').on('click', showExecutions);
     });
 
@@ -1232,12 +1224,10 @@
             request.rawParametersJson = $$('jsonParams').value.trim() || '{}';
         } else {
             var paramsObj = {};
-            // Obtener todos los elementos con data-param-name dentro del contenedor, ordenadamente
             var allElements = document.querySelectorAll('#paramsContainer [data-param-name]');
             allElements.forEach(function(el) {
                 var name = el.getAttribute('data-param-name');
                 if (!name) return;
-                // Si es un contenedor de lista
                 if (el.classList.contains('list-container')) {
                     var elementType = el.getAttribute('data-element-type');
                     var inputs = el.querySelectorAll('.list-item input');
@@ -1248,9 +1238,7 @@
                         }
                     });
                     paramsObj[name] = values;
-                }
-                // Si es un contenedor de diccionario
-                else if (el.classList.contains('dict-container')) {
+                } else if (el.classList.contains('dict-container')) {
                     var rows = el.querySelectorAll('.dict-row');
                     var obj = {};
                     rows.forEach(function(row) {
@@ -1261,16 +1249,13 @@
                         }
                     });
                     paramsObj[name] = obj;
-                }
-                // Caso normal (input, textarea, select)
-                else {
+                } else {
                     var value;
                     if (el.type === 'checkbox') {
                         value = el.checked;
                     } else {
                         value = el.value;
                     }
-                    // Intentar obtener la definición del parámetro para convertir correctamente
                     var paramDef = selectedMethod ? selectedMethod.parameters.find(function(p) { return p.name === name; }) : null;
                     if (paramDef) {
                         value = convertToType(value, paramDef.type, paramDef.isComplex);
@@ -1290,9 +1275,7 @@
         }
         if (request.executionMode === 'Recurring') {
             request.cronExpression = $$('cronExpression').value.trim() || '* * * * *';
-            if (mode === 'manual') {
-                request.recurringEngine = $$('recurringEngine').value;
-            }
+            request.recurringEngine = $$('recurringEngine').value; // Se envía siempre (Direct, BuiltIn o DynamicJobs)
         }
         if (request.executionMode === 'Continuation') {
             request.parentJobId = $$('parentJobId').value.trim();
@@ -1385,7 +1368,6 @@
                     '</tr>';
                 tbody.innerHTML += row;
             });
-            // Bind events
             document.querySelectorAll('.relaunch').forEach(function(btn) {
                 btn.addEventListener('click', function() {
                     var entry = JSON.parse(this.getAttribute('data-entry'));
@@ -1442,9 +1424,14 @@
             }
         }
         if (entry.parentJobId) $$('parentJobId').value = entry.parentJobId;
-        if (entry.recurringEngine) {
-            var engineSelect = $$('recurringEngine');
-            if (engineSelect) engineSelect.value = entry.recurringEngine;
+        if (entry.recurringEngine || entry.engine) {
+            var eng = entry.recurringEngine || entry.engine;
+            var sel = $$('recurringEngine');
+            if (sel) {
+                // Asegurar que la opción exista (puede no estar si es 'Direct' y estamos en modo manual, pero en modo manual no habrá 'Direct')
+                var option = sel.querySelector('option[value="' + eng + '"]');
+                if (option) sel.value = eng;
+            }
         }
 
         if (mode === 'manual') {
@@ -1473,7 +1460,7 @@
             delayMinutes: entry.delayMinutes,
             scheduledDateTime: entry.scheduledDateTime,
             parentJobId: entry.parentJobId,
-            recurringEngine: entry.engine === 'DynamicJobs' ? 'DynamicJobs' : 'BuiltIn',
+            recurringEngine: entry.recurringEngine || entry.engine || 'BuiltIn',
             includePerformContext: entry.includePerformContext,
             includeCancellationToken: entry.includeCancellationToken,
             rawParametersJson: entry.parametersJson,
@@ -1569,7 +1556,6 @@
                         $$('prevPerformContext').textContent = template.includePerformContext ? 'Yes' : 'No';
                         $$('prevCancellationToken').textContent = template.includeCancellationToken ? 'Yes' : 'No';
 
-                        // Parámetros en JSON formateado
                         var rawParams = template.rawParametersJson || '{}';
                         try {
                             var parsed = JSON.parse(rawParams);
@@ -1739,8 +1725,11 @@
         }
         if (template.parentJobId) $$('parentJobId').value = template.parentJobId;
         if (template.recurringEngine) {
-            var engineSelect = $$('recurringEngine');
-            if (engineSelect) engineSelect.value = template.recurringEngine;
+            var sel = $$('recurringEngine');
+            if (sel) {
+                var opt = sel.querySelector('option[value="' + template.recurringEngine + '"]');
+                if (opt) sel.value = template.recurringEngine;
+            }
         }
     }
 
@@ -1761,7 +1750,6 @@
     }
 
     function fillAssistedFields(paramsObj) {
-        // Primero procesar listas y diccionarios
         document.querySelectorAll('#paramsContainer .list-container').forEach(function(container) {
             var name = container.getAttribute('data-param-name');
             var arr = paramsObj[name];
@@ -1794,7 +1782,6 @@
                 });
             }
         });
-        // Luego los campos normales (inputs, selects, textareas)
         var fields = document.querySelectorAll('#paramsContainer .param-field');
         fields.forEach(function(field) {
             var input = field.querySelector('[data-param-name]:not(.list-container):not(.dict-container)');
@@ -1857,7 +1844,7 @@
             delayMinutes: entry.delayMinutes,
             scheduledDateTime: entry.scheduledDateTime,
             parentJobId: entry.parentJobId,
-            recurringEngine: entry.engine === 'DynamicJobs' ? 'DynamicJobs' : (entry.engine === 'Direct' ? null : entry.engine),
+            recurringEngine: entry.recurringEngine || entry.engine || 'BuiltIn',
             includePerformContext: entry.includePerformContext,
             includeCancellationToken: entry.includeCancellationToken,
             rawParametersJson: entry.parametersJson,

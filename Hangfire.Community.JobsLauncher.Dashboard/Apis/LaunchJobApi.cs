@@ -1,4 +1,5 @@
 ﻿using Hangfire;
+using Hangfire.Common;
 using Hangfire.Community.JobLauncher.Common;
 using Hangfire.Community.JobsLauncher.Dashboard;
 using Hangfire.Community.JobsLauncher.Dashboard.Models;
@@ -75,21 +76,50 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
             Type jobType = TypeResolver.FindType(request.ClassName);
 
             string jobId = null;
-            string engineUsed = jobType != null ? "Direct" : "BuiltIn";
+            string engineUsed = jobType != null ? "Direct" : "BuiltIn"; // Para historial
 
             try
             {
-                // Si tenemos el tipo, usamos la vía directa (sin dispatcher)
-                if (jobType != null)
+                // Para trabajos recurrentes que NO usan el motor "Direct", forzamos siempre el dispatcher
+                bool forceDispatcherForRecurring = request.ExecutionMode == "Recurring"
+                                   && request.RecurringEngine == "BuiltIn";
+
+                if (jobType != null && !forceDispatcherForRecurring)
                 {
-                    jobId = LaunchDirect(request, jobType, serializedParams);
+                    var method = jobType.GetMethod(request.MethodName,
+                        BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
+                    if (method == null)
+                        throw new ArgumentException($"Method {request.MethodName} not found in {jobType.FullName}");
+
+                    object[] args = ConvertParametersForDirectCall(method, serializedParams,
+                        request.IncludePerformContext, request.IncludeCancellationToken);
+                    LambdaExpression directLambda = CreateDirectExpression(method, args);
+
+                    // El motor se decide según el request (para todos los modos de ejecución)
+                    if (request.ExecutionMode == "Recurring")
+                    {
+                        jobId = LaunchRecurringJob(request, serializedParams, jobType, method, args, directLambda);
+                        engineUsed = request.RecurringEngine ?? "Direct";
+                    }
+                    else
+                    {
+                        jobId = LaunchNonRecurringDirect(request, directLambda);
+                        engineUsed = "Direct";
+                    }
                 }
                 else
                 {
-                    // Sin tipo, usamos el dispatcher común
-                    jobId = LaunchWithDispatcher(request, serializedParams);
-                    if (request.RecurringEngine == "DynamicJobs")
-                        engineUsed = "DynamicJobs";
+                    // Sin tipo, usamos el dispatcher común para todo
+                    if (request.ExecutionMode == "Recurring")
+                    {
+                        jobId = LaunchRecurringJob(request, serializedParams, null, null, null, null);
+                        engineUsed = request.RecurringEngine ?? "BuiltIn";
+                    }
+                    else
+                    {
+                        jobId = LaunchWithDispatcher(request, serializedParams);
+                        engineUsed = "BuiltIn";
+                    }
                 }
 
                 // Registrar en el historial
@@ -108,17 +138,9 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
             }
         }
 
-        private string LaunchDirect(LaunchRequest request, Type jobType, string serializedParams)
+        // Lanza trabajos no recurrentes usando expresión directa
+        private string LaunchNonRecurringDirect(LaunchRequest request, LambdaExpression lambda)
         {
-            var method = jobType.GetMethod(request.MethodName,
-                BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
-            if (method == null)
-                throw new ArgumentException($"Method {request.MethodName} not found in {jobType.FullName}");
-
-            object[] args = ConvertParametersForDirectCall(method, serializedParams,
-                request.IncludePerformContext, request.IncludeCancellationToken);
-            LambdaExpression lambda = CreateDirectExpression(method, args);
-
             switch (request.ExecutionMode)
             {
                 case "FireAndForget":
@@ -150,149 +172,12 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
                         return BackgroundJob.ContinueJobWith(request.ParentJobId, taskExpr4);
                     throw new InvalidOperationException("Invalid lambda type");
 
-                case "Recurring":
-                    return LaunchRecurringDirectWithExpression(request, method, args, lambda);
-
                 default:
                     throw new ArgumentException($"Modo de ejecución no soportado: {request.ExecutionMode}");
             }
         }
 
-        private static object[] ConvertParametersForDirectCall(
-            MethodInfo method,
-            string serializedParams,
-            bool includePerformContext,
-            bool includeCancellationToken)
-        {
-            var paramDict = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(serializedParams)
-                ?? new Dictionary<string, JsonElement>();
-
-            var methodParams = method.GetParameters();
-            var args = new List<object>();
-
-            foreach (var p in methodParams)
-            {
-                if (p.ParameterType == typeof(PerformContext) && includePerformContext)
-                {
-                    args.Add(null); // Hangfire lo reemplaza automáticamente
-                    continue;
-                }
-                if (p.ParameterType == typeof(IJobCancellationToken) && includeCancellationToken)
-                {
-                    args.Add(JobCancellationToken.Null); // o null, Hangfire lo maneja
-                    continue;
-                }
-
-
-                if (paramDict.TryGetValue(p.Name, out var element))
-                {
-                    args.Add(JobLauncherDispatcher.ConvertJsonElement(element, p.ParameterType));
-                }
-                else
-                {
-                    args.Add(p.DefaultValue ?? (p.ParameterType.IsValueType ? Activator.CreateInstance(p.ParameterType) : null));
-                }
-            }
-
-            return args.ToArray();
-        }
-
-        private static LambdaExpression CreateDirectExpression(MethodInfo method, object[] args)
-        {
-            var parameters = method.GetParameters();
-
-            // Crear las expresiones constantes con el tipo exacto del parámetro
-            var paramExpressions = parameters.Select((p, i) =>
-            {
-                // Si ya no hay más args, lanzar error (no debería ocurrir)
-                if (i >= args.Length)
-                    throw new InvalidOperationException("Mismatch between method parameters and arguments.");
-                var arg = args[i];
-                // Si el argumento es null y el tipo del parámetro no permite null (ej. int), podría fallar,
-                // pero para tipos anulables o referencias está bien.
-                return Expression.Constant(arg, p.ParameterType);
-            }).ToArray();
-
-            if (method.IsStatic)
-            {
-                var call = Expression.Call(method, paramExpressions);
-                if (method.ReturnType == typeof(void))
-                    return Expression.Lambda<Action>(call);
-                if (method.ReturnType == typeof(Task))
-                    return Expression.Lambda<Func<Task>>(call);
-                throw new NotSupportedException($"Return type {method.ReturnType} not supported.");
-            }
-            else
-            {
-                var instance = Expression.New(method.DeclaringType.GetConstructor(Type.EmptyTypes));
-                var call = Expression.Call(instance, method, paramExpressions);
-                if (method.ReturnType == typeof(void))
-                    return Expression.Lambda<Action>(call);
-                if (method.ReturnType == typeof(Task))
-                    return Expression.Lambda<Func<Task>>(call);
-                throw new NotSupportedException($"Return type {method.ReturnType} not supported.");
-            }
-        }
-
-        private string LaunchRecurringDirectWithExpression(LaunchRequest request, MethodInfo method, object[] args, LambdaExpression lambda)
-        {
-            var recurringId = $"joblauncher-{Guid.NewGuid():N}";
-
-            if (request.RecurringEngine == "DynamicJobs" && IsDynamicJobsAvailable())
-            {
-                // Motor DynamicJobs: requiere el paquete Hangfire.DynamicJobs
-                var parameterTypes = method.GetParameters()
-                    .Select(p => p.ParameterType)
-                    .ToList();
-
-                // Construir el DynamicJob
-                var dynamicJobType = Type.GetType("Hangfire.DynamicJobs.DynamicJob, Hangfire.DynamicJobs")
-                    ?? throw new InvalidOperationException("DynamicJobs no está disponible.");
-                var dynamicJob = Activator.CreateInstance(dynamicJobType,
-                    request.ClassName,
-                    request.MethodName,
-                    string.Join(",", parameterTypes.Select(t => t.FullName ?? t.Name)),
-                    JsonSerializer.Serialize(args), // Parámetros ya convertidos
-                    null); // filters
-
-                // Crear DynamicRecurringJobOptions (opcional)
-                var optionsType = Type.GetType("Hangfire.DynamicJobs.DynamicRecurringJobOptions, Hangfire.DynamicJobs");
-                object options = optionsType != null
-                    ? Activator.CreateInstance(optionsType)
-                    : null;
-                if (options != null)
-                {
-                    options.GetType().GetProperty("Queue")?.SetValue(options, request.Queue);
-                    options.GetType().GetProperty("TimeZone")?.SetValue(options, TimeZoneInfo.Utc);
-                }
-
-                // Invocar AddOrUpdateDynamic
-                var recurringJobManager = new RecurringJobManager();
-                var addMethod = recurringJobManager.GetType().GetMethod("AddOrUpdateDynamic")
-                    ?? throw new InvalidOperationException("Método AddOrUpdateDynamic no encontrado.");
-                addMethod.Invoke(recurringJobManager, new[] { recurringId, dynamicJob, request.CronExpression, options });
-
-                return recurringId;
-            }
-            else
-            {
-                // Motor BuiltIn: usar la expresión lambda directamente
-                if (lambda is Expression<Action> actionExpr)
-                {
-                    RecurringJob.AddOrUpdate(recurringId, actionExpr, cronExpression: request.CronExpression, queue:  request.Queue);
-                }
-                else if (lambda is Expression<Func<Task>> taskExpr)
-                {
-                    RecurringJob.AddOrUpdate(recurringId, taskExpr, cronExpression: request.CronExpression, queue: request.Queue);
-                }
-                else
-                {
-                    throw new InvalidOperationException("Tipo de expresión no soportado para job recurrente.");
-                }
-                return recurringId;
-            }
-        }
-
+        // Lanza con dispatcher (sin tipo conocido)
         private string LaunchWithDispatcher(LaunchRequest request, string serializedParams)
         {
             switch (request.ExecutionMode)
@@ -322,58 +207,194 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
                         () => JobLauncherDispatcher.ExecuteJob(request.ClassName, request.MethodName, request.Queue,
                             serializedParams, request.IncludePerformContext, request.IncludeCancellationToken));
 
-                case "Recurring":
-                    return LaunchRecurringDispatcher(request, serializedParams);
-
                 default:
                     throw new ArgumentException($"Modo de ejecución no soportado: {request.ExecutionMode}");
             }
         }
 
-        private string LaunchRecurringDispatcher(LaunchRequest request, string serializedParams)
+        // Método centralizado para lanzar trabajos recurrentes, independientemente del motor y si es directo o dispatcher
+        private string LaunchRecurringJob(
+            LaunchRequest request,
+            string serializedParams,
+            Type jobType,                // null si es vía dispatcher
+            MethodInfo method,           // null si dispatcher
+            object[] args,               // null si dispatcher
+            LambdaExpression directLambda // null si dispatcher
+        )
         {
             var recurringId = $"joblauncher-{Guid.NewGuid():N}";
-            if (request.RecurringEngine == "DynamicJobs" && IsDynamicJobsAvailable())
+            var engine = request.RecurringEngine ?? (jobType != null ? "Direct" : "BuiltIn");
+
+            // Preparar la expresión lambda adecuada según el motor "BuiltIn"
+            LambdaExpression builtInLambda = null;
+            if (engine == "BuiltIn" || engine == "DynamicJobs")
             {
-                // Usar DynamicJob sin tipos específicos (todos como string)
-                var dynamicJob = Activator.CreateInstance(
-                    Type.GetType("Hangfire.DynamicJobs.DynamicJob, Hangfire.DynamicJobs"),
-                    request.ClassName,
-                    request.MethodName,
-                    "System.String", // Un único parámetro string
-                    JsonSerializer.Serialize(new { parameters = serializedParams }), // Envolver
-                    null);
-
-                var recurringJobManager = new RecurringJobManager();
-                var options = Activator.CreateInstance(
-                    Type.GetType("Hangfire.DynamicJobs.DynamicRecurringJobOptions, Hangfire.DynamicJobs"));
-                options.GetType().GetProperty("Queue")?.SetValue(options, request.Queue);
-
-                recurringJobManager.GetType()
-                    .GetMethod("AddOrUpdateDynamic")
-                    ?.Invoke(recurringJobManager, new[]
+                if (jobType != null)
+                {
+                    builtInLambda = directLambda; // usar expresión directa
+                }
+                else
+                {
+                    // Construir expresión para dispatcher
+                    if (request.IncludePerformContext || request.IncludeCancellationToken)
                     {
-                        recurringId,
-                        dynamicJob,
-                        request.CronExpression,
-                        options
+                        // La firma del dispatcher no acepta PerformContext/CancellationToken, se ignoran
+                    }
+                    builtInLambda = Expression.Lambda<Action>(
+                        Expression.Call(
+                            typeof(JobLauncherDispatcher).GetMethod(nameof(JobLauncherDispatcher.ExecuteJob)),
+                            Expression.Constant(request.ClassName),
+                            Expression.Constant(request.MethodName),
+                            Expression.Constant(request.Queue),
+                            Expression.Constant(serializedParams),
+                            Expression.Constant(request.IncludePerformContext),
+                            Expression.Constant(request.IncludeCancellationToken)
+                        )
+                    );
+                }
+            }
+
+            switch (engine)
+            {
+                case "Direct":
+                    if (jobType == null)
+                        throw new InvalidOperationException("Direct engine requires a resolved type.");
+                    // Usar expresión directa
+                    if (directLambda is Expression<Action> actionExpr)
+                        RecurringJob.AddOrUpdate(recurringId, actionExpr, request.CronExpression, queue: request.Queue);
+                    else if (directLambda is Expression<Func<Task>> taskExpr)
+                        RecurringJob.AddOrUpdate(recurringId, taskExpr, request.CronExpression, queue: request.Queue);
+                    else
+                        throw new InvalidOperationException("Direct lambda type not supported.");
+                    break;
+
+                case "BuiltIn":
+                    if (builtInLambda is Expression<Action> actionExpr2)
+                        RecurringJob.AddOrUpdate(recurringId, actionExpr2, request.CronExpression, queue: request.Queue);
+                    else if (builtInLambda is Expression<Func<Task>> taskExpr2)
+                        RecurringJob.AddOrUpdate(recurringId, taskExpr2, request.CronExpression, queue: request.Queue);
+                    else
+                        throw new InvalidOperationException("BuiltIn lambda type not supported.");
+                    break;
+
+                case "DynamicJobs":
+                    if (!IsDynamicJobsAvailable())
+                        throw new InvalidOperationException("DynamicJobs engine not available.");
+
+                    Job job = null;
+                    if (jobType != null)
+                    {
+                        if (directLambda is Expression<Action> actionExprr)
+                            job = Job.FromExpression(actionExprr);
+                        else if (directLambda is Expression<Func<Task>> taskExpr)
+                            job = Job.FromExpression(taskExpr);
+                        else
+                            throw new InvalidOperationException("Direct lambda type not supported for DynamicJobs.");
+                    }
+                    else
+                    {
+                        if (builtInLambda is Expression<Action> actionExprr)
+                            job = Job.FromExpression(actionExprr);
+                        else if (builtInLambda is Expression<Func<Task>> taskExpr)
+                            job = Job.FromExpression(taskExpr);
+                        else
+                            throw new InvalidOperationException("Dispatcher lambda type not supported for DynamicJobs.");
+                    }
+
+                    // Crear DynamicRecurringJobOptions por reflexión (evita dependencia de compilación)
+                    var dynamicOptionsType = Type.GetType("Hangfire.DynamicRecurringJobOptions, Hangfire.DynamicJobs");
+                    var dynamicOptions = Activator.CreateInstance(dynamicOptionsType);
+                    dynamicOptionsType.GetProperty("QueueName")?.SetValue(dynamicOptions, request.Queue);
+                    dynamicOptionsType.GetProperty("TimeZone")?.SetValue(dynamicOptions, TimeZoneInfo.Utc);
+
+                    // Invocar AddOrUpdateDynamic como método de extensión estático
+                    var extensionsType = Type.GetType("Hangfire.DynamicJobRecurringJobManagerExtensions, Hangfire.DynamicJobs");
+                    var addMethod = extensionsType.GetMethod("AddOrUpdateDynamic", new[] {
+                        typeof(IRecurringJobManager),
+                        typeof(string),
+                        typeof(Job),
+                        typeof(string),
+                        dynamicOptionsType
                     });
-                return recurringId;
+                    var manager = new RecurringJobManager();
+                    addMethod.Invoke(null, new object[] { manager, recurringId, job, request.CronExpression, dynamicOptions });
+                    break;
+
+                default:
+                    throw new ArgumentException($"Unsupported Recurring Engine: {engine}");
+            }
+
+            return recurringId;
+        }
+
+        private static object[] ConvertParametersForDirectCall(
+            MethodInfo method,
+            string serializedParams,
+            bool includePerformContext,
+            bool includeCancellationToken)
+        {
+            var paramDict = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(serializedParams)
+                ?? new Dictionary<string, JsonElement>();
+
+            var methodParams = method.GetParameters();
+            var args = new List<object>();
+
+            foreach (var p in methodParams)
+            {
+                if (p.ParameterType == typeof(PerformContext) && includePerformContext)
+                {
+                    args.Add(null); // Hangfire lo reemplaza automáticamente
+                    continue;
+                }
+                if (p.ParameterType == typeof(IJobCancellationToken) && includeCancellationToken)
+                {
+                    args.Add(JobCancellationToken.Null);
+                    continue;
+                }
+
+                if (paramDict.TryGetValue(p.Name, out var element))
+                {
+                    args.Add(JobLauncherDispatcher.ConvertJsonElement(element, p.ParameterType));
+                }
+                else
+                {
+                    args.Add(p.DefaultValue ?? (p.ParameterType.IsValueType ? Activator.CreateInstance(p.ParameterType) : null));
+                }
+            }
+
+            return args.ToArray();
+        }
+
+        private static LambdaExpression CreateDirectExpression(MethodInfo method, object[] args)
+        {
+            var parameters = method.GetParameters();
+
+            var paramExpressions = parameters.Select((p, i) =>
+            {
+                if (i >= args.Length)
+                    throw new InvalidOperationException("Mismatch between method parameters and arguments.");
+                var arg = args[i];
+                return Expression.Constant(arg, p.ParameterType);
+            }).ToArray();
+
+            if (method.IsStatic)
+            {
+                var call = Expression.Call(method, paramExpressions);
+                if (method.ReturnType == typeof(void))
+                    return Expression.Lambda<Action>(call);
+                if (method.ReturnType == typeof(Task))
+                    return Expression.Lambda<Func<Task>>(call);
+                throw new NotSupportedException($"Return type {method.ReturnType} not supported.");
             }
             else
             {
-                RecurringJob.AddOrUpdate(
-                        recurringId,
-                        () => JobLauncherDispatcher.ExecuteJob(
-                            request.ClassName,
-                            request.MethodName,
-                            request.Queue,
-                            serializedParams,
-                            request.IncludePerformContext,
-                            request.IncludeCancellationToken),
-                        cronExpression: request.CronExpression,
-                        queue: request.Queue);
-                return recurringId;
+                var instance = Expression.New(method.DeclaringType.GetConstructor(Type.EmptyTypes));
+                var call = Expression.Call(instance, method, paramExpressions);
+                if (method.ReturnType == typeof(void))
+                    return Expression.Lambda<Action>(call);
+                if (method.ReturnType == typeof(Task))
+                    return Expression.Lambda<Func<Task>>(call);
+                throw new NotSupportedException($"Return type {method.ReturnType} not supported.");
             }
         }
 
@@ -392,7 +413,6 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
                 ParametersJson = serializedParams,
                 IncludePerformContext = request.IncludePerformContext,
                 IncludeCancellationToken = request.IncludeCancellationToken,
-                //User = context.Request?.User?.Identity?.Name ?? "Anonymous"
                 User = "Anonymous"
             };
 
@@ -400,32 +420,25 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
             using (var connection = storage.GetConnection())
             using (var transaction = connection.CreateWriteTransaction())
             {
-                // Historial volátil (clave ordenable)
                 var key = $"{DateTime.UtcNow.Ticks}-{jobId}";
                 transaction.SetRangeInHash(HistoryHashKey, new[] { new KeyValuePair<string, string>(key, JsonSerializer.Serialize(entry)) });
 
-                // Auditoría si está habilitada
                 if (_options.EnableAuditLog)
                 {
                     transaction.SetRangeInHash(AuditLogHashKey, new[] { new KeyValuePair<string, string>(key, JsonSerializer.Serialize(entry)) });
                 }
 
-                // Limitar tamaño del historial volátil
                 var allEntries = connection.GetAllEntriesFromHash(HistoryHashKey) ?? new Dictionary<string, string>();
                 if (allEntries.Count > _options.HistoryMaxEntries)
                 {
-                    // Borrar los más antiguos (ordenando por clave descendente nos quedamos con los últimos HistoryMaxEntries)
                     var keysToRemove = allEntries.Keys
                         .OrderBy(k => k)
                         .Take(allEntries.Count - _options.HistoryMaxEntries)
                         .ToList();
                     foreach (var k in keysToRemove)
                     {
-                        transaction.RemoveHash(HistoryHashKey); // Desafortunadamente no hay RemoveHashField; reescribimos todo
+                        transaction.RemoveHash(HistoryHashKey);
                     }
-                    // Estrategia alternativa: borrar el hash completo y volver a añadir solo los que queremos conservar
-                    // Debido a la complejidad, lo hacemos en un paso posterior o lo dejamos así (crecerá hasta que alguien limpie manualmente).
-                    // Para simplificar, confiamos en que el método HandleClearHistory se encargará de purgarlo.
                 }
 
                 transaction.Commit();
@@ -445,14 +458,8 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
 
         private bool IsDynamicJobsAvailable()
         {
-            return Type.GetType("Hangfire.DynamicJobs.DynamicJob, Hangfire.DynamicJobs") != null;
-        }
-
-        private List<Type> GetParameterTypes(Type jobType, string methodName)
-        {
-            var method = jobType.GetMethod(methodName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
-            if (method == null) throw new Exception($"Método {methodName} no encontrado en {jobType.FullName}");
-            return method.GetParameters().Select(p => p.ParameterType).ToList();
+            return AppDomain.CurrentDomain.GetAssemblies()
+                    .Any(a => a.GetType("Hangfire.DynamicJob") != null);
         }
 
         private static async Task WriteJson(DashboardContext context, object data)
