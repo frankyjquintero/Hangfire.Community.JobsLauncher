@@ -42,6 +42,7 @@
     <li role="presentation" class="active"><a href="#launchTab" aria-controls="launchTab" role="tab" data-toggle="tab">Launch</a></li>
     <li role="presentation"><a href="#historyTab" aria-controls="historyTab" role="tab" data-toggle="tab">History</a></li>
     <li role="presentation"><a href="#templatesTab" aria-controls="templatesTab" role="tab" data-toggle="tab">Templates</a></li>
+    <li role="presentation" id="auditLogTab" style="display:none;"><a href="#auditLogPane" aria-controls="auditLogPane" role="tab" data-toggle="tab">Audit Log</a></li>
 </ul>
 
 <div class="tab-content" style="padding-top:15px;">
@@ -267,6 +268,54 @@
             </div>
         </div>
     </div>
+        <!-- ==================== PESTAÑA AUDITLOG ==================== -->
+    <div role="tabpanel" class="tab-pane fade" id="auditLogPane">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>Audit Log (read-only)</strong>
+            </div>
+            <div class="panel-body">
+                <!-- Filtros -->
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-sm-3">
+                        <input type="text" id="auditUserFilter" class="form-control input-sm" placeholder="User">
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="datetime-local" id="auditFromFilter" class="form-control input-sm" placeholder="From">
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="datetime-local" id="auditToFilter" class="form-control input-sm" placeholder="To">
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="number" id="auditCountFilter" class="form-control input-sm" value="200" min="1" max="1000" placeholder="Count">
+                    </div>
+                    <div class="col-sm-3">
+                        <button class="btn btn-sm btn-default" id="btnApplyAuditFilters">Apply Filters</button>
+                        <button class="btn btn-sm btn-default" id="btnClearAuditFilters">Clear</button>
+                    </div>
+                </div>
+
+                <!-- Tabla -->
+                <table class="table table-condensed" id="auditLogTable">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>JobId</th>
+                            <th>Class</th>
+                            <th>Method</th>
+                            <th>Queue</th>
+                            <th>Mode</th>
+                            <th>Engine</th>
+                            <th>User</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 
 <!-- Modal Generador de Cron (versión mejorada) -->
@@ -519,12 +568,71 @@
         fetchJson(apiBaseUrl + '/api/capabilities').then(function(caps) {
             dynamicJobsAvailable = caps.dynamicJobsAvailable;
             buildRecurringEngineOptions(); // construir opciones según modo actual
+
+            // Mostrar pestaña de auditoría si está habilitada
+            if (caps.auditLogEnabled) {
+                document.getElementById('auditLogTab').style.display = '';
+                // Cargar datos de auditoría al hacer clic en la pestaña
+                document.querySelector('a[href="#auditLogPane"]').addEventListener('click', function() {
+                    loadAuditLog();
+                });
+            }
         });
         loadQueues();
         bindEvents();
         loadHistory();
         loadTemplates();
     });
+
+    // Auditoría: cargar datos al abrir la pestaña
+    function loadAuditLog() {
+        var user = document.getElementById('auditUserFilter').value.trim();
+        var from = toUtcString(document.getElementById('auditFromFilter').value);
+        var to   = toUtcString(document.getElementById('auditToFilter').value);
+        var count = document.getElementById('auditCountFilter').value || '200';
+
+        var params = new URLSearchParams();
+        if (user) params.append('user', user);
+        if (from) params.append('from', from);
+        if (to)   params.append('to', to);
+        params.append('count', count);
+
+        fetchJson(apiBaseUrl + '/api/audit-log?' + params.toString())
+            .then(function(entries) {
+                var tbody = document.querySelector('#auditLogTable tbody');
+                tbody.innerHTML = '';
+                entries.forEach(function(e) {
+                    var row = '<tr>' +
+                        '<td>' + new Date(e.timestamp).toLocaleString() + '</td>' +
+                        '<td>' + (e.jobId || '') + '</td>' +
+                        '<td>' + (e.className || '') + '</td>' +
+                        '<td>' + (e.methodName || '') + '</td>' +
+                        '<td>' + (e.queue || '') + '</td>' +
+                        '<td>' + (e.mode || '') + '</td>' +
+                        '<td>' + (e.engine || '') + '</td>' +
+                        '<td>' + (e.user || '') + '</td>' +
+                        '</tr>';
+                    tbody.innerHTML += row;
+                });
+            });
+    }
+
+    // Eventos de los botones de filtro y carga inicial (añadir en la inicialización)
+
+    document.getElementById('btnApplyAuditFilters').addEventListener('click', loadAuditLog);
+    document.getElementById('btnClearAuditFilters').addEventListener('click', function() {
+        document.getElementById('auditUserFilter').value = '';
+        document.getElementById('auditFromFilter').value = '';
+        document.getElementById('auditToFilter').value = '';
+        document.getElementById('auditCountFilter').value = '200';
+        loadAuditLog();
+    });
+
+    function toUtcString(localDateTime) {
+        if (!localDateTime) return '';
+        // Convierte hora local a UTC y devuelve ISO 8601
+        return new Date(localDateTime).toISOString();
+    }
 
     // Configura las opciones del <select> del motor recurrente según el modo actual y disponibilidad de DynamicJobs
     function buildRecurringEngineOptions() {

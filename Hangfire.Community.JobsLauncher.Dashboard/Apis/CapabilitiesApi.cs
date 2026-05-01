@@ -1,8 +1,7 @@
-﻿using Hangfire.Dashboard;
+﻿using Hangfire.Community.JobsLauncher.Dashboard;
+using Hangfire.Dashboard;
 using System;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -11,12 +10,23 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
 {
     public class CapabilitiesApi : IDashboardDispatcher
     {
+        private readonly JobLauncherOptions _options;
+
+        public CapabilitiesApi(JobLauncherOptions options)
+        {
+            _options = options ?? throw new ArgumentNullException(nameof(options));
+        }
+
         public async Task Dispatch(DashboardContext context)
         {
             bool dynamicJobsAvailable = AppDomain.CurrentDomain.GetAssemblies()
                     .Any(a => a.GetType("Hangfire.DynamicJob") != null);
 
-            var response = new { dynamicJobsAvailable };
+            var response = new
+            {
+                dynamicJobsAvailable,
+                auditLogEnabled = _options.EnableAuditLog
+            };
 
             await WriteJson(context, response);
         }

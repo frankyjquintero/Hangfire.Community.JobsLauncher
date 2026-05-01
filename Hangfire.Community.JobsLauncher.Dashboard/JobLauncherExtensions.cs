@@ -32,7 +32,7 @@ namespace Hangfire.Community.JobsLauncher.Dashboard
             var opts = options ?? new JobLauncherOptions();
 
             // APIs
-            DashboardRoutes.Routes.Add("/joblauncher/api/capabilities", new CapabilitiesApi());
+            DashboardRoutes.Routes.Add("/joblauncher/api/capabilities", new CapabilitiesApi(opts));
             DashboardRoutes.Routes.Add("/joblauncher/api/methods", new GetMethodsApi());
             DashboardRoutes.Routes.Add("/joblauncher/api/launch", new LaunchJobApi(opts));
             DashboardRoutes.Routes.Add("/joblauncher/api/validate-cron", new ValidateCronApi());
@@ -40,6 +40,10 @@ namespace Hangfire.Community.JobsLauncher.Dashboard
             DashboardRoutes.Routes.Add("/joblauncher/api/templates", new TemplatesApi());
             DashboardRoutes.Routes.Add("/joblauncher/api/queues", new QueuesApi());
             DashboardRoutes.Routes.Add("/joblauncher/api/export-import", new ExportImportApi());
+            if(opts.EnableAuditLog)
+            {
+                DashboardRoutes.Routes.Add("/joblauncher/api/audit-log", new AuditLogApi());
+            }
 
             // Página principal
             DashboardRoutes.Routes.AddRazorPage("/joblauncher", x => new JobLauncherPage());

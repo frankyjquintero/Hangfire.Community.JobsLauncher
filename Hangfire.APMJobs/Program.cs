@@ -1,8 +1,9 @@
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Hangfire.Community.JobsLauncher.Dashboard;
+using Hangfire.Community.Dashboard.JobsInsights;
 
-    var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
@@ -20,11 +21,11 @@ builder.Services.AddHangfire(config =>
 {
     if (storageType == "SqlServer")
     {
-        config.UseSqlServerStorage(sqlConn).UseDynamicJobs().UseJobLauncher();
+        config.UseSqlServerStorage(sqlConn).UseDynamicJobs().UseJobLauncher(new JobLauncherOptions() { EnableAuditLog = true }).UseJobsInsights();
     }
     else
     {
-        config.UseMemoryStorage().UseDynamicJobs().UseJobLauncher();
+        config.UseMemoryStorage().UseDynamicJobs().UseJobLauncher(new JobLauncherOptions() { EnableAuditLog = true }).UseJobsInsights();
     }
 });
 builder.Services.AddHangfireServer();
