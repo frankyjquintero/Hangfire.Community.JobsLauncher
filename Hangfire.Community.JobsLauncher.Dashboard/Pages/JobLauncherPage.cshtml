@@ -136,7 +136,10 @@
                                 <label>Cron Expression</label>
                                 <div class="input-group">
                                     <input type="text" id="cronExpression" class="form-control" placeholder="* * * * *">
-                                    <span class="input-group-btn"><button class="btn btn-default" id="btnValidateCron" type="button">Validate</button></span>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" id="btnValidateCron" type="button">Validate</button>
+                                        <button type="button" class="btn btn-default" id="btnOpenCronGenerator">Generate</button>
+                                    </span>
                                 </div>
                                 <div id="cronPreview" style="margin-top:5px; display:none;" class="text-info"></div>
                             </div>
@@ -236,7 +239,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>        
         <!-- Modal para vista previa de plantilla -->
         <div class="modal fade" id="templatePreviewModal" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-lg" role="document">
@@ -264,6 +267,222 @@
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Generador de Cron (versión mejorada) -->
+<div class="modal fade" id="cronGeneratorModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #f8f9fa; border-bottom: 1px solid #dee2e6;">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><i class="glyphicon glyphicon-time"></i> Cron Expression Generator</h4>
+            </div>
+            <div class="modal-body" style="padding: 20px;">
+                <div class="row">
+                    <div class="col-md-7">
+                        <!-- Pestañas de categorías -->
+                        <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 15px;">
+                            <li role="presentation" class="active"><a href="#tabMinutes" role="tab" data-toggle="tab">Minutes</a></li>
+                            <li role="presentation"><a href="#tabHours" role="tab" data-toggle="tab">Hours</a></li>
+                            <li role="presentation"><a href="#tabDayMonth" role="tab" data-toggle="tab">Day of Month</a></li>
+                            <li role="presentation"><a href="#tabMonth" role="tab" data-toggle="tab">Month</a></li>
+                            <li role="presentation"><a href="#tabDayWeek" role="tab" data-toggle="tab">Day of Week</a></li>
+                        </ul>
+
+                        <div class="tab-content" style="min-height: 250px;">
+                            <!-- Pestaña Minutos -->
+                            <div role="tabpanel" class="tab-pane active" id="tabMinutes">
+                                <div class="form-group">
+                                    <label>Every N minutes</label>
+                                    <input type="number" id="minEveryN" class="form-control" min="1" value="1" placeholder="N">
+                                </div>
+                                <div class="form-group">
+                                    <label>Specific minutes (comma separated)</label>
+                                    <input type="text" id="minSpecific" class="form-control" placeholder="0,15,30,45">
+                                </div>
+                                <div class="form-group">
+                                    <label>Range (from - to)</label>
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                            <input type="number" id="minRangeFrom" class="form-control" min="0" max="59" value="0" placeholder="From">
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <input type="number" id="minRangeTo" class="form-control" min="0" max="59" value="59" placeholder="To">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Pestaña Horas -->
+                            <div role="tabpanel" class="tab-pane" id="tabHours">
+                                <div class="form-group">
+                                    <label>Every N hours</label>
+                                    <input type="number" id="hourEveryN" class="form-control" min="1" value="1" placeholder="N">
+                                </div>
+                                <div class="form-group">
+                                    <label>Specific hours (comma separated)</label>
+                                    <input type="text" id="hourSpecific" class="form-control" placeholder="8,12,18">
+                                </div>
+                                <div class="form-group">
+                                    <label>Range (from - to)</label>
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                            <input type="number" id="hourRangeFrom" class="form-control" min="0" max="23" value="9" placeholder="From">
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <input type="number" id="hourRangeTo" class="form-control" min="0" max="23" value="17" placeholder="To">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Pestaña Día del mes -->
+                            <div role="tabpanel" class="tab-pane" id="tabDayMonth">
+                                <div class="form-group">
+                                    <label>Every day</label>
+                                    <input type="text" class="form-control" value="*" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>Specific days (comma separated, e.g., 1,15)</label>
+                                    <input type="text" id="dayMonthSpecific" class="form-control" placeholder="1,15">
+                                </div>
+                                <div class="form-group">
+                                    <label>Every N days starting at day</label>
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                            <input type="number" id="dayMonthEveryN" class="form-control" min="1" value="1" placeholder="N">
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <input type="number" id="dayMonthStart" class="form-control" min="1" max="31" value="1" placeholder="Start day">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Specific day of month (choose one or many)</label>
+                                    <div class="row" style="margin: 0;">
+                                        <!-- Checkboxes para días 1-31 en una cuadrícula compacta -->
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="1"> 01</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="2"> 02</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="3"> 03</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="4"> 04</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="5"> 05</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="6"> 06</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="7"> 07</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="8"> 08</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="9"> 09</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="10"> 10</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="11"> 11</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="12"> 12</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="13"> 13</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="14"> 14</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="15"> 15</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="16"> 16</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="17"> 17</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="18"> 18</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="19"> 19</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="20"> 20</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="21"> 21</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="22"> 22</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="23"> 23</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="24"> 24</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="25"> 25</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="26"> 26</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="27"> 27</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="28"> 28</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="29"> 29</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="30"> 30</label></div>
+                                        <div class="col-xs-3"><label><input type="checkbox" class="day-month-check" value="31"> 31</label></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Pestaña Mes -->
+                            <div role="tabpanel" class="tab-pane" id="tabMonth">
+                                <div class="form-group">
+                                    <label>Every month</label>
+                                    <input type="text" class="form-control" value="*" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>Specific months (comma separated, 1-12)</label>
+                                    <input type="text" id="monthSpecific" class="form-control" placeholder="1,6,12">
+                                </div>
+                                <div class="form-group">
+                                    <label>Specific months (choose)</label>
+                                    <div class="row" style="margin: 0;">
+                                        <div class="col-xs-4"><label><input type="checkbox" class="month-check" value="1"> January</label></div>
+                                        <div class="col-xs-4"><label><input type="checkbox" class="month-check" value="2"> February</label></div>
+                                        <div class="col-xs-4"><label><input type="checkbox" class="month-check" value="3"> March</label></div>
+                                        <div class="col-xs-4"><label><input type="checkbox" class="month-check" value="4"> April</label></div>
+                                        <div class="col-xs-4"><label><input type="checkbox" class="month-check" value="5"> May</label></div>
+                                        <div class="col-xs-4"><label><input type="checkbox" class="month-check" value="6"> June</label></div>
+                                        <div class="col-xs-4"><label><input type="checkbox" class="month-check" value="7"> July</label></div>
+                                        <div class="col-xs-4"><label><input type="checkbox" class="month-check" value="8"> August</label></div>
+                                        <div class="col-xs-4"><label><input type="checkbox" class="month-check" value="9"> September</label></div>
+                                        <div class="col-xs-4"><label><input type="checkbox" class="month-check" value="10"> October</label></div>
+                                        <div class="col-xs-4"><label><input type="checkbox" class="month-check" value="11"> November</label></div>
+                                        <div class="col-xs-4"><label><input type="checkbox" class="month-check" value="12"> December</label></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Pestaña Día de la semana -->
+                            <div role="tabpanel" class="tab-pane" id="tabDayWeek">
+                                <div class="form-group">
+                                    <label>Every day of week</label>
+                                    <input type="text" class="form-control" value="*" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>Specific days of week (choose)</label>
+                                    <div class="row" style="margin: 0;">
+                                        <div class="col-xs-6"><label><input type="checkbox" class="weekday-check" value="1"> Monday</label></div>
+                                        <div class="col-xs-6"><label><input type="checkbox" class="weekday-check" value="2"> Tuesday</label></div>
+                                        <div class="col-xs-6"><label><input type="checkbox" class="weekday-check" value="3"> Wednesday</label></div>
+                                        <div class="col-xs-6"><label><input type="checkbox" class="weekday-check" value="4"> Thursday</label></div>
+                                        <div class="col-xs-6"><label><input type="checkbox" class="weekday-check" value="5"> Friday</label></div>
+                                        <div class="col-xs-6"><label><input type="checkbox" class="weekday-check" value="6"> Saturday</label></div>
+                                        <div class="col-xs-6"><label><input type="checkbox" class="weekday-check" value="0"> Sunday</label></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Specific days (comma separated, 0-7, SUN-SAT)</label>
+                                    <input type="text" id="weekdaySpecific" class="form-control" placeholder="1,3,5">
+                                </div>
+                                <div class="form-group">
+                                    <label>Every N days starting on day</label>
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                            <input type="number" id="weekdayEveryN" class="form-control" min="1" value="1" placeholder="N">
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <input type="number" id="weekdayStart" class="form-control" min="0" max="7" value="1" placeholder="Start day">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Panel derecho: previsualización -->
+                    <div class="col-md-5">
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><strong>Preview</strong></div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label>Current expression</label>
+                                    <input type="text" id="cronPreviewExpression" class="form-control" readonly style="font-family:monospace;">
+                                </div>
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <p id="cronDescription" style="font-style:italic; color:#555;"></p>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-info" id="btnShowExecutions">Show next executions</button>
+                                <div id="cronExecutionsPreview" style="margin-top:10px; max-height:150px; overflow-y:auto; font-size:12px;">&nbsp;</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btnGenerateCron">Generate</button>
             </div>
         </div>
     </div>
@@ -332,6 +551,9 @@
 
         // Cron
         $$('btnValidateCron').addEventListener('click', validateCron);
+        $$('btnOpenCronGenerator').addEventListener('click', function() {
+            $('#cronGeneratorModal').modal('show');
+        });
 
         // Botones principales
         $$('btnPreview').addEventListener('click', showPreview);
@@ -701,6 +923,225 @@
                 div.style.display = 'block';
             });
     }
+
+    // ====== CRON GENERATOR ======
+    function buildCronExpressionFromModal() {
+        var minute = '*';
+        var hour = '*';
+        var dayMonth = '*';
+        var month = '*';
+        var dayWeek = '*';
+
+        // Minutos (si el usuario no especifica nada, se queda '0')
+        var minEveryN = document.getElementById('minEveryN').value;
+        var minSpecific = document.getElementById('minSpecific').value.trim();
+        var minRangeFrom = document.getElementById('minRangeFrom').value;
+        var minRangeTo = document.getElementById('minRangeTo').value;
+        if (minEveryN && minEveryN !== '1') {
+            minute = '*/' + minEveryN;
+        } else if (minSpecific) {
+            minute = minSpecific;
+        } else if (minRangeFrom && minRangeTo) {
+            minute = minRangeFrom + '-' + minRangeTo;
+        }
+
+        // Horas (análogo)
+        var hourEveryN = document.getElementById('hourEveryN').value;
+        var hourSpecific = document.getElementById('hourSpecific').value.trim();
+        var hourRangeFrom = document.getElementById('hourRangeFrom').value;
+        var hourRangeTo = document.getElementById('hourRangeTo').value;
+        if (hourEveryN && hourEveryN !== '1') {
+            hour = '*/' + hourEveryN;
+        } else if (hourSpecific) {
+            hour = hourSpecific;
+        } else if (hourRangeFrom && hourRangeTo) {
+            hour = hourRangeFrom + '-' + hourRangeTo;
+        }
+
+        // Día del mes
+        var dayMonthSpecific = document.getElementById('dayMonthSpecific').value.trim();
+        var dayMonthEveryN = document.getElementById('dayMonthEveryN').value;
+        var dayMonthStart = document.getElementById('dayMonthStart').value;
+        var checkedDays = [];
+        document.querySelectorAll('.day-month-check:checked').forEach(function(cb) { checkedDays.push(cb.value); });
+        if (checkedDays.length > 0) {
+            dayMonth = checkedDays.join(',');
+        } else if (dayMonthSpecific) {
+            dayMonth = dayMonthSpecific;
+        } else if (dayMonthEveryN && dayMonthEveryN !== '1') {
+            dayMonth = (dayMonthStart ? dayMonthStart + '/' + dayMonthEveryN : '*/' + dayMonthEveryN);
+        }
+
+        // Mes
+        var monthSpecific = document.getElementById('monthSpecific').value.trim();
+        var checkedMonths = [];
+        document.querySelectorAll('.month-check:checked').forEach(function(cb) { checkedMonths.push(cb.value); });
+        if (checkedMonths.length > 0) {
+            month = checkedMonths.join(',');
+        } else if (monthSpecific) {
+            month = monthSpecific;
+        }
+
+        // Día de la semana
+        var checkedWeekdays = [];
+        document.querySelectorAll('.weekday-check:checked').forEach(function(cb) { checkedWeekdays.push(cb.value); });
+        var weekdaySpecific = document.getElementById('weekdaySpecific').value.trim();
+        var weekdayEveryN = document.getElementById('weekdayEveryN').value;
+        var weekdayStart = document.getElementById('weekdayStart').value;
+        if (checkedWeekdays.length > 0) {
+            dayWeek = checkedWeekdays.join(',');
+        } else if (weekdaySpecific) {
+            dayWeek = weekdaySpecific;
+        } else if (weekdayEveryN && weekdayEveryN !== '1') {
+            dayWeek = (weekdayStart ? weekdayStart + '/' + weekdayEveryN : '*/' + weekdayEveryN);
+        }
+
+        return minute + ' ' + hour + ' ' + dayMonth + ' ' + month + ' ' + dayWeek;
+    }
+
+    function updateCronPreview() {
+        var expression = buildCronExpressionFromModal();
+        document.getElementById('cronPreviewExpression').value = expression;
+        document.getElementById('cronExecutionsPreview').innerHTML = '';
+        document.getElementById('cronDescription').textContent = generateCronDescription();
+    }
+
+    function showExecutions() {
+        var expr = document.getElementById('cronPreviewExpression').value;
+        if (!expr) return;
+        var fetchUrl = apiBaseUrl + '/api/validate-cron?expression=' + encodeURIComponent(expr);
+        fetchJson(fetchUrl)
+            .then(function(resp) {
+                var div = document.getElementById('cronExecutionsPreview');
+                if (!resp.success) {
+                    div.innerHTML = '<span class="text-danger">' + resp.error + '</span>';
+                    return;
+                }
+                // Convertir fechas ISO a objetos moment y formatearlas
+                var occurrences = resp.occurrences.map(function(isoDate) {
+                    var m = moment.utc(isoDate);
+                    return m.local().format('ddd, MMM Do YYYY, h:mm:ss A');
+                });
+                var firstMoment = moment.utc(resp.occurrences[0]);
+                var fromNow = firstMoment.fromNow(); // e.g., "in 2 days"
+                var html = '<strong>Next executions:</strong><br>';
+                html += '<span style="font-weight:bold; color:#337ab7;">' + fromNow + '</span><br>';
+                html += occurrences.join('<br>');
+                div.innerHTML = html;
+            })
+            .catch(function(err) {
+                document.getElementById('cronExecutionsPreview').innerHTML = 
+                    '<span class="text-danger">Error: ' + err.message + '</span>';
+            });
+    }
+
+    function generateCronDescription() {
+        var parts = buildCronExpressionFromModal().split(' ');
+        var minute = parts[0], hour = parts[1], dayM = parts[2], month = parts[3], dayW = parts[4];
+        var desc = [];
+
+        // Minutos
+        if (minute === '*') desc.push('every minute');
+        else if (minute.startsWith('*/')) desc.push('every ' + minute.slice(2) + ' minutes');
+        else desc.push('at minute ' + minute);
+
+        // Horas
+        if (hour === '*') desc.push('of every hour');
+        else if (hour.startsWith('*/')) desc.push('every ' + hour.slice(2) + ' hours');
+        else desc.push('at ' + formatTime(hour, minute));
+
+        // Día del mes
+        if (dayM !== '*') {
+            if (dayM.includes('/')) {
+                var dmParts = dayM.split('/');
+                desc.push('every ' + dmParts[1] + ' days starting on day ' + dmParts[0]);
+            } else {
+                desc.push('on day(s) ' + dayM);
+            }
+        }
+        // Mes
+        if (month !== '*') desc.push('in month(s) ' + month);
+        // Día de semana
+        if (dayW !== '*') {
+            var days = dayW.split(',').map(function(d) {
+                return moment().day(parseInt(d)).format('dddd');
+            }).join(', ');
+            desc.push('on ' + days);
+        }
+
+        return desc.join(' ') || 'Custom expression';
+    }
+
+    function formatTime(hour, minute) {
+        var h = hour === '*' ? '0' : hour;
+        var m = minute === '*' ? '0' : minute;
+        return moment({hour: h, minute: m}).format('h:mm A');
+    }
+
+    function resetCronGenerator() {
+        // Minutos
+        document.getElementById('minEveryN').value = '';   // no se usa si specific o range están definidos
+        document.getElementById('minSpecific').value = '';
+        document.getElementById('minRangeFrom').value = '';
+        document.getElementById('minRangeTo').value = '';
+
+        // Horas
+        document.getElementById('hourEveryN').value = '';
+        document.getElementById('hourSpecific').value = '';
+        document.getElementById('hourRangeFrom').value = '';
+        document.getElementById('hourRangeTo').value = '';
+
+        // Día del mes
+        document.getElementById('dayMonthSpecific').value = '';
+        document.getElementById('dayMonthEveryN').value = '1';
+        document.getElementById('dayMonthStart').value = '1';
+        document.querySelectorAll('.day-month-check').forEach(function(cb) { cb.checked = false; });
+
+        // Mes
+        document.getElementById('monthSpecific').value = '';
+        document.querySelectorAll('.month-check').forEach(function(cb) { cb.checked = false; });
+
+        // Día de la semana
+        document.getElementById('weekdaySpecific').value = '';
+        document.getElementById('weekdayEveryN').value = '1';
+        document.getElementById('weekdayStart').value = '1';
+        document.querySelectorAll('.weekday-check').forEach(function(cb) { cb.checked = false; });
+    }
+
+    // Inicialización única cuando el DOM esté listo
+    document.addEventListener('DOMContentLoaded', function() {
+        // Botón Generate dentro del modal
+        $('#btnGenerateCron').on('click', function() {
+            var expression = buildCronExpressionFromModal();
+            if (expression) {
+                document.getElementById('cronExpression').value = expression;
+                $('#cronGeneratorModal').modal('hide');
+                if (typeof validateCron === 'function') validateCron();
+            }
+        });
+
+        // Configuración al mostrar el modal
+        $('#cronGeneratorModal').on('shown.bs.modal', function () {
+            resetCronGenerator();
+            // Activar la primera pestaña
+            $('.nav-tabs a[href="#tabMinutes"]').tab('show');
+            updateCronPreview();
+        });
+
+        // Delegación de eventos para cambios en cualquier input/select del modal
+        $('#cronGeneratorModal').on('change input', 'input, select', function() {
+            updateCronPreview();
+        });
+
+        // Al cambiar de pestaña, actualizar también
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function () {
+            updateCronPreview();
+        });
+
+        // Botón "Show next executions"
+        $('#btnShowExecutions').on('click', showExecutions);
+    });
+
 
     // ====== COLAS CRÍTICAS ======
     function isQueueCritical(queue) {
