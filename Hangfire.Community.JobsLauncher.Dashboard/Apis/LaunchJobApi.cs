@@ -5,6 +5,7 @@ using Hangfire.Community.JobsLauncher.Dashboard;
 using Hangfire.Community.JobsLauncher.Dashboard.Models;
 using Hangfire.Dashboard;
 using Hangfire.Server;
+using Hangfire.States;
 using Hangfire.Storage;
 using System;
 using System.Collections.Generic;
@@ -141,29 +142,47 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
         // Lanza trabajos no recurrentes usando expresión directa
         private string LaunchNonRecurringDirect(LaunchRequest request, LambdaExpression lambda)
         {
+            var client = new BackgroundJobClient();
+
             switch (request.ExecutionMode)
             {
                 case "FireAndForget":
                     if (lambda is Expression<Action> actionExpr)
-                        return BackgroundJob.Enqueue(actionExpr);
+                        return client.Create(Job.FromExpression(actionExpr), new EnqueuedState(request.Queue));
                     else if (lambda is Expression<Func<Task>> taskExpr)
-                        return BackgroundJob.Enqueue(taskExpr);
+                        return client.Create(Job.FromExpression(taskExpr), new EnqueuedState(request.Queue));
                     throw new InvalidOperationException("Invalid lambda type");
 
                 case "Schedule":
                     var delay = TimeSpan.FromMinutes(request.DelayMinutes ?? 30);
+                    string jobId;
                     if (lambda is Expression<Action> actionExpr2)
-                        return BackgroundJob.Schedule(actionExpr2, delay);
-                    if (lambda is Expression<Func<Task>> taskExpr2)
-                        return BackgroundJob.Schedule(taskExpr2, delay);
-                    throw new InvalidOperationException("Invalid lambda type");
+                        jobId = client.Create(Job.FromExpression(actionExpr2), new ScheduledState(delay));
+                    else if (lambda is Expression<Func<Task>> taskExpr2)
+                        jobId = client.Create(Job.FromExpression(taskExpr2), new ScheduledState(delay));
+                    else
+                        throw new InvalidOperationException("Invalid lambda type");
+
+                    // Asignar la cola mediante el parámetro del trabajo (única forma con ScheduledState)
+                    SetJobQueue(jobId, request.Queue);
+                    return jobId;
 
                 case "ScheduleDateTime":
+                    if (!request.ScheduledDateTime.HasValue)
+                        throw new ArgumentException("ScheduledDateTime requerido.");
+
+                    string schedJobId;
+                    var scheduledTime = request.ScheduledDateTime.Value;
+                    var scheduledState = new ScheduledState(scheduledTime);
                     if (lambda is Expression<Action> actionExpr3)
-                        return BackgroundJob.Schedule(actionExpr3, request.ScheduledDateTime.Value);
-                    if (lambda is Expression<Func<Task>> taskExpr3)
-                        return BackgroundJob.Schedule(taskExpr3, request.ScheduledDateTime.Value);
-                    throw new InvalidOperationException("Invalid lambda type");
+                        schedJobId = client.Create(Job.FromExpression(actionExpr3), scheduledState);
+                    else if (lambda is Expression<Func<Task>> taskExpr3)
+                        schedJobId = client.Create(Job.FromExpression(taskExpr3), scheduledState);
+                    else
+                        throw new InvalidOperationException("Invalid lambda type");
+
+                    SetJobQueue(schedJobId, request.Queue);
+                    return schedJobId;
 
                 case "Continuation":
                     if (lambda is Expression<Action> actionExpr4)
@@ -177,34 +196,57 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
             }
         }
 
+        // Método auxiliar para fijar la cola en un job ya creado
+        private void SetJobQueue(string jobId, string queue)
+        {
+            using (var connection = JobStorage.Current.GetConnection())
+            {
+                connection.SetJobParameter(jobId, ParametersNameJobs.Queue, queue);
+            }
+        }
+
         // Lanza con dispatcher (sin tipo conocido)
         private string LaunchWithDispatcher(LaunchRequest request, string serializedParams)
         {
+            var client = new BackgroundJobClient();
+
             switch (request.ExecutionMode)
             {
                 case "FireAndForget":
-                    return BackgroundJob.Enqueue(
-                        () => JobLauncherDispatcher.ExecuteJob(request.ClassName, request.MethodName, request.Queue,
-                            serializedParams, request.IncludePerformContext, request.IncludeCancellationToken));
+                    return client.Create(
+                        Job.FromExpression(() => JobLauncherDispatcher.ExecuteJob(
+                            request.ClassName, request.MethodName, request.Queue,
+                            serializedParams, request.IncludePerformContext, request.IncludeCancellationToken)),
+                        new EnqueuedState(request.Queue));
 
                 case "Schedule":
                     if (!request.DelayMinutes.HasValue) throw new ArgumentException("DelayMinutes requerido.");
-                    return BackgroundJob.Schedule(
-                        () => JobLauncherDispatcher.ExecuteJob(request.ClassName, request.MethodName, request.Queue,
-                            serializedParams, request.IncludePerformContext, request.IncludeCancellationToken),
-                        TimeSpan.FromMinutes(request.DelayMinutes.Value));
+                    var delay = TimeSpan.FromMinutes(request.DelayMinutes.Value);
+                    var jobId = client.Create(
+                        Job.FromExpression(() => JobLauncherDispatcher.ExecuteJob(
+                            request.ClassName, request.MethodName, request.Queue,
+                            serializedParams, request.IncludePerformContext, request.IncludeCancellationToken)),
+                        new ScheduledState(delay));
+                    SetJobQueue(jobId, request.Queue);
+                    return jobId;
 
                 case "ScheduleDateTime":
                     if (!request.ScheduledDateTime.HasValue) throw new ArgumentException("ScheduledDateTime requerido.");
-                    return BackgroundJob.Schedule(
-                        () => JobLauncherDispatcher.ExecuteJob(request.ClassName, request.MethodName, request.Queue,
-                            serializedParams, request.IncludePerformContext, request.IncludeCancellationToken),
-                        request.ScheduledDateTime.Value);
+                    var schedTime = request.ScheduledDateTime.Value;
+                    var schedJobId = client.Create(
+                        Job.FromExpression(() => JobLauncherDispatcher.ExecuteJob(
+                            request.ClassName, request.MethodName, request.Queue,
+                            serializedParams, request.IncludePerformContext, request.IncludeCancellationToken)),
+                        new ScheduledState(schedTime));
+                    SetJobQueue(schedJobId, request.Queue);
+                    return schedJobId;
 
                 case "Continuation":
                     if (string.IsNullOrWhiteSpace(request.ParentJobId)) throw new ArgumentException("ParentJobId requerido.");
+                    // Continuación sin cola explícita (hereda del padre)
                     return BackgroundJob.ContinueJobWith(request.ParentJobId,
-                        () => JobLauncherDispatcher.ExecuteJob(request.ClassName, request.MethodName, request.Queue,
+                        () => JobLauncherDispatcher.ExecuteJob(
+                            request.ClassName, request.MethodName, request.Queue,
                             serializedParams, request.IncludePerformContext, request.IncludeCancellationToken));
 
                 default:

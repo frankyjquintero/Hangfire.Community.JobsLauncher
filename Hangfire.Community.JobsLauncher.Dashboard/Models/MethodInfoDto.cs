@@ -4,6 +4,11 @@ using System.Text;
 
 namespace Hangfire.Community.JobsLauncher.Dashboard.Models
 {
+    public static class ParametersNameJobs
+    {
+        public const string Queue = "OriginalQueue";
+    }
+
     public class MethodInfoDto
     {
         public string MethodName { get; set; }

@@ -1,5 +1,6 @@
 ﻿using Hangfire.Community.JobLauncher.Dashboard.Pages;
 using Hangfire.Community.JobsLauncher.Dashboard.Apis;
+using Hangfire.Community.JobsLauncher.Dashboard.Filters;
 using Hangfire.Dashboard;
 using System;
 using System.Collections.Generic;
@@ -48,6 +49,9 @@ namespace Hangfire.Community.JobsLauncher.Dashboard
             {
                 Active = page.RequestPath.StartsWith("/joblauncher")
             });
+
+            // Filters
+            GlobalJobFilters.Filters.Add(new QueueStateFilter());
 
             return config;
         }

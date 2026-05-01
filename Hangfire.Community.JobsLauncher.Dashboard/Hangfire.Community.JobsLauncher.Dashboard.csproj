@@ -59,7 +59,6 @@
 		<PackageReference Include="RazorGenerator.MsBuild" Version="2.5.0" PrivateAssets="all" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Filters\" />
 	  <Folder Include="Services\" />
 	</ItemGroup>
 	<ItemGroup>
