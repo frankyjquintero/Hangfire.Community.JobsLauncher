@@ -20,11 +20,11 @@ builder.Services.AddHangfire(config =>
 {
     if (storageType == "SqlServer")
     {
-        config.UseSqlServerStorage(sqlConn).UseJobLauncher();
+        config.UseSqlServerStorage(sqlConn).UseDynamicJobs().UseJobLauncher();
     }
     else
     {
-        config.UseMemoryStorage().UseJobLauncher();
+        config.UseMemoryStorage().UseDynamicJobs().UseJobLauncher();
     }
 });
 builder.Services.AddHangfireServer();

@@ -18,7 +18,11 @@ namespace Hangfire.Community.JobLauncher.Common
             bool includePerformContext = false,
             bool includeCancellationToken = false)
         {
-            var type = Type.GetType(className, throwOnError: true);
+            var type = AppDomain.CurrentDomain.GetAssemblies()
+                .Select(assm => assm.GetType(className))
+                .FirstOrDefault(t => t != null)
+                ?? throw new InvalidOperationException($"Type '{className}' not found in any loaded assembly.");
+
             var method = type.GetMethod(methodName,
                 BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
             object instance = method.IsStatic ? null : Activator.CreateInstance(type);

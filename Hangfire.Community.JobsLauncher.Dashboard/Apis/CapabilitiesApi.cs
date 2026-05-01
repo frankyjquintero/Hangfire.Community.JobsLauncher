@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Hangfire.Dashboard;
+using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
-using Hangfire.Dashboard;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
 {
@@ -10,8 +13,8 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
     {
         public async Task Dispatch(DashboardContext context)
         {
-            bool dynamicJobsAvailable = Type.GetType(
-                "Hangfire.DynamicJobs.DynamicJob, Hangfire.DynamicJobs") != null;
+            bool dynamicJobsAvailable = AppDomain.CurrentDomain.GetAssemblies()
+                    .Any(a => a.GetType("Hangfire.DynamicJob") != null);
 
             var response = new { dynamicJobsAvailable };
 
