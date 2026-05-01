@@ -13,7 +13,7 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
 {
     public class HistoryApi : IDashboardDispatcher
     {
-        private const string HistoryHashKey = "joblauncher:history";
+        private const string HistoryListKey = "joblauncher:history-list";
         private readonly JobLauncherOptions _options;
 
         public HistoryApi(JobLauncherOptions options)
@@ -42,34 +42,40 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
 
         private async Task HandleGetHistory(DashboardContext context)
         {
-            var storage = context.Storage;
-            using (var connection = storage.GetConnection())
-            {
-                var allEntries = connection.GetAllEntriesFromHash(HistoryHashKey);
-                var entries = new List<HistoryEntry>();
+            var pageParam = context.Request.GetQuery("page");
+            var pageSizeParam = context.Request.GetQuery("pageSize");
 
-                if (allEntries != null)
+            int page = int.TryParse(pageParam, out int p) ? p : 1;
+            int pageSize = int.TryParse(pageSizeParam, out int ps) ? ps : 20;
+
+            var storage = context.Storage;
+            using (var connection = (JobStorageConnection)storage.GetConnection())
+            {
+                long total = connection.GetListCount(HistoryListKey);
+                int startIndex = (int)((page - 1) * pageSize);
+                int endIndex = (int)Math.Min(startIndex + pageSize - 1, total - 1);
+
+                if (startIndex >= total)
                 {
-                    foreach (var kvp in allEntries.OrderByDescending(x => x.Key))
-                    {
-                        try
-                        {
-                            var entry = JsonSerializer.Deserialize<HistoryEntry>(kvp.Value);
-                            if (entry != null)
-                            {
-                                entries.Add(entry);
-                            }
-                        }
-                        catch
-                        {
-                            // ignora entradas corruptas
-                        }
-                    }
+                    await WriteJson(context, new { items = new List<HistoryEntry>(), total, page, pageSize });
+                    return;
                 }
 
-                // Limitar al máximo configurado
-                var result = entries.Take(_options.HistoryMaxEntries).ToList();
-                await WriteJson(context, result);
+                // Obtener solo el rango necesario (los más recientes están al final de la lista)
+                var range = connection.GetRangeFromList(HistoryListKey, startIndex, endIndex);
+
+                var entries = new List<HistoryEntry>();
+                foreach (var json in range)
+                {
+                    try
+                    {
+                        var entry = JsonSerializer.Deserialize<HistoryEntry>(json);
+                        if (entry != null) entries.Add(entry);
+                    }
+                    catch { }
+                }
+
+                await WriteJson(context, new { items = entries, total, page, pageSize });
             }
         }
 
@@ -78,9 +84,9 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
             var storage = context.Storage;
             using (var connection = storage.GetConnection())
             {
-                using (var transaction = connection.CreateWriteTransaction())
+                using (var transaction = (JobStorageTransaction)connection.CreateWriteTransaction())
                 {
-                    transaction.RemoveHash(HistoryHashKey);
+                    transaction.TrimList(HistoryListKey, 0, - 1);
                     transaction.Commit();
                 }
             }

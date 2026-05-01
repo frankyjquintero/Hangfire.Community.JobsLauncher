@@ -21,8 +21,8 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
 {
     public class LaunchJobApi : IDashboardDispatcher
     {
-        private const string HistoryHashKey = "joblauncher:history";
-        private const string AuditLogHashKey = "joblauncher:audit-log";
+        private const string HistoryListKey = "joblauncher:history-list";
+        private const string AuditLogListKey = "joblauncher:audit-log-list";
         private const string KnownQueuesSetKey = "joblauncher:known-queues";
 
         private readonly JobLauncherOptions _options;
@@ -458,29 +458,27 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
                 User = "Anonymous"
             };
 
+            var json = JsonSerializer.Serialize(entry);
+
             var storage = context.Storage;
-            using (var connection = storage.GetConnection())
+            using (var connection = (JobStorageConnection)storage.GetConnection())
             using (var transaction = connection.CreateWriteTransaction())
             {
-                var key = $"{DateTime.UtcNow.Ticks}-{jobId}";
-                transaction.SetRangeInHash(HistoryHashKey, new[] { new KeyValuePair<string, string>(key, JsonSerializer.Serialize(entry)) });
+                // Insertar al final de la lista (más reciente al final)
+                transaction.InsertToList(HistoryListKey, json);
 
-                if (_options.EnableAuditLog)
+                // Limitar el tamaño: si excede HistoryMaxEntries, eliminar los más antiguos (principio)
+                long count = connection.GetListCount(HistoryListKey);
+                if (count > _options.HistoryMaxEntries)
                 {
-                    transaction.SetRangeInHash(AuditLogHashKey, new[] { new KeyValuePair<string, string>(key, JsonSerializer.Serialize(entry)) });
+                    // Eliminar los primeros (count - HistoryMaxEntries) elementos
+                    transaction.TrimList(HistoryListKey, 0, _options.HistoryMaxEntries - 1);
                 }
 
-                var allEntries = connection.GetAllEntriesFromHash(HistoryHashKey) ?? new Dictionary<string, string>();
-                if (allEntries.Count > _options.HistoryMaxEntries)
+                // Auditoría: misma lógica en otra lista
+                if (_options.EnableAuditLog)
                 {
-                    var keysToRemove = allEntries.Keys
-                        .OrderBy(k => k)
-                        .Take(allEntries.Count - _options.HistoryMaxEntries)
-                        .ToList();
-                    foreach (var k in keysToRemove)
-                    {
-                        transaction.RemoveHash(HistoryHashKey);
-                    }
+                    transaction.InsertToList(AuditLogListKey, json);
                 }
 
                 transaction.Commit();

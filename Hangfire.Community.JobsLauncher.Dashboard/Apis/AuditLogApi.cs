@@ -1,8 +1,9 @@
-﻿using Hangfire.Dashboard;
-using Hangfire.Community.JobsLauncher.Dashboard.Models;
+﻿using Hangfire.Community.JobsLauncher.Dashboard.Models;
+using Hangfire.Dashboard;
 using Hangfire.Storage;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -11,84 +12,104 @@ using System.Threading.Tasks;
 namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
 {
     /// <summary>
-    /// Endpoint de solo lectura para obtener el log de auditoría.
-    /// No se borran entradas al limpiar el historial volátil.
+    /// Endpoint de solo lectura para obtener el log de auditoría (inmutable).
+    /// Usa una lista para permitir paginación real y mantener los datos aunque se limpie el historial.
     /// </summary>
     public class AuditLogApi : IDashboardDispatcher
     {
-        private const string AuditLogHashKey = "joblauncher:audit-log";
+        private const string AuditLogListKey = "joblauncher:audit-log-list";
 
         public async Task Dispatch(DashboardContext context)
         {
-            // Obtención de parámetros mediante GetQuery
+            // Parámetros
             var userFilter = context.Request.GetQuery("user");
             var fromParam = context.Request.GetQuery("from");
             var toParam = context.Request.GetQuery("to");
-            var countStr = context.Request.GetQuery("count");
+            var pageParam = context.Request.GetQuery("page");
+            var pageSizeParam = context.Request.GetQuery("pageSize");
 
-            int.TryParse(countStr, out int count);
-            if (count <= 0) count = 100; // valor por defecto
+            int page = int.TryParse(pageParam, out int p) && p > 0 ? p : 1;
+            int pageSize = int.TryParse(pageSizeParam, out int ps) && ps > 0 ? ps : 20;
+
+            DateTime? fromUtc = null;
+            DateTime? toUtc = null;
+
+            if (!string.IsNullOrEmpty(fromParam) &&
+                DateTime.TryParse(fromParam, null, DateTimeStyles.AdjustToUniversal, out DateTime parsedFrom))
+            {
+                fromUtc = parsedFrom;
+            }
+
+            if (!string.IsNullOrEmpty(toParam) &&
+                DateTime.TryParse(toParam, null, DateTimeStyles.AdjustToUniversal, out DateTime parsedTo))
+            {
+                toUtc = parsedTo;
+            }
+
 
             var storage = context.Storage;
-            List<HistoryEntry> entries = new List<HistoryEntry>();
+            List<HistoryEntry> allEntries = new List<HistoryEntry>();
 
-            using (var connection = storage.GetConnection())
+            using (var connection = (JobStorageConnection)storage.GetConnection())
             {
-                var rawEntries = connection.GetAllEntriesFromHash(AuditLogHashKey)
-                    ?? new Dictionary<string, string>();
-
-                foreach (var kvp in rawEntries)
+                // Obtener todos los elementos de la lista (la operación es rápida)
+                var rawItems = connection.GetAllItemsFromList(AuditLogListKey);
+                if (rawItems != null)
                 {
-                    try
+                    foreach (var json in rawItems)
                     {
-                        var entry = JsonSerializer.Deserialize<HistoryEntry>(kvp.Value);
-                        if (entry != null)
+                        try
                         {
-                            // Aplicar filtros básicos
-                            if (!string.IsNullOrEmpty(userFilter) &&
-                                !entry.User.Equals(userFilter, StringComparison.OrdinalIgnoreCase))
-                                continue;
-
-                            DateTime from = DateTime.MinValue;
-                            DateTime to = DateTime.MaxValue;
-
-                            if (!string.IsNullOrWhiteSpace(fromParam) &&
-                                DateTimeOffset.TryParse(fromParam, out var fromOffset))
+                            var entry = JsonSerializer.Deserialize<HistoryEntry>(json);
+                            if (entry != null)
                             {
-                                from = fromOffset.UtcDateTime;
+                                // Filtro por usuario (insensible a mayúsculas/minúsculas)
+                                if (!string.IsNullOrEmpty(userFilter) &&
+                                    !entry.User.Equals(userFilter, StringComparison.OrdinalIgnoreCase))
+                                    continue;
+
+                                // Filtro por rango de fechas (desde/hasta)
+                                if (fromUtc.HasValue && entry.Timestamp < fromUtc.Value)
+                                    continue;
+
+                                if (toUtc.HasValue && entry.Timestamp > toUtc.Value)
+                                    continue;
+
+                                allEntries.Add(entry);
                             }
-
-                            if (!string.IsNullOrWhiteSpace(toParam) &&
-                                DateTimeOffset.TryParse(toParam, out var toOffset))
-                            {
-                                to = toOffset.UtcDateTime;
-                            }
-
-                            if (entry.Timestamp < from || entry.Timestamp > to)
-                                continue;
-
-                            entries.Add(entry);
                         }
-                    }
-                    catch
-                    {
-                        // Ignorar entradas corruptas
+                        catch
+                        {
+                            // Ignorar entradas corruptas
+                        }
                     }
                 }
             }
 
-            // Ordenar por timestamp descendente (más reciente primero) y limitar cantidad
-            var result = entries
-                .OrderByDescending(e => e.Timestamp)
-                .Take(count)
+            // Ordenar por timestamp descendente (más reciente primero)
+            var filteredEntries = allEntries.OrderByDescending(e => e.Timestamp).ToList();
+            int total = filteredEntries.Count;
+
+            // Aplicar paginación
+            var pagedEntries = filteredEntries
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToList();
 
-            // Responder con JSON
-            var json = JsonSerializer.Serialize(result, new JsonSerializerOptions
+            // Responder
+            var response = new
+            {
+                items = pagedEntries,
+                total,
+                page,
+                pageSize
+            };
+
+            var jsonResult = JsonSerializer.Serialize(response, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             });
-            var bytes = Encoding.UTF8.GetBytes(json);
+            var bytes = Encoding.UTF8.GetBytes(jsonResult);
 
             context.Response.ContentType = "application/json; charset=utf-8";
             await context.Response.Body.WriteAsync(bytes, 0, bytes.Length);

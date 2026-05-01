@@ -215,1202 +215,1255 @@ WriteLiteral("<style>\r\n    #paramsContainer .param-complex {\r\n        border
 "            <table class=\"table table-condensed\" id=\"historyTable\">\r\n           " +
 "         <thead><tr><th>Timestamp</th><th>JobId</th><th>Class</th><th>Method</th" +
 "><th>Queue</th><th>Mode</th><th>Engine</th><th></th></tr></thead>\r\n             " +
-"       <tbody></tbody>\r\n                </table>\r\n                <div class=\"al" +
-"ert alert-info\" style=\"margin-top:15px;\">\r\n                    <strong>About the" +
-" buttons:</strong>\r\n                    <ul style=\"margin-bottom:0;\">\r\n         " +
-"               <li><strong>Relaunch:</strong> Loads this job\'s parameters into t" +
-"he Launch tab so you can review or modify them before launching.</li>\r\n         " +
-"               <li><strong>Clone & Launch:</strong> Immediately creates and enqu" +
-"eues an identical job without editing.</li>\r\n                    </ul>\r\n        " +
-"        </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n    <!-- =====" +
-"=============== PESTAÑA TEMPLATES ==================== -->\r\n    <div role=\"tabpa" +
-"nel\" class=\"tab-pane fade\" id=\"templatesTab\">\r\n        <div class=\"row\">\r\n      " +
-"      <div class=\"col-md-8\">\r\n                <div class=\"panel panel-default\">\r" +
-"\n                    <div class=\"panel-heading\">Saved templates</div>\r\n         " +
-"           <div class=\"panel-body\">\r\n                        <table class=\"table" +
-" table-condensed\" id=\"templatesTable\">\r\n                            <thead><tr><" +
-"th>Name</th><th>Class</th><th>Method</th><th>Queue</th><th>Mode</th><th></th></t" +
-"r></thead>\r\n                            <tbody></tbody>\r\n                       " +
-" </table>\r\n                    </div>\r\n                </div>\r\n            </div" +
-">\r\n            <div class=\"col-md-4\">\r\n                <div class=\"panel panel-d" +
-"efault\">\r\n                    <div class=\"panel-heading\">Manage</div>\r\n         " +
-"           <div class=\"panel-body\">\r\n                        <p><small>You can a" +
-"lso create a template from any job in the <strong>History</strong> tab using the" +
-" <em>Save as template</em> button.</small></p>\r\n                        <div cla" +
-"ss=\"form-group\" style=\"margin-top:10px;\">\r\n                            <label>Im" +
-"port template</label>\r\n                            <input type=\"file\" id=\"import" +
-"File\" accept=\".json\">\r\n                            <button id=\"btnImport\" class=" +
-"\"btn btn-default btn-block\" style=\"margin-top:5px;\">Import</button>\r\n           " +
-"             </div>\r\n                    </div>\r\n                </div>\r\n       " +
-"     </div>\r\n        </div>        \r\n        <!-- Modal para vista previa de pla" +
-"ntilla -->\r\n        <div class=\"modal fade\" id=\"templatePreviewModal\" tabindex=\"" +
-"-1\" role=\"dialog\">\r\n            <div class=\"modal-dialog modal-lg\" role=\"documen" +
-"t\">\r\n                <div class=\"modal-content\">\r\n                    <div class" +
-"=\"modal-header\">\r\n                        <button type=\"button\" class=\"close\" da" +
-"ta-dismiss=\"modal\">&times;</button>\r\n                        <h4 class=\"modal-ti" +
-"tle\">Template Preview: <span id=\"previewTemplateName\"></span></h4>\r\n            " +
-"        </div>\r\n                    <div class=\"modal-body\">\r\n                  " +
-"      <dl class=\"dl-horizontal\">\r\n                            <dt>Class</dt><dd " +
-"id=\"prevClass\"></dd>\r\n                            <dt>Method</dt><dd id=\"prevMet" +
-"hod\"></dd>\r\n                            <dt>Queue</dt><dd id=\"prevQueue\"></dd>\r\n" +
-"                            <dt>Execution Mode</dt><dd id=\"prevExecMode\"></dd>\r\n" +
-"                            <dt>Cron Expression</dt><dd id=\"prevCron\"></dd>\r\n   " +
-"                         <dt>Recurring Engine</dt><dd id=\"prevEngine\"></dd>\r\n   " +
-"                         <dt>Mode</dt><dd id=\"prevMode\"></dd>\r\n                 " +
-"           <dt>Perform Context</dt><dd id=\"prevPerformContext\"></dd>\r\n          " +
-"                  <dt>Cancellation Token</dt><dd id=\"prevCancellationToken\"></dd" +
-">\r\n                            <dt>Params (raw JSON)</dt>\r\n                     " +
-"       <dd><pre id=\"prevParams\" style=\"max-height:300px; overflow-y:auto; backgr" +
-"ound:#f5f5f5; padding:10px;\"></pre></dd>\r\n                        </dl>\r\n       " +
-"             </div>\r\n                    <div class=\"modal-footer\">\r\n           " +
-"             <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">" +
-"Close</button>\r\n                    </div>\r\n                </div>\r\n            " +
-"</div>\r\n        </div>\r\n    </div>\r\n        <!-- ==================== PESTAÑA AU" +
-"DITLOG ==================== -->\r\n    <div role=\"tabpanel\" class=\"tab-pane fade\" " +
-"id=\"auditLogPane\">\r\n        <div class=\"panel panel-default\">\r\n            <div " +
-"class=\"panel-heading\">\r\n                <strong>Audit Log (read-only)</strong>\r\n" +
-"            </div>\r\n            <div class=\"panel-body\">\r\n                <!-- F" +
-"iltros -->\r\n                <div class=\"row\" style=\"margin-bottom: 10px;\">\r\n    " +
-"                <div class=\"col-sm-3\">\r\n                        <input type=\"tex" +
-"t\" id=\"auditUserFilter\" class=\"form-control input-sm\" placeholder=\"User\">\r\n     " +
-"               </div>\r\n                    <div class=\"col-sm-2\">\r\n             " +
-"           <input type=\"datetime-local\" id=\"auditFromFilter\" class=\"form-control" +
-" input-sm\" placeholder=\"From\">\r\n                    </div>\r\n                    " +
-"<div class=\"col-sm-2\">\r\n                        <input type=\"datetime-local\" id=" +
-"\"auditToFilter\" class=\"form-control input-sm\" placeholder=\"To\">\r\n               " +
-"     </div>\r\n                    <div class=\"col-sm-2\">\r\n                       " +
-" <input type=\"number\" id=\"auditCountFilter\" class=\"form-control input-sm\" value=" +
-"\"200\" min=\"1\" max=\"1000\" placeholder=\"Count\">\r\n                    </div>\r\n     " +
-"               <div class=\"col-sm-3\">\r\n                        <button class=\"bt" +
-"n btn-sm btn-default\" id=\"btnApplyAuditFilters\">Apply Filters</button>\r\n        " +
-"                <button class=\"btn btn-sm btn-default\" id=\"btnClearAuditFilters\"" +
-">Clear</button>\r\n                    </div>\r\n                </div>\r\n\r\n         " +
-"       <!-- Tabla -->\r\n                <table class=\"table table-condensed\" id=\"" +
-"auditLogTable\">\r\n                    <thead>\r\n                        <tr>\r\n    " +
-"                        <th>Timestamp</th>\r\n                            <th>JobI" +
-"d</th>\r\n                            <th>Class</th>\r\n                            " +
-"<th>Method</th>\r\n                            <th>Queue</th>\r\n                   " +
-"         <th>Mode</th>\r\n                            <th>Engine</th>\r\n           " +
-"                 <th>User</th>\r\n                        </tr>\r\n                 " +
-"   </thead>\r\n                    <tbody></tbody>\r\n                </table>\r\n    " +
-"        </div>\r\n        </div>\r\n    </div>\r\n\r\n\r\n</div>\r\n\r\n<!-- Modal Generador d" +
-"e Cron (versión mejorada) -->\r\n<div class=\"modal fade\" id=\"cronGeneratorModal\" t" +
-"abindex=\"-1\" role=\"dialog\">\r\n    <div class=\"modal-dialog modal-lg\" role=\"docume" +
-"nt\">\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-header\"" +
-" style=\"background-color: #f8f9fa; border-bottom: 1px solid #dee2e6;\">\r\n        " +
-"        <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button" +
-">\r\n                <h4 class=\"modal-title\"><i class=\"glyphicon glyphicon-time\"><" +
-"/i> Cron Expression Generator</h4>\r\n            </div>\r\n            <div class=\"" +
-"modal-body\" style=\"padding: 20px;\">\r\n                <div class=\"row\">\r\n        " +
-"            <div class=\"col-md-7\">\r\n                        <!-- Pestañas de cat" +
-"egorías -->\r\n                        <ul class=\"nav nav-tabs\" role=\"tablist\" sty" +
-"le=\"margin-bottom: 15px;\">\r\n                            <li role=\"presentation\" " +
-"class=\"active\"><a href=\"#tabMinutes\" role=\"tab\" data-toggle=\"tab\">Minutes</a></l" +
-"i>\r\n                            <li role=\"presentation\"><a href=\"#tabHours\" role" +
-"=\"tab\" data-toggle=\"tab\">Hours</a></li>\r\n                            <li role=\"p" +
-"resentation\"><a href=\"#tabDayMonth\" role=\"tab\" data-toggle=\"tab\">Day of Month</a" +
-"></li>\r\n                            <li role=\"presentation\"><a href=\"#tabMonth\" " +
-"role=\"tab\" data-toggle=\"tab\">Month</a></li>\r\n                            <li rol" +
-"e=\"presentation\"><a href=\"#tabDayWeek\" role=\"tab\" data-toggle=\"tab\">Day of Week<" +
-"/a></li>\r\n                        </ul>\r\n\r\n                        <div class=\"t" +
-"ab-content\" style=\"min-height: 250px;\">\r\n                            <!-- Pestañ" +
-"a Minutos -->\r\n                            <div role=\"tabpanel\" class=\"tab-pane " +
-"active\" id=\"tabMinutes\">\r\n                                <div class=\"form-group" +
-"\">\r\n                                    <label>Every N minutes</label>\r\n        " +
-"                            <input type=\"number\" id=\"minEveryN\" class=\"form-cont" +
-"rol\" min=\"1\" value=\"1\" placeholder=\"N\">\r\n                                </div>\r" +
-"\n                                <div class=\"form-group\">\r\n                     " +
-"               <label>Specific minutes (comma separated)</label>\r\n              " +
-"                      <input type=\"text\" id=\"minSpecific\" class=\"form-control\" p" +
-"laceholder=\"0,15,30,45\">\r\n                                </div>\r\n              " +
-"                  <div class=\"form-group\">\r\n                                    " +
-"<label>Range (from - to)</label>\r\n                                    <div class" +
-"=\"row\">\r\n                                        <div class=\"col-xs-6\">\r\n       " +
-"                                     <input type=\"number\" id=\"minRangeFrom\" clas" +
-"s=\"form-control\" min=\"0\" max=\"59\" value=\"0\" placeholder=\"From\">\r\n               " +
-"                         </div>\r\n                                        <div cl" +
-"ass=\"col-xs-6\">\r\n                                            <input type=\"number" +
-"\" id=\"minRangeTo\" class=\"form-control\" min=\"0\" max=\"59\" value=\"59\" placeholder=\"" +
-"To\">\r\n                                        </div>\r\n                          " +
-"          </div>\r\n                                </div>\r\n                      " +
-"      </div>\r\n                            <!-- Pestaña Horas -->\r\n              " +
-"              <div role=\"tabpanel\" class=\"tab-pane\" id=\"tabHours\">\r\n            " +
-"                    <div class=\"form-group\">\r\n                                  " +
-"  <label>Every N hours</label>\r\n                                    <input type=" +
-"\"number\" id=\"hourEveryN\" class=\"form-control\" min=\"1\" value=\"1\" placeholder=\"N\">" +
-"\r\n                                </div>\r\n                                <div c" +
-"lass=\"form-group\">\r\n                                    <label>Specific hours (c" +
-"omma separated)</label>\r\n                                    <input type=\"text\" " +
-"id=\"hourSpecific\" class=\"form-control\" placeholder=\"8,12,18\">\r\n                 " +
-"               </div>\r\n                                <div class=\"form-group\">\r" +
-"\n                                    <label>Range (from - to)</label>\r\n         " +
-"                           <div class=\"row\">\r\n                                  " +
-"      <div class=\"col-xs-6\">\r\n                                            <input" +
-" type=\"number\" id=\"hourRangeFrom\" class=\"form-control\" min=\"0\" max=\"23\" value=\"9" +
-"\" placeholder=\"From\">\r\n                                        </div>\r\n         " +
-"                               <div class=\"col-xs-6\">\r\n                         " +
-"                   <input type=\"number\" id=\"hourRangeTo\" class=\"form-control\" mi" +
-"n=\"0\" max=\"23\" value=\"17\" placeholder=\"To\">\r\n                                   " +
-"     </div>\r\n                                    </div>\r\n                       " +
-"         </div>\r\n                            </div>\r\n                           " +
-" <!-- Pestaña Día del mes -->\r\n                            <div role=\"tabpanel\" " +
-"class=\"tab-pane\" id=\"tabDayMonth\">\r\n                                <div class=\"" +
-"form-group\">\r\n                                    <label>Every day</label>\r\n    " +
-"                                <input type=\"text\" class=\"form-control\" value=\"*" +
-"\" disabled>\r\n                                </div>\r\n                           " +
-"     <div class=\"form-group\">\r\n                                    <label>Specif" +
-"ic days (comma separated, e.g., 1,15)</label>\r\n                                 " +
-"   <input type=\"text\" id=\"dayMonthSpecific\" class=\"form-control\" placeholder=\"1," +
-"15\">\r\n                                </div>\r\n                                <d" +
-"iv class=\"form-group\">\r\n                                    <label>Every N days " +
-"starting at day</label>\r\n                                    <div class=\"row\">\r\n" +
-"                                        <div class=\"col-xs-6\">\r\n                " +
-"                            <input type=\"number\" id=\"dayMonthEveryN\" class=\"form" +
-"-control\" min=\"1\" value=\"1\" placeholder=\"N\">\r\n                                  " +
-"      </div>\r\n                                        <div class=\"col-xs-6\">\r\n  " +
-"                                          <input type=\"number\" id=\"dayMonthStart" +
-"\" class=\"form-control\" min=\"1\" max=\"31\" value=\"1\" placeholder=\"Start day\">\r\n    " +
-"                                    </div>\r\n                                    " +
-"</div>\r\n                                </div>\r\n                                " +
-"<div class=\"form-group\">\r\n                                    <label>Specific da" +
-"y of month (choose one or many)</label>\r\n                                    <di" +
-"v class=\"row\" style=\"margin: 0;\">\r\n                                        <!-- " +
-"Checkboxes para días 1-31 en una cuadrícula compacta -->\r\n                      " +
-"                  <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day" +
-"-month-check\" value=\"1\"> 01</label></div>\r\n                                     " +
-"   <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" v" +
-"alue=\"2\"> 02</label></div>\r\n                                        <div class=\"" +
-"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"3\"> 03</l" +
-"abel></div>\r\n                                        <div class=\"col-xs-3\"><labe" +
-"l><input type=\"checkbox\" class=\"day-month-check\" value=\"4\"> 04</label></div>\r\n  " +
-"                                      <div class=\"col-xs-3\"><label><input type=\"" +
-"checkbox\" class=\"day-month-check\" value=\"5\"> 05</label></div>\r\n                 " +
-"                       <div class=\"col-xs-3\"><label><input type=\"checkbox\" class" +
-"=\"day-month-check\" value=\"6\"> 06</label></div>\r\n                                " +
-"        <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-che" +
-"ck\" value=\"7\"> 07</label></div>\r\n                                        <div cl" +
-"ass=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"8\"> " +
-"08</label></div>\r\n                                        <div class=\"col-xs-3\">" +
-"<label><input type=\"checkbox\" class=\"day-month-check\" value=\"9\"> 09</label></div" +
-">\r\n                                        <div class=\"col-xs-3\"><label><input t" +
-"ype=\"checkbox\" class=\"day-month-check\" value=\"10\"> 10</label></div>\r\n           " +
-"                             <div class=\"col-xs-3\"><label><input type=\"checkbox\"" +
-" class=\"day-month-check\" value=\"11\"> 11</label></div>\r\n                         " +
-"               <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-mo" +
-"nth-check\" value=\"12\"> 12</label></div>\r\n                                       " +
-" <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" val" +
-"ue=\"13\"> 13</label></div>\r\n                                        <div class=\"c" +
-"ol-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"14\"> 14</l" +
-"abel></div>\r\n                                        <div class=\"col-xs-3\"><labe" +
-"l><input type=\"checkbox\" class=\"day-month-check\" value=\"15\"> 15</label></div>\r\n " +
-"                                       <div class=\"col-xs-3\"><label><input type=" +
-"\"checkbox\" class=\"day-month-check\" value=\"16\"> 16</label></div>\r\n               " +
-"                         <div class=\"col-xs-3\"><label><input type=\"checkbox\" cla" +
-"ss=\"day-month-check\" value=\"17\"> 17</label></div>\r\n                             " +
-"           <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-" +
-"check\" value=\"18\"> 18</label></div>\r\n                                        <di" +
-"v class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"" +
-"19\"> 19</label></div>\r\n                                        <div class=\"col-x" +
-"s-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"20\"> 20</label" +
-"></div>\r\n                                        <div class=\"col-xs-3\"><label><i" +
-"nput type=\"checkbox\" class=\"day-month-check\" value=\"21\"> 21</label></div>\r\n     " +
-"                                   <div class=\"col-xs-3\"><label><input type=\"che" +
-"ckbox\" class=\"day-month-check\" value=\"22\"> 22</label></div>\r\n                   " +
-"                     <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"" +
-"day-month-check\" value=\"23\"> 23</label></div>\r\n                                 " +
-"       <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-chec" +
-"k\" value=\"24\"> 24</label></div>\r\n                                        <div cl" +
-"ass=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"25\">" +
-" 25</label></div>\r\n                                        <div class=\"col-xs-3\"" +
-"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"26\"> 26</label></d" +
-"iv>\r\n                                        <div class=\"col-xs-3\"><label><input" +
-" type=\"checkbox\" class=\"day-month-check\" value=\"27\"> 27</label></div>\r\n         " +
-"                               <div class=\"col-xs-3\"><label><input type=\"checkbo" +
-"x\" class=\"day-month-check\" value=\"28\"> 28</label></div>\r\n                       " +
-"                 <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-" +
-"month-check\" value=\"29\"> 29</label></div>\r\n                                     " +
-"   <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" v" +
-"alue=\"30\"> 30</label></div>\r\n                                        <div class=" +
-"\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"31\"> 31<" +
-"/label></div>\r\n                                    </div>\r\n                     " +
-"           </div>\r\n                            </div>\r\n                         " +
-"   <!-- Pestaña Mes -->\r\n                            <div role=\"tabpanel\" class=" +
-"\"tab-pane\" id=\"tabMonth\">\r\n                                <div class=\"form-grou" +
-"p\">\r\n                                    <label>Every month</label>\r\n           " +
-"                         <input type=\"text\" class=\"form-control\" value=\"*\" disab" +
-"led>\r\n                                </div>\r\n                                <d" +
-"iv class=\"form-group\">\r\n                                    <label>Specific mont" +
-"hs (comma separated, 1-12)</label>\r\n                                    <input t" +
-"ype=\"text\" id=\"monthSpecific\" class=\"form-control\" placeholder=\"1,6,12\">\r\n      " +
-"                          </div>\r\n                                <div class=\"fo" +
-"rm-group\">\r\n                                    <label>Specific months (choose)<" +
-"/label>\r\n                                    <div class=\"row\" style=\"margin: 0;\"" +
-">\r\n                                        <div class=\"col-xs-4\"><label><input t" +
-"ype=\"checkbox\" class=\"month-check\" value=\"1\"> January</label></div>\r\n           " +
-"                             <div class=\"col-xs-4\"><label><input type=\"checkbox\"" +
-" class=\"month-check\" value=\"2\"> February</label></div>\r\n                        " +
-"                <div class=\"col-xs-4\"><label><input type=\"checkbox\" class=\"month" +
-"-check\" value=\"3\"> March</label></div>\r\n                                        " +
-"<div class=\"col-xs-4\"><label><input type=\"checkbox\" class=\"month-check\" value=\"4" +
-"\"> April</label></div>\r\n                                        <div class=\"col-" +
-"xs-4\"><label><input type=\"checkbox\" class=\"month-check\" value=\"5\"> May</label></" +
-"div>\r\n                                        <div class=\"col-xs-4\"><label><inpu" +
-"t type=\"checkbox\" class=\"month-check\" value=\"6\"> June</label></div>\r\n           " +
-"                             <div class=\"col-xs-4\"><label><input type=\"checkbox\"" +
-" class=\"month-check\" value=\"7\"> July</label></div>\r\n                            " +
-"            <div class=\"col-xs-4\"><label><input type=\"checkbox\" class=\"month-che" +
-"ck\" value=\"8\"> August</label></div>\r\n                                        <di" +
-"v class=\"col-xs-4\"><label><input type=\"checkbox\" class=\"month-check\" value=\"9\"> " +
-"September</label></div>\r\n                                        <div class=\"col" +
-"-xs-4\"><label><input type=\"checkbox\" class=\"month-check\" value=\"10\"> October</la" +
-"bel></div>\r\n                                        <div class=\"col-xs-4\"><label" +
-"><input type=\"checkbox\" class=\"month-check\" value=\"11\"> November</label></div>\r\n" +
-"                                        <div class=\"col-xs-4\"><label><input type" +
-"=\"checkbox\" class=\"month-check\" value=\"12\"> December</label></div>\r\n            " +
-"                        </div>\r\n                                </div>\r\n        " +
-"                    </div>\r\n                            <!-- Pestaña Día de la s" +
-"emana -->\r\n                            <div role=\"tabpanel\" class=\"tab-pane\" id=" +
-"\"tabDayWeek\">\r\n                                <div class=\"form-group\">\r\n       " +
-"                             <label>Every day of week</label>\r\n                 " +
-"                   <input type=\"text\" class=\"form-control\" value=\"*\" disabled>\r\n" +
-"                                </div>\r\n                                <div cla" +
-"ss=\"form-group\">\r\n                                    <label>Specific days of we" +
-"ek (choose)</label>\r\n                                    <div class=\"row\" style=" +
-"\"margin: 0;\">\r\n                                        <div class=\"col-xs-6\"><la" +
-"bel><input type=\"checkbox\" class=\"weekday-check\" value=\"1\"> Monday</label></div>" +
-"\r\n                                        <div class=\"col-xs-6\"><label><input ty" +
-"pe=\"checkbox\" class=\"weekday-check\" value=\"2\"> Tuesday</label></div>\r\n          " +
-"                              <div class=\"col-xs-6\"><label><input type=\"checkbox" +
-"\" class=\"weekday-check\" value=\"3\"> Wednesday</label></div>\r\n                    " +
-"                    <div class=\"col-xs-6\"><label><input type=\"checkbox\" class=\"w" +
-"eekday-check\" value=\"4\"> Thursday</label></div>\r\n                               " +
-"         <div class=\"col-xs-6\"><label><input type=\"checkbox\" class=\"weekday-chec" +
-"k\" value=\"5\"> Friday</label></div>\r\n                                        <div" +
-" class=\"col-xs-6\"><label><input type=\"checkbox\" class=\"weekday-check\" value=\"6\">" +
-" Saturday</label></div>\r\n                                        <div class=\"col" +
-"-xs-6\"><label><input type=\"checkbox\" class=\"weekday-check\" value=\"0\"> Sunday</la" +
-"bel></div>\r\n                                    </div>\r\n                        " +
-"        </div>\r\n                                <div class=\"form-group\">\r\n      " +
-"                              <label>Specific days (comma separated, SST, 0-7, S" +
-"UN-SAT)</label>\r\n                                    <input type=\"text\" id=\"week" +
-"daySpecific\" class=\"form-control\" placeholder=\"1,3,5\">\r\n                        " +
-"        </div>\r\n                                <div class=\"form-group\">\r\n      " +
-"                              <label>Every N days starting on day</label>\r\n     " +
-"                               <div class=\"row\">\r\n                              " +
-"          <div class=\"col-xs-6\">\r\n                                            <i" +
-"nput type=\"number\" id=\"weekdayEveryN\" class=\"form-control\" min=\"1\" value=\"1\" pla" +
+"       <tbody></tbody>\r\n                </table>\r\n                <!-- Paginació" +
+"n -->\r\n                <div class=\"row\" style=\"margin-top:5px;\">\r\n              " +
+"      <div class=\"col-sm-6\">\r\n                        <span id=\"historyPageInfo\"" +
+"></span>\r\n                    </div>\r\n                    <div class=\"col-sm-6 t" +
+"ext-right\">\r\n                        <button class=\"btn btn-xs btn-default\" id=\"" +
+"btnPrevPage\" disabled>Prev</button>\r\n                        <button class=\"btn " +
+"btn-xs btn-default\" id=\"btnNextPage\" disabled>Next</button>\r\n                   " +
+" </div>\r\n                </div>\r\n                <div class=\"alert alert-info\" s" +
+"tyle=\"margin-top:15px;\">\r\n                    <strong>About the buttons:</strong" +
+">\r\n                    <ul style=\"margin-bottom:0;\">\r\n                        <l" +
+"i><strong>Relaunch:</strong> Loads this job\'s parameters into the Launch tab so " +
+"you can review or modify them before launching.</li>\r\n                        <l" +
+"i><strong>Clone & Launch:</strong> Immediately creates and enqueues an identical" +
+" job without editing.</li>\r\n                    </ul>\r\n                </div>\r\n " +
+"           </div>\r\n        </div>\r\n    </div>\r\n\r\n    <!-- ==================== P" +
+"ESTAÑA TEMPLATES ==================== -->\r\n    <div role=\"tabpanel\" class=\"tab-p" +
+"ane fade\" id=\"templatesTab\">\r\n        <div class=\"row\">\r\n            <div class=" +
+"\"col-md-8\">\r\n                <div class=\"panel panel-default\">\r\n                " +
+"    <div class=\"panel-heading\">Saved templates</div>\r\n                    <div c" +
+"lass=\"panel-body\">\r\n                        <table class=\"table table-condensed\"" +
+" id=\"templatesTable\">\r\n                            <thead><tr><th>Name</th><th>C" +
+"lass</th><th>Method</th><th>Queue</th><th>Mode</th><th></th></tr></thead>\r\n     " +
+"                       <tbody></tbody>\r\n                        </table>\r\n      " +
+"              </div>\r\n                </div>\r\n            </div>\r\n            <d" +
+"iv class=\"col-md-4\">\r\n                <div class=\"panel panel-default\">\r\n       " +
+"             <div class=\"panel-heading\">Manage</div>\r\n                    <div c" +
+"lass=\"panel-body\">\r\n                        <p><small>You can also create a temp" +
+"late from any job in the <strong>History</strong> tab using the <em>Save as temp" +
+"late</em> button.</small></p>\r\n                        <div class=\"form-group\" s" +
+"tyle=\"margin-top:10px;\">\r\n                            <label>Import template</la" +
+"bel>\r\n                            <input type=\"file\" id=\"importFile\" accept=\".js" +
+"on\">\r\n                            <button id=\"btnImport\" class=\"btn btn-default " +
+"btn-block\" style=\"margin-top:5px;\">Import</button>\r\n                        </di" +
+"v>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n    " +
+"    </div>        \r\n        <!-- Modal para vista previa de plantilla -->\r\n     " +
+"   <div class=\"modal fade\" id=\"templatePreviewModal\" tabindex=\"-1\" role=\"dialog\"" +
+">\r\n            <div class=\"modal-dialog modal-lg\" role=\"document\">\r\n            " +
+"    <div class=\"modal-content\">\r\n                    <div class=\"modal-header\">\r" +
+"\n                        <button type=\"button\" class=\"close\" data-dismiss=\"modal" +
+"\">&times;</button>\r\n                        <h4 class=\"modal-title\">Template Pre" +
+"view: <span id=\"previewTemplateName\"></span></h4>\r\n                    </div>\r\n " +
+"                   <div class=\"modal-body\">\r\n                        <dl class=\"" +
+"dl-horizontal\">\r\n                            <dt>Class</dt><dd id=\"prevClass\"></" +
+"dd>\r\n                            <dt>Method</dt><dd id=\"prevMethod\"></dd>\r\n     " +
+"                       <dt>Queue</dt><dd id=\"prevQueue\"></dd>\r\n                 " +
+"           <dt>Execution Mode</dt><dd id=\"prevExecMode\"></dd>\r\n                 " +
+"           <dt>Cron Expression</dt><dd id=\"prevCron\"></dd>\r\n                    " +
+"        <dt>Recurring Engine</dt><dd id=\"prevEngine\"></dd>\r\n                    " +
+"        <dt>Mode</dt><dd id=\"prevMode\"></dd>\r\n                            <dt>Pe" +
+"rform Context</dt><dd id=\"prevPerformContext\"></dd>\r\n                           " +
+" <dt>Cancellation Token</dt><dd id=\"prevCancellationToken\"></dd>\r\n              " +
+"              <dt>Params (raw JSON)</dt>\r\n                            <dd><pre i" +
+"d=\"prevParams\" style=\"max-height:300px; overflow-y:auto; background:#f5f5f5; pad" +
+"ding:10px;\"></pre></dd>\r\n                        </dl>\r\n                    </di" +
+"v>\r\n                    <div class=\"modal-footer\">\r\n                        <but" +
+"ton type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\r\n " +
+"                   </div>\r\n                </div>\r\n            </div>\r\n        <" +
+"/div>\r\n    </div>\r\n        <!-- ==================== PESTAÑA AUDITLOG ==========" +
+"========== -->\r\n    <div role=\"tabpanel\" class=\"tab-pane fade\" id=\"auditLogPane\"" +
+">\r\n        <div class=\"panel panel-default\">\r\n            <div class=\"panel-head" +
+"ing\">\r\n                <strong>Audit Log (read-only)</strong>\r\n            </div" +
+">\r\n            <div class=\"panel-body\">\r\n                <!-- Filtros -->\r\n     " +
+"           <div class=\"row\" style=\"margin-bottom: 10px;\">\r\n                    <" +
+"div class=\"col-sm-3\">\r\n                        <input type=\"text\" id=\"auditUserF" +
+"ilter\" class=\"form-control input-sm\" placeholder=\"User\">\r\n                    </" +
+"div>\r\n                    <div class=\"col-sm-2\">\r\n                        <input" +
+" type=\"datetime-local\" id=\"auditFromFilter\" class=\"form-control input-sm\" placeh" +
+"older=\"From\">\r\n                    </div>\r\n                    <div class=\"col-s" +
+"m-2\">\r\n                        <input type=\"datetime-local\" id=\"auditToFilter\" c" +
+"lass=\"form-control input-sm\" placeholder=\"To\">\r\n                    </div>\r\n    " +
+"                <div class=\"col-sm-2\">\r\n                        <input type=\"num" +
+"ber\" id=\"auditCountFilter\" class=\"form-control input-sm\" value=\"200\" min=\"1\" max" +
+"=\"1000\" placeholder=\"Count\">\r\n                    </div>\r\n                    <d" +
+"iv class=\"col-sm-3\">\r\n                        <button class=\"btn btn-sm btn-defa" +
+"ult\" id=\"btnApplyAuditFilters\">Apply Filters</button>\r\n                        <" +
+"button class=\"btn btn-sm btn-default\" id=\"btnClearAuditFilters\">Clear</button>\r\n" +
+"                    </div>\r\n                </div>\r\n\r\n                <!-- Tabla" +
+" -->\r\n                <table class=\"table table-condensed\" id=\"auditLogTable\">\r\n" +
+"                    <thead>\r\n                        <tr>\r\n                     " +
+"       <th>Timestamp</th>\r\n                            <th>JobId</th>\r\n         " +
+"                   <th>Class</th>\r\n                            <th>Method</th>\r\n" +
+"                            <th>Queue</th>\r\n                            <th>Mode" +
+"</th>\r\n                            <th>Engine</th>\r\n                            " +
+"<th>User</th>\r\n                        </tr>\r\n                    </thead>\r\n    " +
+"                <tbody></tbody>\r\n                </table>\r\n                <div " +
+"class=\"row\" style=\"margin-top:5px;\">\r\n                    <div class=\"col-sm-6\">" +
+"<span id=\"auditPageInfo\"></span></div>\r\n                    <div class=\"col-sm-6" +
+" text-right\">\r\n                        <button class=\"btn btn-xs btn-default\" id" +
+"=\"btnAuditPrevPage\" disabled>Prev</button>\r\n                        <button clas" +
+"s=\"btn btn-xs btn-default\" id=\"btnAuditNextPage\" disabled>Next</button>\r\n       " +
+"             </div>\r\n                </div>\r\n            </div>\r\n        </div>\r" +
+"\n    </div>\r\n\r\n\r\n</div>\r\n\r\n<!-- Modal Generador de Cron (versión mejorada) -->\r\n" +
+"<div class=\"modal fade\" id=\"cronGeneratorModal\" tabindex=\"-1\" role=\"dialog\">\r\n  " +
+"  <div class=\"modal-dialog modal-lg\" role=\"document\">\r\n        <div class=\"modal" +
+"-content\">\r\n            <div class=\"modal-header\" style=\"background-color: #f8f9" +
+"fa; border-bottom: 1px solid #dee2e6;\">\r\n                <button type=\"button\" c" +
+"lass=\"close\" data-dismiss=\"modal\">&times;</button>\r\n                <h4 class=\"m" +
+"odal-title\"><i class=\"glyphicon glyphicon-time\"></i> Cron Expression Generator</" +
+"h4>\r\n            </div>\r\n            <div class=\"modal-body\" style=\"padding: 20p" +
+"x;\">\r\n                <div class=\"row\">\r\n                    <div class=\"col-md-" +
+"7\">\r\n                        <!-- Pestañas de categorías -->\r\n                  " +
+"      <ul class=\"nav nav-tabs\" role=\"tablist\" style=\"margin-bottom: 15px;\">\r\n   " +
+"                         <li role=\"presentation\" class=\"active\"><a href=\"#tabMin" +
+"utes\" role=\"tab\" data-toggle=\"tab\">Minutes</a></li>\r\n                           " +
+" <li role=\"presentation\"><a href=\"#tabHours\" role=\"tab\" data-toggle=\"tab\">Hours<" +
+"/a></li>\r\n                            <li role=\"presentation\"><a href=\"#tabDayMo" +
+"nth\" role=\"tab\" data-toggle=\"tab\">Day of Month</a></li>\r\n                       " +
+"     <li role=\"presentation\"><a href=\"#tabMonth\" role=\"tab\" data-toggle=\"tab\">Mo" +
+"nth</a></li>\r\n                            <li role=\"presentation\"><a href=\"#tabD" +
+"ayWeek\" role=\"tab\" data-toggle=\"tab\">Day of Week</a></li>\r\n                     " +
+"   </ul>\r\n\r\n                        <div class=\"tab-content\" style=\"min-height: " +
+"250px;\">\r\n                            <!-- Pestaña Minutos -->\r\n                " +
+"            <div role=\"tabpanel\" class=\"tab-pane active\" id=\"tabMinutes\">\r\n     " +
+"                           <div class=\"form-group\">\r\n                           " +
+"         <label>Every N minutes</label>\r\n                                    <in" +
+"put type=\"number\" id=\"minEveryN\" class=\"form-control\" min=\"1\" value=\"1\" placehol" +
+"der=\"N\">\r\n                                </div>\r\n                              " +
+"  <div class=\"form-group\">\r\n                                    <label>Specific " +
+"minutes (comma separated)</label>\r\n                                    <input ty" +
+"pe=\"text\" id=\"minSpecific\" class=\"form-control\" placeholder=\"0,15,30,45\">\r\n     " +
+"                           </div>\r\n                                <div class=\"f" +
+"orm-group\">\r\n                                    <label>Range (from - to)</label" +
+">\r\n                                    <div class=\"row\">\r\n                      " +
+"                  <div class=\"col-xs-6\">\r\n                                      " +
+"      <input type=\"number\" id=\"minRangeFrom\" class=\"form-control\" min=\"0\" max=\"5" +
+"9\" value=\"0\" placeholder=\"From\">\r\n                                        </div>" +
+"\r\n                                        <div class=\"col-xs-6\">\r\n              " +
+"                              <input type=\"number\" id=\"minRangeTo\" class=\"form-c" +
+"ontrol\" min=\"0\" max=\"59\" value=\"59\" placeholder=\"To\">\r\n                         " +
+"               </div>\r\n                                    </div>\r\n             " +
+"                   </div>\r\n                            </div>\r\n                 " +
+"           <!-- Pestaña Horas -->\r\n                            <div role=\"tabpan" +
+"el\" class=\"tab-pane\" id=\"tabHours\">\r\n                                <div class=" +
+"\"form-group\">\r\n                                    <label>Every N hours</label>\r" +
+"\n                                    <input type=\"number\" id=\"hourEveryN\" class=" +
+"\"form-control\" min=\"1\" value=\"1\" placeholder=\"N\">\r\n                             " +
+"   </div>\r\n                                <div class=\"form-group\">\r\n           " +
+"                         <label>Specific hours (comma separated)</label>\r\n      " +
+"                              <input type=\"text\" id=\"hourSpecific\" class=\"form-c" +
+"ontrol\" placeholder=\"8,12,18\">\r\n                                </div>\r\n        " +
+"                        <div class=\"form-group\">\r\n                              " +
+"      <label>Range (from - to)</label>\r\n                                    <div" +
+" class=\"row\">\r\n                                        <div class=\"col-xs-6\">\r\n " +
+"                                           <input type=\"number\" id=\"hourRangeFro" +
+"m\" class=\"form-control\" min=\"0\" max=\"23\" value=\"9\" placeholder=\"From\">\r\n        " +
+"                                </div>\r\n                                        " +
+"<div class=\"col-xs-6\">\r\n                                            <input type=" +
+"\"number\" id=\"hourRangeTo\" class=\"form-control\" min=\"0\" max=\"23\" value=\"17\" place" +
+"holder=\"To\">\r\n                                        </div>\r\n                  " +
+"                  </div>\r\n                                </div>\r\n              " +
+"              </div>\r\n                            <!-- Pestaña Día del mes -->\r\n" +
+"                            <div role=\"tabpanel\" class=\"tab-pane\" id=\"tabDayMont" +
+"h\">\r\n                                <div class=\"form-group\">\r\n                 " +
+"                   <label>Every day</label>\r\n                                   " +
+" <input type=\"text\" class=\"form-control\" value=\"*\" disabled>\r\n                  " +
+"              </div>\r\n                                <div class=\"form-group\">\r\n" +
+"                                    <label>Specific days (comma separated, e.g.," +
+" 1,15)</label>\r\n                                    <input type=\"text\" id=\"dayMo" +
+"nthSpecific\" class=\"form-control\" placeholder=\"1,15\">\r\n                         " +
+"       </div>\r\n                                <div class=\"form-group\">\r\n       " +
+"                             <label>Every N days starting at day</label>\r\n      " +
+"                              <div class=\"row\">\r\n                               " +
+"         <div class=\"col-xs-6\">\r\n                                            <in" +
+"put type=\"number\" id=\"dayMonthEveryN\" class=\"form-control\" min=\"1\" value=\"1\" pla" +
 "ceholder=\"N\">\r\n                                        </div>\r\n                 " +
 "                       <div class=\"col-xs-6\">\r\n                                 " +
-"           <input type=\"number\" id=\"weekdayStart\" class=\"form-control\" min=\"0\" m" +
-"ax=\"7\" value=\"1\" placeholder=\"Start day\">\r\n                                     " +
-"   </div>\r\n                                    </div>\r\n                         " +
-"       </div>\r\n                            </div>\r\n                        </div" +
-">\r\n                    </div>\r\n                    <!-- Panel derecho: previsual" +
-"ización -->\r\n                    <div class=\"col-md-5\">\r\n                       " +
-" <div class=\"panel panel-default\">\r\n                            <div class=\"pane" +
-"l-heading\"><strong>Preview</strong></div>\r\n                            <div clas" +
-"s=\"panel-body\">\r\n                                <div class=\"form-group\">\r\n     " +
-"                               <label>Current expression</label>\r\n              " +
-"                      <input type=\"text\" id=\"cronPreviewExpression\" class=\"form-" +
-"control\" readonly style=\"font-family:monospace;\">\r\n                             " +
-"   </div>\r\n                                <div class=\"form-group\">\r\n           " +
-"                         <label>Description</label>\r\n                           " +
-"         <p id=\"cronDescription\" style=\"font-style:italic; color:#555;\"></p>\r\n  " +
-"                              </div>\r\n                                <button ty" +
-"pe=\"button\" class=\"btn btn-sm btn-info\" id=\"btnShowExecutions\">Show next executi" +
-"ons</button>\r\n                                <div id=\"cronExecutionsPreview\" st" +
-"yle=\"margin-top:10px; max-height:150px; overflow-y:auto; font-size:12px;\">&nbsp;" +
-"</div>\r\n                            </div>\r\n                        </div>\r\n    " +
-"                </div>\r\n                </div>\r\n            </div>\r\n            " +
-"<div class=\"modal-footer\">\r\n                <button type=\"button\" class=\"btn btn" +
-"-default\" data-dismiss=\"modal\">Cancel</button>\r\n                <button type=\"bu" +
-"tton\" class=\"btn btn-primary\" id=\"btnGenerateCron\">Generate</button>\r\n          " +
-"  </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n\r\n<!-- Modal de Confirmación para " +
-"colas críticas -->\r\n<div class=\"modal fade\" id=\"criticalConfirmModal\" tabindex=\"" +
-"-1\" role=\"dialog\">\r\n    <div class=\"modal-dialog\" role=\"document\">\r\n        <div" +
-" class=\"modal-content\">\r\n            <div class=\"modal-header\"><h4 class=\"modal-" +
-"title\">Confirm Launch</h4></div>\r\n            <div class=\"modal-body\">\r\n        " +
-"        <p>The queue <strong id=\"criticalQueueName\"></strong> is marked as criti" +
-"cal. Are you sure you want to launch this job?</p>\r\n                <div><pre id" +
-"=\"criticalJobSummary\"></pre></div>\r\n            </div>\r\n            <div class=\"" +
-"modal-footer\">\r\n                <button type=\"button\" class=\"btn btn-default\" da" +
-"ta-dismiss=\"modal\">Cancel</button>\r\n                <button type=\"button\" class=" +
-"\"btn btn-danger\" id=\"confirmCriticalLaunch\">Confirm & Launch</button>\r\n         " +
-"   </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n\r\n<script>\r\n    // ====== VARIABL" +
-"ES GLOBALES ======\r\n    var currentMethods = [];        // array de MethodInfoDt" +
-"o\r\n    var dynamicJobsAvailable = false;\r\n    var criticalQueues =  [];\r\n    var" +
-" apiBaseUrl = \'");
+"           <input type=\"number\" id=\"dayMonthStart\" class=\"form-control\" min=\"1\" " +
+"max=\"31\" value=\"1\" placeholder=\"Start day\">\r\n                                   " +
+"     </div>\r\n                                    </div>\r\n                       " +
+"         </div>\r\n                                <div class=\"form-group\">\r\n     " +
+"                               <label>Specific day of month (choose one or many)" +
+"</label>\r\n                                    <div class=\"row\" style=\"margin: 0;" +
+"\">\r\n                                        <!-- Checkboxes para días 1-31 en un" +
+"a cuadrícula compacta -->\r\n                                        <div class=\"c" +
+"ol-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"1\"> 01</la" +
+"bel></div>\r\n                                        <div class=\"col-xs-3\"><label" +
+"><input type=\"checkbox\" class=\"day-month-check\" value=\"2\"> 02</label></div>\r\n   " +
+"                                     <div class=\"col-xs-3\"><label><input type=\"c" +
+"heckbox\" class=\"day-month-check\" value=\"3\"> 03</label></div>\r\n                  " +
+"                      <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=" +
+"\"day-month-check\" value=\"4\"> 04</label></div>\r\n                                 " +
+"       <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-chec" +
+"k\" value=\"5\"> 05</label></div>\r\n                                        <div cla" +
+"ss=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"6\"> 0" +
+"6</label></div>\r\n                                        <div class=\"col-xs-3\"><" +
+"label><input type=\"checkbox\" class=\"day-month-check\" value=\"7\"> 07</label></div>" +
+"\r\n                                        <div class=\"col-xs-3\"><label><input ty" +
+"pe=\"checkbox\" class=\"day-month-check\" value=\"8\"> 08</label></div>\r\n             " +
+"                           <div class=\"col-xs-3\"><label><input type=\"checkbox\" c" +
+"lass=\"day-month-check\" value=\"9\"> 09</label></div>\r\n                            " +
+"            <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month" +
+"-check\" value=\"10\"> 10</label></div>\r\n                                        <d" +
+"iv class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=" +
+"\"11\"> 11</label></div>\r\n                                        <div class=\"col-" +
+"xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"12\"> 12</labe" +
+"l></div>\r\n                                        <div class=\"col-xs-3\"><label><" +
+"input type=\"checkbox\" class=\"day-month-check\" value=\"13\"> 13</label></div>\r\n    " +
+"                                    <div class=\"col-xs-3\"><label><input type=\"ch" +
+"eckbox\" class=\"day-month-check\" value=\"14\"> 14</label></div>\r\n                  " +
+"                      <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=" +
+"\"day-month-check\" value=\"15\"> 15</label></div>\r\n                                " +
+"        <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-che" +
+"ck\" value=\"16\"> 16</label></div>\r\n                                        <div c" +
+"lass=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"17\"" +
+"> 17</label></div>\r\n                                        <div class=\"col-xs-3" +
+"\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"18\"> 18</label></" +
+"div>\r\n                                        <div class=\"col-xs-3\"><label><inpu" +
+"t type=\"checkbox\" class=\"day-month-check\" value=\"19\"> 19</label></div>\r\n        " +
+"                                <div class=\"col-xs-3\"><label><input type=\"checkb" +
+"ox\" class=\"day-month-check\" value=\"20\"> 20</label></div>\r\n                      " +
+"                  <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day" +
+"-month-check\" value=\"21\"> 21</label></div>\r\n                                    " +
+"    <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" " +
+"value=\"22\"> 22</label></div>\r\n                                        <div class" +
+"=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"23\"> 23" +
+"</label></div>\r\n                                        <div class=\"col-xs-3\"><l" +
+"abel><input type=\"checkbox\" class=\"day-month-check\" value=\"24\"> 24</label></div>" +
+"\r\n                                        <div class=\"col-xs-3\"><label><input ty" +
+"pe=\"checkbox\" class=\"day-month-check\" value=\"25\"> 25</label></div>\r\n            " +
+"                            <div class=\"col-xs-3\"><label><input type=\"checkbox\" " +
+"class=\"day-month-check\" value=\"26\"> 26</label></div>\r\n                          " +
+"              <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-mon" +
+"th-check\" value=\"27\"> 27</label></div>\r\n                                        " +
+"<div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" valu" +
+"e=\"28\"> 28</label></div>\r\n                                        <div class=\"co" +
+"l-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"29\"> 29</la" +
+"bel></div>\r\n                                        <div class=\"col-xs-3\"><label" +
+"><input type=\"checkbox\" class=\"day-month-check\" value=\"30\"> 30</label></div>\r\n  " +
+"                                      <div class=\"col-xs-3\"><label><input type=\"" +
+"checkbox\" class=\"day-month-check\" value=\"31\"> 31</label></div>\r\n                " +
+"                    </div>\r\n                                </div>\r\n            " +
+"                </div>\r\n                            <!-- Pestaña Mes -->\r\n      " +
+"                      <div role=\"tabpanel\" class=\"tab-pane\" id=\"tabMonth\">\r\n    " +
+"                            <div class=\"form-group\">\r\n                          " +
+"          <label>Every month</label>\r\n                                    <input" +
+" type=\"text\" class=\"form-control\" value=\"*\" disabled>\r\n                         " +
+"       </div>\r\n                                <div class=\"form-group\">\r\n       " +
+"                             <label>Specific months (comma separated, 1-12)</lab" +
+"el>\r\n                                    <input type=\"text\" id=\"monthSpecific\" c" +
+"lass=\"form-control\" placeholder=\"1,6,12\">\r\n                                </div" +
+">\r\n                                <div class=\"form-group\">\r\n                   " +
+"                 <label>Specific months (choose)</label>\r\n                      " +
+"              <div class=\"row\" style=\"margin: 0;\">\r\n                            " +
+"            <div class=\"col-xs-4\"><label><input type=\"checkbox\" class=\"month-che" +
+"ck\" value=\"1\"> January</label></div>\r\n                                        <d" +
+"iv class=\"col-xs-4\"><label><input type=\"checkbox\" class=\"month-check\" value=\"2\">" +
+" February</label></div>\r\n                                        <div class=\"col" +
+"-xs-4\"><label><input type=\"checkbox\" class=\"month-check\" value=\"3\"> March</label" +
+"></div>\r\n                                        <div class=\"col-xs-4\"><label><i" +
+"nput type=\"checkbox\" class=\"month-check\" value=\"4\"> April</label></div>\r\n       " +
+"                                 <div class=\"col-xs-4\"><label><input type=\"check" +
+"box\" class=\"month-check\" value=\"5\"> May</label></div>\r\n                         " +
+"               <div class=\"col-xs-4\"><label><input type=\"checkbox\" class=\"month-" +
+"check\" value=\"6\"> June</label></div>\r\n                                        <d" +
+"iv class=\"col-xs-4\"><label><input type=\"checkbox\" class=\"month-check\" value=\"7\">" +
+" July</label></div>\r\n                                        <div class=\"col-xs-" +
+"4\"><label><input type=\"checkbox\" class=\"month-check\" value=\"8\"> August</label></" +
+"div>\r\n                                        <div class=\"col-xs-4\"><label><inpu" +
+"t type=\"checkbox\" class=\"month-check\" value=\"9\"> September</label></div>\r\n      " +
+"                                  <div class=\"col-xs-4\"><label><input type=\"chec" +
+"kbox\" class=\"month-check\" value=\"10\"> October</label></div>\r\n                   " +
+"                     <div class=\"col-xs-4\"><label><input type=\"checkbox\" class=\"" +
+"month-check\" value=\"11\"> November</label></div>\r\n                               " +
+"         <div class=\"col-xs-4\"><label><input type=\"checkbox\" class=\"month-check\"" +
+" value=\"12\"> December</label></div>\r\n                                    </div>\r" +
+"\n                                </div>\r\n                            </div>\r\n   " +
+"                         <!-- Pestaña Día de la semana -->\r\n                    " +
+"        <div role=\"tabpanel\" class=\"tab-pane\" id=\"tabDayWeek\">\r\n                " +
+"                <div class=\"form-group\">\r\n                                    <l" +
+"abel>Every day of week</label>\r\n                                    <input type=" +
+"\"text\" class=\"form-control\" value=\"*\" disabled>\r\n                               " +
+" </div>\r\n                                <div class=\"form-group\">\r\n             " +
+"                       <label>Specific days of week (choose)</label>\r\n          " +
+"                          <div class=\"row\" style=\"margin: 0;\">\r\n                " +
+"                        <div class=\"col-xs-6\"><label><input type=\"checkbox\" clas" +
+"s=\"weekday-check\" value=\"1\"> Monday</label></div>\r\n                             " +
+"           <div class=\"col-xs-6\"><label><input type=\"checkbox\" class=\"weekday-ch" +
+"eck\" value=\"2\"> Tuesday</label></div>\r\n                                        <" +
+"div class=\"col-xs-6\"><label><input type=\"checkbox\" class=\"weekday-check\" value=\"" +
+"3\"> Wednesday</label></div>\r\n                                        <div class=" +
+"\"col-xs-6\"><label><input type=\"checkbox\" class=\"weekday-check\" value=\"4\"> Thursd" +
+"ay</label></div>\r\n                                        <div class=\"col-xs-6\">" +
+"<label><input type=\"checkbox\" class=\"weekday-check\" value=\"5\"> Friday</label></d" +
+"iv>\r\n                                        <div class=\"col-xs-6\"><label><input" +
+" type=\"checkbox\" class=\"weekday-check\" value=\"6\"> Saturday</label></div>\r\n      " +
+"                                  <div class=\"col-xs-6\"><label><input type=\"chec" +
+"kbox\" class=\"weekday-check\" value=\"0\"> Sunday</label></div>\r\n                   " +
+"                 </div>\r\n                                </div>\r\n               " +
+"                 <div class=\"form-group\">\r\n                                    <" +
+"label>Specific days (comma separated, SST, 0-7, SUN-SAT)</label>\r\n              " +
+"                      <input type=\"text\" id=\"weekdaySpecific\" class=\"form-contro" +
+"l\" placeholder=\"1,3,5\">\r\n                                </div>\r\n               " +
+"                 <div class=\"form-group\">\r\n                                    <" +
+"label>Every N days starting on day</label>\r\n                                    " +
+"<div class=\"row\">\r\n                                        <div class=\"col-xs-6\"" +
+">\r\n                                            <input type=\"number\" id=\"weekdayE" +
+"veryN\" class=\"form-control\" min=\"1\" value=\"1\" placeholder=\"N\">\r\n                " +
+"                        </div>\r\n                                        <div cla" +
+"ss=\"col-xs-6\">\r\n                                            <input type=\"number\"" +
+" id=\"weekdayStart\" class=\"form-control\" min=\"0\" max=\"7\" value=\"1\" placeholder=\"S" +
+"tart day\">\r\n                                        </div>\r\n                    " +
+"                </div>\r\n                                </div>\r\n                " +
+"            </div>\r\n                        </div>\r\n                    </div>\r\n" +
+"                    <!-- Panel derecho: previsualización -->\r\n                  " +
+"  <div class=\"col-md-5\">\r\n                        <div class=\"panel panel-defaul" +
+"t\">\r\n                            <div class=\"panel-heading\"><strong>Preview</str" +
+"ong></div>\r\n                            <div class=\"panel-body\">\r\n              " +
+"                  <div class=\"form-group\">\r\n                                    " +
+"<label>Current expression</label>\r\n                                    <input ty" +
+"pe=\"text\" id=\"cronPreviewExpression\" class=\"form-control\" readonly style=\"font-f" +
+"amily:monospace;\">\r\n                                </div>\r\n                    " +
+"            <div class=\"form-group\">\r\n                                    <label" +
+">Description</label>\r\n                                    <p id=\"cronDescription" +
+"\" style=\"font-style:italic; color:#555;\"></p>\r\n                                <" +
+"/div>\r\n                                <button type=\"button\" class=\"btn btn-sm b" +
+"tn-info\" id=\"btnShowExecutions\">Show next executions</button>\r\n                 " +
+"               <div id=\"cronExecutionsPreview\" style=\"margin-top:10px; max-heigh" +
+"t:150px; overflow-y:auto; font-size:12px;\">&nbsp;</div>\r\n                       " +
+"     </div>\r\n                        </div>\r\n                    </div>\r\n       " +
+"         </div>\r\n            </div>\r\n            <div class=\"modal-footer\">\r\n   " +
+"             <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">" +
+"Cancel</button>\r\n                <button type=\"button\" class=\"btn btn-primary\" i" +
+"d=\"btnGenerateCron\">Generate</button>\r\n            </div>\r\n        </div>\r\n    <" +
+"/div>\r\n</div>\r\n\r\n<!-- Modal de Confirmación para colas críticas -->\r\n<div class=" +
+"\"modal fade\" id=\"criticalConfirmModal\" tabindex=\"-1\" role=\"dialog\">\r\n    <div cl" +
+"ass=\"modal-dialog\" role=\"document\">\r\n        <div class=\"modal-content\">\r\n      " +
+"      <div class=\"modal-header\"><h4 class=\"modal-title\">Confirm Launch</h4></div" +
+">\r\n            <div class=\"modal-body\">\r\n                <p>The queue <strong id" +
+"=\"criticalQueueName\"></strong> is marked as critical. Are you sure you want to l" +
+"aunch this job?</p>\r\n                <div><pre id=\"criticalJobSummary\"></pre></d" +
+"iv>\r\n            </div>\r\n            <div class=\"modal-footer\">\r\n               " +
+" <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Cancel</butt" +
+"on>\r\n                <button type=\"button\" class=\"btn btn-danger\" id=\"confirmCri" +
+"ticalLaunch\">Confirm & Launch</button>\r\n            </div>\r\n        </div>\r\n    " +
+"</div>\r\n</div>\r\n\r\n<script>\r\n    // ====== VARIABLES GLOBALES ======\r\n    var cur" +
+"rentMethods = [];        // array de MethodInfoDto\r\n    var dynamicJobsAvailable" +
+" = false;\r\n    var criticalQueues =  [];\r\n    var apiBaseUrl = \'");
 
 
             
-            #line 559 "..\..\Pages\JobLauncherPage.cshtml"
+            #line 576 "..\..\Pages\JobLauncherPage.cshtml"
                  Write(Url.To("/joblauncher"));
 
             
             #line default
             #line hidden
-WriteLiteral("\';\r\n    var selectedMethod = null; // almacenará el MethodInfoDto actual\r\n\r\n    /" +
-"/ ====== UTILIDADES ======\r\n    function $$(id){ return document.getElementById(" +
-"id); }\r\n    function fetchJson(url, options){ return fetch(url, options).then(r " +
-"=> r.json()); }\r\n\r\n    // ====== INICIALIZACIÓN ======\r\n    document.addEventLis" +
-"tener(\'DOMContentLoaded\', function() {\r\n        fetchJson(apiBaseUrl + \'/api/cap" +
-"abilities\').then(function(caps) {\r\n            dynamicJobsAvailable = caps.dynam" +
-"icJobsAvailable;\r\n            buildRecurringEngineOptions(); // construir opcion" +
-"es según modo actual\r\n\r\n            // Mostrar pestaña de auditoría si está habi" +
-"litada\r\n            if (caps.auditLogEnabled) {\r\n                document.getEle" +
-"mentById(\'auditLogTab\').style.display = \'\';\r\n                // Cargar datos de " +
-"auditoría al hacer clic en la pestaña\r\n                document.querySelector(\'a" +
-"[href=\"#auditLogPane\"]\').addEventListener(\'click\', function() {\r\n               " +
-"     loadAuditLog();\r\n                });\r\n            }\r\n        });\r\n        l" +
-"oadQueues();\r\n        bindEvents();\r\n        loadHistory();\r\n        loadTemplat" +
-"es();\r\n    });\r\n\r\n    // Auditoría: cargar datos al abrir la pestaña\r\n    functi" +
-"on loadAuditLog() {\r\n        var user = document.getElementById(\'auditUserFilter" +
-"\').value.trim();\r\n        var from = toUtcString(document.getElementById(\'auditF" +
-"romFilter\').value);\r\n        var to   = toUtcString(document.getElementById(\'aud" +
-"itToFilter\').value);\r\n        var count = document.getElementById(\'auditCountFil" +
-"ter\').value || \'200\';\r\n\r\n        var params = new URLSearchParams();\r\n        if" +
-" (user) params.append(\'user\', user);\r\n        if (from) params.append(\'from\', fr" +
-"om);\r\n        if (to)   params.append(\'to\', to);\r\n        params.append(\'count\'," +
-" count);\r\n\r\n        fetchJson(apiBaseUrl + \'/api/audit-log?\' + params.toString()" +
-")\r\n            .then(function(entries) {\r\n                var tbody = document.q" +
-"uerySelector(\'#auditLogTable tbody\');\r\n                tbody.innerHTML = \'\';\r\n  " +
-"              entries.forEach(function(e) {\r\n                    var row = \'<tr>" +
-"\' +\r\n                        \'<td>\' + new Date(e.timestamp).toLocaleString() + \'" +
-"</td>\' +\r\n                        \'<td>\' + (e.jobId || \'\') + \'</td>\' +\r\n        " +
-"                \'<td>\' + (e.className || \'\') + \'</td>\' +\r\n                      " +
-"  \'<td>\' + (e.methodName || \'\') + \'</td>\' +\r\n                        \'<td>\' + (e" +
-".queue || \'\') + \'</td>\' +\r\n                        \'<td>\' + (e.mode || \'\') + \'</" +
-"td>\' +\r\n                        \'<td>\' + (e.engine || \'\') + \'</td>\' +\r\n         " +
-"               \'<td>\' + (e.user || \'\') + \'</td>\' +\r\n                        \'</t" +
-"r>\';\r\n                    tbody.innerHTML += row;\r\n                });\r\n        " +
-"    });\r\n    }\r\n\r\n    // Eventos de los botones de filtro y carga inicial (añadi" +
-"r en la inicialización)\r\n\r\n    document.getElementById(\'btnApplyAuditFilters\').a" +
-"ddEventListener(\'click\', loadAuditLog);\r\n    document.getElementById(\'btnClearAu" +
-"ditFilters\').addEventListener(\'click\', function() {\r\n        document.getElement" +
-"ById(\'auditUserFilter\').value = \'\';\r\n        document.getElementById(\'auditFromF" +
-"ilter\').value = \'\';\r\n        document.getElementById(\'auditToFilter\').value = \'\'" +
-";\r\n        document.getElementById(\'auditCountFilter\').value = \'200\';\r\n        l" +
-"oadAuditLog();\r\n    });\r\n\r\n    function toUtcString(localDateTime) {\r\n        if" +
-" (!localDateTime) return \'\';\r\n        // Convierte hora local a UTC y devuelve I" +
-"SO 8601\r\n        return new Date(localDateTime).toISOString();\r\n    }\r\n\r\n    // " +
-"Configura las opciones del <select> del motor recurrente según el modo actual y " +
-"disponibilidad de DynamicJobs\r\n    function buildRecurringEngineOptions() {\r\n   " +
-"     var mode = document.querySelector(\'input[name=\"launchMode\"]:checked\').value" +
-";\r\n        var sel = $$(\'recurringEngine\');\r\n        sel.innerHTML = \'\';\r\n\r\n    " +
-"    if (mode === \'assisted\') {\r\n            addOption(sel, \'Direct\', \'Direct\', t" +
-"rue); // siempre disponible en asistido (si no carga clase fallará en backend)\r\n" +
-"            addOption(sel, \'BuiltIn\', \'Built-in (lightweight)\', true);\r\n        " +
-"    addOption(sel, \'DynamicJobs\', \'DynamicJobs (advanced)\', dynamicJobsAvailable" +
-");\r\n        } else { // manual\r\n            addOption(sel, \'BuiltIn\', \'Built-in " +
-"(lightweight)\', true);\r\n            addOption(sel, \'DynamicJobs\', \'DynamicJobs (" +
-"advanced)\', dynamicJobsAvailable);\r\n        }\r\n\r\n        // Mostrar advertencia " +
-"si DynamicJobs no está disponible y está seleccionado\r\n        if (!dynamicJobsA" +
-"vailable && sel.value === \'DynamicJobs\') {\r\n            $$(\'dynamicJobsWarning\')" +
-".style.display = \'inline\';\r\n        } else {\r\n            $$(\'dynamicJobsWarning" +
-"\').style.display = \'none\';\r\n        }\r\n    }\r\n\r\n    function addOption(sel, valu" +
-"e, text, enabled) {\r\n        var opt = document.createElement(\'option\');\r\n      " +
-"  opt.value = value;\r\n        opt.textContent = text;\r\n        if (!enabled) opt" +
-".disabled = true;\r\n        sel.appendChild(opt);\r\n    }\r\n\r\n    function bindEven" +
-"ts() {\r\n        // Modo\r\n        var radios = document.querySelectorAll(\'input[n" +
-"ame=\"launchMode\"]\');\r\n        radios.forEach(function(r) { r.addEventListener(\'c" +
-"hange\', toggleMode); });\r\n\r\n        // Load methods\r\n        $$(\'btnLoadMethods\'" +
-").addEventListener(\'click\', loadMethods);\r\n\r\n        // Method select\r\n        $" +
-"$(\'methodSelect\').addEventListener(\'change\', onMethodChange);\r\n\r\n        // Exec" +
-"ution modes\r\n        var execRadios = document.querySelectorAll(\'input[name=\"exe" +
-"cMode\"]\');\r\n        execRadios.forEach(function(r) { r.addEventListener(\'change\'" +
-", toggleExecMode); });\r\n\r\n        // Validate/format JSON/suggest\r\n        $$(\'v" +
-"alidateJsonBtn\').addEventListener(\'click\', validateJson);\r\n        $$(\'formatJso" +
-"nBtn\').addEventListener(\'click\', formatJson);\r\n        $$(\'suggestJsonBtn\').addE" +
-"ventListener(\'click\', suggestJsonStructure);\r\n\r\n        // Cron\r\n        $$(\'btn" +
-"ValidateCron\').addEventListener(\'click\', validateCron);\r\n        $$(\'btnOpenCron" +
-"Generator\').addEventListener(\'click\', function() {\r\n            $(\'#cronGenerato" +
-"rModal\').modal(\'show\');\r\n        });\r\n\r\n        // Botones principales\r\n        " +
-"$$(\'btnPreview\').addEventListener(\'click\', showPreview);\r\n        $$(\'btnLaunch\'" +
-").addEventListener(\'click\', submitJob);\r\n        $$(\'confirmCriticalLaunch\').add" +
-"EventListener(\'click\', confirmedLaunch);\r\n\r\n        // History\r\n        $$(\'btnC" +
-"learHistory\').addEventListener(\'click\', clearHistory);\r\n\r\n        // Templates\r\n" +
-"        $$(\'btnImport\').addEventListener(\'click\', importTemplate);\r\n\r\n        //" +
-" Atajo Ctrl+Enter\r\n        document.addEventListener(\'keydown\', function(e) {\r\n " +
-"           if (e.ctrlKey && e.key === \'Enter\') { e.preventDefault(); submitJob()" +
-"; }\r\n        });\r\n\r\n        $$(\'btnSaveAsTemplate\').addEventListener(\'click\', sa" +
-"veCurrentAsTemplate);\r\n\r\n        // Mostrar/esconder campos de ejecución y opcio" +
-"nes de motor\r\n        toggleExecMode();\r\n        toggleMode();\r\n    }\r\n\r\n    // " +
-"====== MODO ASISTIDO / MANUAL ======\r\n    function toggleMode() {\r\n        var m" +
-"ode = document.querySelector(\'input[name=\"launchMode\"]:checked\').value;\r\n       " +
-" if (mode === \'assisted\') {\r\n            $$(\'assistedFields\').style.display = \'b" +
-"lock\';\r\n            $$(\'manualFields\').style.display = \'none\';\r\n        } else {" +
-"\r\n            $$(\'assistedFields\').style.display = \'none\';\r\n            $$(\'manu" +
-"alFields\').style.display = \'block\';\r\n        }\r\n        buildRecurringEngineOpti" +
-"ons(); // Reconstruir opciones al cambiar modo\r\n        toggleExecMode(); // Par" +
-"a asegurar visibilidad de recurringFields y motor\r\n    }\r\n\r\n    // ====== MODO D" +
-"E EJECUCIÓN ======\r\n    function toggleExecMode() {\r\n        var mode = document" +
-".querySelector(\'input[name=\"execMode\"]:checked\').value;\r\n        $$(\'scheduleFie" +
-"lds\').style.display = (mode === \'Schedule\') ? \'block\' : \'none\';\r\n        $$(\'sch" +
-"eduleDateTimeFields\').style.display = (mode === \'ScheduleDateTime\') ? \'block\' : " +
-"\'none\';\r\n        $$(\'recurringFields\').style.display = (mode === \'Recurring\') ? " +
-"\'block\' : \'none\';\r\n        $$(\'continuationFields\').style.display = (mode === \'C" +
-"ontinuation\') ? \'block\' : \'none\';\r\n\r\n        // El grupo del motor recurrente ah" +
-"ora siempre está visible cuando recurringFields está visible\r\n        // pero se" +
-" mostrará/ocultará junto con recurringFields; no necesita lógica adicional.\r\n   " +
-"     // Sólo actualizamos opciones por si cambió dinámicamente la disponibilidad" +
-".\r\n        if (mode === \'Recurring\') {\r\n            buildRecurringEngineOptions(" +
-");\r\n        }\r\n    }\r\n\r\n    // ====== CARGAR MÉTODOS (ASISTIDO) ======\r\n    func" +
-"tion loadMethods() {\r\n        var className = $$(\'classNameAssisted\').value.trim" +
-"();\r\n        if (!className) { alert(\'Class name required\'); return; }\r\n        " +
-"fetchJson(apiBaseUrl + \'/api/methods?className=\' + encodeURIComponent(className)" +
-")\r\n            .then(function(resp) {\r\n                if (!resp.success) {\r\n   " +
-"                 alert(resp.error + \' Switched to manual mode.\');\r\n             " +
-"       document.querySelector(\'input[name=\"launchMode\"][value=\"manual\"]\').checke" +
-"d = true;\r\n                    toggleMode();\r\n                    return;\r\n     " +
-"           }\r\n                currentMethods = resp.methods;\r\n                va" +
-"r sel = $$(\'methodSelect\');\r\n                sel.innerHTML = \'<option value=\"\">-" +
-"- Select method --</option>\';\r\n                currentMethods.forEach(function(m" +
-", i) {\r\n                    var params = m.parameters.map(function(p) { return p" +
-".name; }).join(\', \');\r\n                    var display = m.methodName + \'(\' + pa" +
-"rams + \')\';\r\n                    sel.innerHTML += \'<option value=\"\' + i + \'\">\' +" +
-" display + \'</option>\';\r\n                });\r\n                $$(\'methodSelectGr" +
-"oup\').style.display = \'block\';\r\n                $$(\'paramsContainer\').innerHTML " +
-"= \'\';\r\n            });\r\n    }\r\n\r\n    // ====== GENERAR PARÁMETROS DINÁMICOS (ASI" +
-"STIDO) ======\r\n    function onMethodChange() {\r\n        var idx = $$(\'methodSele" +
-"ct\').value;\r\n        if (idx === \'\') { \r\n            $$(\'paramsContainer\').inner" +
-"HTML = \'\'; \r\n            selectedMethod = null; \r\n            return; \r\n        " +
-"}\r\n        var method = currentMethods[parseInt(idx)];\r\n        selectedMethod =" +
-" method;\r\n        var html = \'\';\r\n    \r\n        method.parameters.forEach(functi" +
-"on(p) {\r\n            html += \'<div class=\"form-group param-field\">\';\r\n          " +
-"  html += \'<label>\' + p.name + \' (\' + p.type + \')</label>\';\r\n        \r\n         " +
-"   if (p.isComplex) {\r\n                if (isListType(p.type)) {\r\n              " +
-"      html += generateListInput(p);\r\n                } else if (isDictType(p.typ" +
-"e)) {\r\n                    html += generateDictionaryInput(p);\r\n                " +
-"} else {\r\n                    html += \'<textarea class=\"form-control param-compl" +
-"ex\" data-param-name=\"\' + p.name + \'\" rows=\"3\" placeholder=\\\'Insert JSON for \' + " +
-"p.type + \'\\\'></textarea>\';\r\n                }\r\n            } else {\r\n           " +
-"     html += generateInputForSimpleType(p);\r\n            }\r\n            html += " +
-"\'</div>\';\r\n        });\r\n        $$(\'paramsContainer\').innerHTML = html;\r\n\r\n     " +
-"   // Bindear eventos para listas y diccionarios\r\n        document.querySelector" +
-"All(\'.add-list-item\').forEach(function(btn) {\r\n            btn.addEventListener(" +
-"\'click\', function(e) {\r\n                e.preventDefault();\r\n                var" +
-" container = this.closest(\'.list-container\');\r\n                var elementType =" +
-" container.getAttribute(\'data-element-type\');\r\n                var itemsDiv = co" +
-"ntainer.querySelector(\'.list-items\');\r\n                var newItem = createListI" +
-"tem(elementType);\r\n                itemsDiv.insertAdjacentHTML(\'beforeend\', newI" +
-"tem);\r\n                bindRemoveItem(itemsDiv);\r\n            });\r\n        });\r\n" +
-"        document.querySelectorAll(\'.add-dict-item\').forEach(function(btn) {\r\n   " +
-"         btn.addEventListener(\'click\', function(e) {\r\n                e.preventD" +
-"efault();\r\n                var container = this.closest(\'.dict-container\');\r\n   " +
-"             var keyType = container.getAttribute(\'data-key-type\');\r\n           " +
-"     var valueType = container.getAttribute(\'data-value-type\');\r\n               " +
-" var tbody = container.querySelector(\'.dict-items tbody\');\r\n                var " +
-"newRow = createDictRow(keyType, valueType);\r\n                tbody.insertAdjacen" +
-"tHTML(\'beforeend\', newRow);\r\n                bindRemoveDictRow(tbody);\r\n        " +
-"    });\r\n        });\r\n        function bindRemoveItem(container) {\r\n            " +
-"container.querySelectorAll(\'.remove-list-item\').forEach(function(btn) {\r\n       " +
-"         btn.onclick = function() { this.closest(\'.list-item\').remove(); };\r\n   " +
-"         });\r\n        }\r\n        function bindRemoveDictRow(tbody) {\r\n          " +
-"  tbody.querySelectorAll(\'.remove-dict-row\').forEach(function(btn) {\r\n          " +
-"      btn.onclick = function() { this.closest(\'.dict-row\').remove(); };\r\n       " +
-"     });\r\n        }\r\n        // Inicializar remove en items ya existentes (si se" +
-" regeneran los campos)\r\n        document.querySelectorAll(\'.list-items\').forEach" +
-"(bindRemoveItem);\r\n        document.querySelectorAll(\'.dict-items tbody\').forEac" +
-"h(bindRemoveDictRow);\r\n    }\r\n\r\n    // Generadores de campos para listas y dicci" +
-"onarios\r\n    function generateListInput(paramInfo) {\r\n        var name = paramIn" +
-"fo.name;\r\n        var elementType = extractGenericArgument(paramInfo.type, 0) ||" +
-" \'string\';\r\n        var html = \'<div class=\"list-container\" data-param-name=\"\' +" +
-" name + \'\" data-element-type=\"\' + elementType + \'\">\';\r\n        html += \'<label>\'" +
-" + name + \' (List of \' + elementType + \')</label>\';\r\n        html += \'<div class" +
-"=\"list-items\"></div>\';\r\n        html += \'<button type=\"button\" class=\"btn btn-xs" +
-" btn-default add-list-item\">+ Add item</button>\';\r\n        html += \'</div>\';\r\n  " +
-"      return html;\r\n    }\r\n\r\n    function generateDictionaryInput(paramInfo) {\r\n" +
-"        var name = paramInfo.name;\r\n        var keyType = extractGenericArgument" +
-"(paramInfo.type, 0) || \'string\';\r\n        var valueType = extractGenericArgument" +
-"(paramInfo.type, 1) || \'string\';\r\n        var html = \'<div class=\"dict-container" +
-"\" data-param-name=\"\' + name + \'\" data-key-type=\"\' + keyType + \'\" data-value-type" +
-"=\"\' + valueType + \'\">\';\r\n        html += \'<label>\' + name + \' (Dictionary<\' + ke" +
-"yType + \', \' + valueType + \'>)</label>\';\r\n        html += \'<table class=\"table t" +
-"able-condensed dict-items\"><tbody></tbody></table>\';\r\n        html += \'<button t" +
-"ype=\"button\" class=\"btn btn-xs btn-default add-dict-item\">+ Add entry</button>\';" +
-"\r\n        html += \'</div>\';\r\n        return html;\r\n    }\r\n\r\n    function createL" +
-"istItem(elementType) {\r\n        var inputType = getInputTypeForSimple(elementTyp" +
-"e);\r\n        return \'<div class=\"list-item\">\' +\r\n            \'<input type=\"\' + i" +
-"nputType + \'\" class=\"form-control input-sm\" value=\"\" />\' +\r\n            \'<button" +
-" type=\"button\" class=\"btn btn-xs btn-danger remove-list-item\">×</button>\' +\r\n   " +
-"         \'</div>\';\r\n    }\r\n\r\n    function createDictRow(keyType, valueType) {\r\n " +
-"       var keyInputType = getInputTypeForSimple(keyType);\r\n        var valueInpu" +
-"tType = getInputTypeForSimple(valueType);\r\n        return \'<tr class=\"dict-row\">" +
-"\' +\r\n            \'<td><input type=\"\' + keyInputType + \'\" class=\"form-control inp" +
-"ut-sm dict-key\" placeholder=\"key\" /></td>\' +\r\n            \'<td><input type=\"\' + " +
-"valueInputType + \'\" class=\"form-control input-sm dict-value\" placeholder=\"value\"" +
-" /></td>\' +\r\n            \'<td><button type=\"button\" class=\"btn btn-xs btn-danger" +
-" remove-dict-row\">×</button></td>\' +\r\n            \'</tr>\';\r\n    }\r\n\r\n    functio" +
-"n getInputTypeForSimple(typeName) {\r\n        var t = typeName.toLowerCase();\r\n  " +
-"      if (t.includes(\'int\') || t.includes(\'long\') || t.includes(\'short\') || t.in" +
-"cludes(\'byte\') ||\r\n            t.includes(\'double\') || t.includes(\'float\') || t." +
-"includes(\'decimal\')) return \'number\';\r\n        if (t.includes(\'datetime\')) retur" +
-"n \'datetime-local\';\r\n        if (t.includes(\'bool\')) return \'checkbox\';\r\n       " +
-" return \'text\';\r\n    }\r\n\r\n    function isListType(type) {\r\n        return type.s" +
-"tartsWith(\'System.Collections.Generic.List\') ||\r\n               type.startsWith(" +
-"\'System.Collections.Generic.IList\') ||\r\n               type.endsWith(\'[]\');\r\n   " +
-" }\r\n\r\n    function isDictType(type) {\r\n        return type.startsWith(\'System.Co" +
-"llections.Generic.Dictionary\');\r\n    }\r\n\r\n    function extractGenericArgument(ty" +
-"peName, index) {\r\n        var match = typeName.match(/<(.+)>/);\r\n        if (mat" +
-"ch) {\r\n            var args = match[1].split(\',\');\r\n            return args[inde" +
-"x] ? args[index].trim() : null;\r\n        }\r\n        return null;\r\n    }\r\n\r\n    f" +
-"unction generateInputForSimpleType(paramInfo) {\r\n        var type = paramInfo.ty" +
-"pe;\r\n        var name = paramInfo.name;\r\n        var isNullable = type.endsWith(" +
-"\'?\');\r\n        var underlyingType = isNullable ? type.slice(0, -1).toLowerCase()" +
-" : type.toLowerCase();\r\n    \r\n        var html = \'\';\r\n    \r\n        if (underlyi" +
-"ngType.includes(\'int\') || underlyingType.includes(\'long\') || \r\n            under" +
-"lyingType.includes(\'short\') || underlyingType.includes(\'byte\')) {\r\n            h" +
-"tml = \'<input type=\"number\" class=\"form-control\" data-param-name=\"\' + name + \'\" " +
-"step=\"1\" value=\"\' + (isNullable ? \'\' : \'0\') + \'\" />\';\r\n        }\r\n        else i" +
-"f (underlyingType.includes(\'double\') || underlyingType.includes(\'float\') || \r\n  " +
-"               underlyingType.includes(\'decimal\') || underlyingType.includes(\'si" +
-"ngle\')) {\r\n            html = \'<input type=\"number\" class=\"form-control\" data-pa" +
-"ram-name=\"\' + name + \'\" step=\"any\" value=\"\' + (isNullable ? \'\' : \'0.0\') + \'\" />\'" +
-";\r\n        }\r\n        else if (underlyingType.includes(\'bool\')) {\r\n            h" +
-"tml = \'<select class=\"form-control\" data-param-name=\"\' + name + \'\">\';\r\n         " +
-"   if (isNullable) html += \'<option value=\"\">-- Not set --</option>\';\r\n         " +
-"   html += \'<option value=\"true\">True</option><option value=\"false\">False</optio" +
-"n>\';\r\n            html += \'</select>\';\r\n        }\r\n        else if (underlyingTy" +
-"pe.includes(\'datetime\') || underlyingType.includes(\'datetimeoffset\')) {\r\n       " +
-"     var defaultDate = isNullable ? \'\' : new Date(new Date().getTime() - new Dat" +
-"e().getTimezoneOffset() * 60000).toISOString().slice(0, 16);\r\n            html =" +
-" \'<input type=\"datetime-local\" class=\"form-control\" data-param-name=\"\' + name + " +
-"\'\" value=\"\' + defaultDate + \'\" />\';\r\n            html += \'<small class=\"help-blo" +
-"ck\">Click the calendar icon to select a date and time.</small>\';\r\n        }\r\n   " +
-"     else if (underlyingType === \'system.datetime\' || underlyingType === \'dateti" +
-"me\') {\r\n            var defaultDate = isNullable ? \'\' : new Date().toISOString()" +
-".slice(0, 10);\r\n            html = \'<input type=\"date\" class=\"form-control\" data" +
-"-param-name=\"\' + name + \'\" value=\"\' + defaultDate + \'\" />\';\r\n        }\r\n        " +
-"else if (underlyingType === \'system.guid\' || underlyingType === \'guid\') {\r\n     " +
-"       html = \'<input type=\"text\" class=\"form-control\" data-param-name=\"\' + name" +
-" + \'\" placeholder=\"00000000-0000-0000-0000-000000000000\" value=\"\' + (isNullable " +
-"? \'\' : \'00000000-0000-0000-0000-000000000000\') + \'\" />\';\r\n        }\r\n        els" +
-"e if (underlyingType === \'system.timespan\' || underlyingType === \'timespan\') {\r\n" +
-"            html = \'<input type=\"text\" class=\"form-control\" data-param-name=\"\' +" +
-" name + \'\" placeholder=\"hh:mm:ss\" value=\"\' + (isNullable ? \'\' : \'00:00:00\') + \'\"" +
-" />\';\r\n        }\r\n        else if (underlyingType.includes(\'.\') && !underlyingTy" +
-"pe.startsWith(\'system.\')) {\r\n            if (paramInfo.enumValues && paramInfo.e" +
-"numValues.length > 0) {\r\n                html += \'<select class=\"form-control\" d" +
-"ata-param-name=\"\' + name + \'\">\';\r\n                paramInfo.enumValues.forEach(f" +
-"unction(val) {\r\n                    html += \'<option value=\"\' + val + \'\">\' + val" +
-" + \'</option>\';\r\n                });\r\n                html += \'</select>\';\r\n    " +
-"        } else {\r\n                html = \'<input type=\"text\" class=\"form-control" +
-"\" data-param-name=\"\' + name + \'\" placeholder=\"Enum value of \' + paramInfo.type +" +
-" \'\" />\';\r\n            }\r\n        }\r\n        else {\r\n            html = \'<input t" +
-"ype=\"text\" class=\"form-control\" data-param-name=\"\' + name + \'\" placeholder=\"\' + " +
-"paramInfo.type + \'\" />\';\r\n        }\r\n    \r\n        if (isNullable) {\r\n          " +
-"  html += \'<small class=\"text-muted\">(Optional, leave empty for null)</small>\';\r" +
-"\n        }\r\n    \r\n        return html;\r\n    }\r\n\r\n    // ====== JSON VALIDATE / F" +
-"ORMAT / SUGGEST ======\r\n    function validateJson() {\r\n        var text = $$(\'js" +
-"onParams\').value.trim();\r\n        if (!text) return;\r\n        try { JSON.parse(t" +
-"ext); $$(\'jsonValidationMsg\').style.display = \'none\'; alert(\'Valid JSON.\'); }\r\n " +
-"       catch(e) { $$(\'jsonValidationMsg\').style.display = \'inline\'; }\r\n    }\r\n  " +
-"  function formatJson() {\r\n        var text = $$(\'jsonParams\').value.trim();\r\n  " +
-"      try { var obj = JSON.parse(text); $$(\'jsonParams\').value = JSON.stringify(" +
-"obj, null, 2); $$(\'jsonValidationMsg\').style.display = \'none\'; }\r\n        catch(" +
-"e) { $$(\'jsonValidationMsg\').style.display = \'inline\'; }\r\n    }\r\n\r\n    function " +
-"suggestJsonStructure() {\r\n        var className = $$(\'classNameManual\').value.tr" +
-"im();\r\n        var methodName = $$(\'methodNameManual\').value.trim();\r\n    \r\n    " +
-"    if (!className || !methodName) {\r\n            alert(\'Please enter Class Name" +
-" and Method Name first.\');\r\n            return;\r\n        }\r\n    \r\n        fetchJ" +
-"son(apiBaseUrl + \'/api/methods?className=\' + encodeURIComponent(className))\r\n   " +
-"         .then(function(resp) {\r\n                if (!resp.success) {\r\n         " +
-"           alert(\'Assembly no disponible: \' + resp.error);\r\n                    " +
-"return;\r\n                }\r\n                var method = resp.methods.find(funct" +
-"ion(m) { return m.methodName === methodName; });\r\n                if (!method) {" +
-"\r\n                    alert(\'Method not found.\');\r\n                    return;\r\n" +
-"                }\r\n                var suggestion = {};\r\n                method." +
-"parameters.forEach(function(p) {\r\n                    suggestion[p.name] = getDe" +
-"faultValueForType(p.type, p.isComplex);\r\n                });\r\n                $$" +
-"(\'jsonParams\').value = JSON.stringify(suggestion, null, 2);\r\n            })\r\n   " +
-"         .catch(function(err) {\r\n                alert(\'Error loading suggestion" +
-": \' + err.message);\r\n            });\r\n    }\r\n\r\n    function getDefaultValueForTy" +
-"pe(type, isComplex) {\r\n        if (type.endsWith(\'?\')) {\r\n            return nul" +
-"l;\r\n        }\r\n        if (isComplex) {\r\n            return {};\r\n        }\r\n    " +
-"    var t = type.toLowerCase();\r\n        if (t.includes(\'int\') || t.includes(\'lo" +
-"ng\') || t.includes(\'short\') || t.includes(\'byte\')) return 0;\r\n        if (t.incl" +
-"udes(\'double\') || t.includes(\'float\') || t.includes(\'decimal\') || t.includes(\'si" +
-"ngle\')) return 0.0;\r\n        if (t.includes(\'bool\')) return true;\r\n        if (t" +
-".includes(\'datetime\') || t.includes(\'datetimeoffset\')) return new Date().toISOSt" +
-"ring();\r\n        if (t === \'system.guid\' || t === \'guid\') return \'00000000-0000-" +
-"0000-0000-000000000000\';\r\n        if (t === \'system.timespan\' || t === \'timespan" +
-"\') return \'00:00:00\';\r\n        if (t === \'system.string\' || t === \'string\') retu" +
-"rn \'\';\r\n        return \'\';\r\n    }\r\n\r\n    // ====== VALIDATE CRON ======\r\n    fun" +
-"ction validateCron() {\r\n        var expr = $$(\'cronExpression\').value.trim();\r\n " +
-"       if (!expr) { alert(\'Cron expression required\'); return; }\r\n        fetchJ" +
-"son(apiBaseUrl + \'/api/validate-cron?expression=\' + encodeURIComponent(expr))\r\n " +
-"           .then(function(resp) {\r\n                var div = $$(\'cronPreview\');\r" +
-"\n                if (!resp.success) {\r\n                    div.innerHTML = \'<spa" +
-"n class=\"text-danger\">\' + resp.error + \'</span>\';\r\n                } else {\r\n   " +
-"                 div.innerHTML = \'Next occurrences: \' + resp.occurrences.join(\'," +
-" \');\r\n                }\r\n                div.style.display = \'block\';\r\n         " +
-"   });\r\n    }\r\n\r\n    // ====== CRON GENERATOR ======\r\n    function buildCronExpr" +
-"essionFromModal() {\r\n        var minute = \'*\';\r\n        var hour = \'*\';\r\n       " +
-" var dayMonth = \'*\';\r\n        var month = \'*\';\r\n        var dayWeek = \'*\';\r\n\r\n  " +
-"      var minEveryN = document.getElementById(\'minEveryN\').value;\r\n        var m" +
-"inSpecific = document.getElementById(\'minSpecific\').value.trim();\r\n        var m" +
-"inRangeFrom = document.getElementById(\'minRangeFrom\').value;\r\n        var minRan" +
-"geTo = document.getElementById(\'minRangeTo\').value;\r\n        if (minEveryN && mi" +
-"nEveryN !== \'1\') {\r\n            minute = \'*/\' + minEveryN;\r\n        } else if (m" +
-"inSpecific) {\r\n            minute = minSpecific;\r\n        } else if (minRangeFro" +
-"m && minRangeTo) {\r\n            minute = minRangeFrom + \'-\' + minRangeTo;\r\n     " +
-"   }\r\n\r\n        var hourEveryN = document.getElementById(\'hourEveryN\').value;\r\n " +
-"       var hourSpecific = document.getElementById(\'hourSpecific\').value.trim();\r" +
-"\n        var hourRangeFrom = document.getElementById(\'hourRangeFrom\').value;\r\n  " +
-"      var hourRangeTo = document.getElementById(\'hourRangeTo\').value;\r\n        i" +
-"f (hourEveryN && hourEveryN !== \'1\') {\r\n            hour = \'*/\' + hourEveryN;\r\n " +
-"       } else if (hourSpecific) {\r\n            hour = hourSpecific;\r\n        } e" +
-"lse if (hourRangeFrom && hourRangeTo) {\r\n            hour = hourRangeFrom + \'-\' " +
-"+ hourRangeTo;\r\n        }\r\n\r\n        var dayMonthSpecific = document.getElementB" +
-"yId(\'dayMonthSpecific\').value.trim();\r\n        var dayMonthEveryN = document.get" +
-"ElementById(\'dayMonthEveryN\').value;\r\n        var dayMonthStart = document.getEl" +
-"ementById(\'dayMonthStart\').value;\r\n        var checkedDays = [];\r\n        docume" +
-"nt.querySelectorAll(\'.day-month-check:checked\').forEach(function(cb) { checkedDa" +
-"ys.push(cb.value); });\r\n        if (checkedDays.length > 0) {\r\n            dayMo" +
-"nth = checkedDays.join(\',\');\r\n        } else if (dayMonthSpecific) {\r\n          " +
-"  dayMonth = dayMonthSpecific;\r\n        } else if (dayMonthEveryN && dayMonthEve" +
-"ryN !== \'1\') {\r\n            dayMonth = (dayMonthStart ? dayMonthStart + \'/\' + da" +
-"yMonthEveryN : \'*/\' + dayMonthEveryN);\r\n        }\r\n\r\n        var monthSpecific =" +
-" document.getElementById(\'monthSpecific\').value.trim();\r\n        var checkedMont" +
-"hs = [];\r\n        document.querySelectorAll(\'.month-check:checked\').forEach(func" +
-"tion(cb) { checkedMonths.push(cb.value); });\r\n        if (checkedMonths.length >" +
-" 0) {\r\n            month = checkedMonths.join(\',\');\r\n        } else if (monthSpe" +
-"cific) {\r\n            month = monthSpecific;\r\n        }\r\n\r\n        var checkedWe" +
-"ekdays = [];\r\n        document.querySelectorAll(\'.weekday-check:checked\').forEac" +
-"h(function(cb) { checkedWeekdays.push(cb.value); });\r\n        var weekdaySpecifi" +
-"c = document.getElementById(\'weekdaySpecific\').value.trim();\r\n        var weekda" +
-"yEveryN = document.getElementById(\'weekdayEveryN\').value;\r\n        var weekdaySt" +
-"art = document.getElementById(\'weekdayStart\').value;\r\n        if (checkedWeekday" +
-"s.length > 0) {\r\n            dayWeek = checkedWeekdays.join(\',\');\r\n        } els" +
-"e if (weekdaySpecific) {\r\n            dayWeek = weekdaySpecific;\r\n        } else" +
-" if (weekdayEveryN && weekdayEveryN !== \'1\') {\r\n            dayWeek = (weekdaySt" +
-"art ? weekdayStart + \'/\' + weekdayEveryN : \'*/\' + weekdayEveryN);\r\n        }\r\n\r\n" +
-"        return minute + \' \' + hour + \' \' + dayMonth + \' \' + month + \' \' + dayWee" +
-"k;\r\n    }\r\n\r\n    function updateCronPreview() {\r\n        var expression = buildC" +
-"ronExpressionFromModal();\r\n        document.getElementById(\'cronPreviewExpressio" +
-"n\').value = expression;\r\n        document.getElementById(\'cronExecutionsPreview\'" +
-").innerHTML = \'\';\r\n        document.getElementById(\'cronDescription\').textConten" +
-"t = generateCronDescription();\r\n    }\r\n\r\n    function showExecutions() {\r\n      " +
-"  var expr = document.getElementById(\'cronPreviewExpression\').value;\r\n        if" +
-" (!expr) return;\r\n        var fetchUrl = apiBaseUrl + \'/api/validate-cron?expres" +
-"sion=\' + encodeURIComponent(expr);\r\n        fetchJson(fetchUrl)\r\n            .th" +
-"en(function(resp) {\r\n                var div = document.getElementById(\'cronExec" +
-"utionsPreview\');\r\n                if (!resp.success) {\r\n                    div." +
-"innerHTML = \'<span class=\"text-danger\">\' + resp.error + \'</span>\';\r\n            " +
-"        return;\r\n                }\r\n                // Convertir fechas ISO a ob" +
-"jetos moment y formatearlas\r\n                var occurrences = resp.occurrences." +
-"map(function(isoDate) {\r\n                    var m = moment.utc(isoDate);\r\n     " +
-"               return m.local().format(\'ddd, MMM Do YYYY, h:mm:ss A\');\r\n        " +
-"        });\r\n                var firstMoment = moment.utc(resp.occurrences[0]);\r" +
-"\n                var fromNow = firstMoment.fromNow();\r\n                var html " +
-"= \'<strong>Next executions:</strong><br>\';\r\n                html += \'<span style" +
-"=\"font-weight:bold; color:#337ab7;\">\' + fromNow + \'</span><br>\';\r\n              " +
-"  html += occurrences.join(\'<br>\');\r\n                div.innerHTML = html;\r\n    " +
-"        })\r\n            .catch(function(err) {\r\n                document.getElem" +
-"entById(\'cronExecutionsPreview\').innerHTML = \r\n                    \'<span class=" +
-"\"text-danger\">Error: \' + err.message + \'</span>\';\r\n            });\r\n    }\r\n\r\n   " +
-" function generateCronDescription() {\r\n        var parts = buildCronExpressionFr" +
-"omModal().split(\' \');\r\n        var minute = parts[0], hour = parts[1], dayM = pa" +
-"rts[2], month = parts[3], dayW = parts[4];\r\n        var desc = [];\r\n\r\n        if" +
-" (minute === \'*\') desc.push(\'every minute\');\r\n        else if (minute.startsWith" +
-"(\'*/\')) desc.push(\'every \' + minute.slice(2) + \' minutes\');\r\n        else desc.p" +
-"ush(\'at minute \' + minute);\r\n\r\n        if (hour === \'*\') desc.push(\'of every hou" +
-"r\');\r\n        else if (hour.startsWith(\'*/\')) desc.push(\'every \' + hour.slice(2)" +
-" + \' hours\');\r\n        else desc.push(\'at \' + formatTime(hour, minute));\r\n\r\n    " +
-"    if (dayM !== \'*\') {\r\n            if (dayM.includes(\'/\')) {\r\n                " +
-"var dmParts = dayM.split(\'/\');\r\n                desc.push(\'every \' + dmParts[1] " +
-"+ \' days starting on day \' + dmParts[0]);\r\n            } else {\r\n               " +
-" desc.push(\'on day(s) \' + dayM);\r\n            }\r\n        }\r\n        if (month !=" +
-"= \'*\') desc.push(\'in month(s) \' + month);\r\n        if (dayW !== \'*\') {\r\n        " +
-"    var days = dayW.split(\',\').map(function(d) {\r\n                return moment(" +
-").day(parseInt(d)).format(\'dddd\');\r\n            }).join(\', \');\r\n            desc" +
-".push(\'on \' + days);\r\n        }\r\n\r\n        return desc.join(\' \') || \'Custom expr" +
-"ession\';\r\n    }\r\n\r\n    function formatTime(hour, minute) {\r\n        var h = hour" +
-" === \'*\' ? \'0\' : hour;\r\n        var m = minute === \'*\' ? \'0\' : minute;\r\n        " +
-"return moment({hour: h, minute: m}).format(\'h:mm A\');\r\n    }\r\n\r\n    function res" +
-"etCronGenerator() {\r\n        document.getElementById(\'minEveryN\').value = \'\';\r\n " +
-"       document.getElementById(\'minSpecific\').value = \'\';\r\n        document.getE" +
-"lementById(\'minRangeFrom\').value = \'\';\r\n        document.getElementById(\'minRang" +
-"eTo\').value = \'\';\r\n\r\n        document.getElementById(\'hourEveryN\').value = \'\';\r\n" +
-"        document.getElementById(\'hourSpecific\').value = \'\';\r\n        document.ge" +
-"tElementById(\'hourRangeFrom\').value = \'\';\r\n        document.getElementById(\'hour" +
-"RangeTo\').value = \'\';\r\n\r\n        document.getElementById(\'dayMonthSpecific\').val" +
-"ue = \'\';\r\n        document.getElementById(\'dayMonthEveryN\').value = \'1\';\r\n      " +
-"  document.getElementById(\'dayMonthStart\').value = \'1\';\r\n        document.queryS" +
-"electorAll(\'.day-month-check\').forEach(function(cb) { cb.checked = false; });\r\n\r" +
-"\n        document.getElementById(\'monthSpecific\').value = \'\';\r\n        document." +
-"querySelectorAll(\'.month-check\').forEach(function(cb) { cb.checked = false; });\r" +
-"\n\r\n        document.getElementById(\'weekdaySpecific\').value = \'\';\r\n        docum" +
-"ent.getElementById(\'weekdayEveryN\').value = \'1\';\r\n        document.getElementByI" +
-"d(\'weekdayStart\').value = \'1\';\r\n        document.querySelectorAll(\'.weekday-chec" +
-"k\').forEach(function(cb) { cb.checked = false; });\r\n    }\r\n\r\n    document.addEve" +
-"ntListener(\'DOMContentLoaded\', function() {\r\n        $(\'#btnGenerateCron\').on(\'c" +
-"lick\', function() {\r\n            var expression = buildCronExpressionFromModal()" +
-";\r\n            if (expression) {\r\n                document.getElementById(\'cronE" +
-"xpression\').value = expression;\r\n                $(\'#cronGeneratorModal\').modal(" +
-"\'hide\');\r\n                if (typeof validateCron === \'function\') validateCron()" +
-";\r\n            }\r\n        });\r\n\r\n        $(\'#cronGeneratorModal\').on(\'shown.bs.m" +
-"odal\', function () {\r\n            resetCronGenerator();\r\n            $(\'.nav-tab" +
-"s a[href=\"#tabMinutes\"]\').tab(\'show\');\r\n            updateCronPreview();\r\n      " +
-"  });\r\n\r\n        $(\'#cronGeneratorModal\').on(\'change input\', \'input, select\', fu" +
-"nction() {\r\n            updateCronPreview();\r\n        });\r\n\r\n        $(\'a[data-t" +
-"oggle=\"tab\"]\').on(\'shown.bs.tab\', function () {\r\n            updateCronPreview()" +
-";\r\n        });\r\n\r\n        $(\'#btnShowExecutions\').on(\'click\', showExecutions);\r\n" +
-"    });\r\n\r\n\r\n    // ====== COLAS CRÍTICAS ======\r\n    function isQueueCritical(q" +
-"ueue) {\r\n        return criticalQueues.indexOf(queue) >= 0;\r\n    }\r\n\r\n    functi" +
-"on checkCriticalQueue(queue) {\r\n        if (isQueueCritical(queue)) {\r\n         " +
-"   $$(\'criticalQueueWarning\').style.display = \'block\';\r\n            return true;" +
-"\r\n        } else {\r\n            $$(\'criticalQueueWarning\').style.display = \'none" +
-"\';\r\n            return false;\r\n        }\r\n    }\r\n\r\n    $$(\'queue\').addEventListe" +
-"ner(\'input\', function() { checkCriticalQueue(this.value); });\r\n    $$(\'queue\').a" +
-"ddEventListener(\'change\', function() { checkCriticalQueue(this.value); });\r\n\r\n  " +
-"  // ====== CARGAR COLAS ======\r\n    function loadQueues() {\r\n        fetchJson(" +
-"apiBaseUrl + \'/api/queues\').then(function(resp) {\r\n            var datalist = $$" +
-"(\'queueList\');\r\n            datalist.innerHTML = \'\';\r\n            (resp.queues |" +
-"| []).forEach(function(q) {\r\n                datalist.innerHTML += \'<option valu" +
-"e=\"\' + q + \'\">\';\r\n            });\r\n        });\r\n    }\r\n\r\n    // ====== BUILD REQ" +
-"UEST OBJECT ======\r\n    function convertToType(value, type, isComplex) {\r\n      " +
-"  var isNullable = type.endsWith(\'?\');\r\n        var underlyingType = isNullable " +
-"? type.slice(0, -1).toLowerCase() : type.toLowerCase();\r\n    \r\n        if (isNul" +
-"lable && (value === \'\' || value === null || value === undefined)) {\r\n           " +
-" return null;\r\n        }\r\n    \r\n        if (isComplex) {\r\n            if (value " +
-"=== \'\' && isNullable) return null;\r\n            try {\r\n                return JS" +
-"ON.parse(value);\r\n            } catch(e) {\r\n                return value;\r\n     " +
-"       }\r\n        }\r\n    \r\n        if (underlyingType.includes(\'int\') || underly" +
-"ingType.includes(\'long\') || \r\n            underlyingType.includes(\'short\') || un" +
-"derlyingType.includes(\'byte\')) {\r\n            var num = parseInt(value, 10);\r\n  " +
-"          return isNaN(num) ? (isNullable ? null : value) : num;\r\n        }\r\n   " +
-"     if (underlyingType.includes(\'double\') || underlyingType.includes(\'float\') |" +
-"| \r\n            underlyingType.includes(\'decimal\') || underlyingType.includes(\'s" +
-"ingle\')) {\r\n            var num = parseFloat(value);\r\n            return isNaN(n" +
-"um) ? (isNullable ? null : value) : num;\r\n        }\r\n        if (underlyingType." +
-"includes(\'bool\')) {\r\n            if (typeof value === \'boolean\') return value;\r\n" +
-"            if (value === \'\' && isNullable) return null;\r\n            return val" +
-"ue === \'true\' || value === \'1\' || value === \'on\';\r\n        }\r\n        return val" +
-"ue;\r\n    }\r\n\r\n    function buildRequest() {\r\n        var mode = document.querySe" +
-"lector(\'input[name=\"launchMode\"]:checked\').value;\r\n        var className = mode " +
-"=== \'assisted\' ? $$(\'classNameAssisted\').value.trim() : $$(\'classNameManual\').va" +
-"lue.trim();\r\n        var methodName = mode === \'assisted\' ? (function() {\r\n     " +
-"       var idx = $$(\'methodSelect\').value;\r\n            return idx === \'\' ? \'\' :" +
-" currentMethods[parseInt(idx)].methodName;\r\n        })() : $$(\'methodNameManual\'" +
-").value.trim();\r\n\r\n        var request = {\r\n            mode: mode,\r\n           " +
-" className: className,\r\n            methodName: methodName,\r\n            queue: " +
-"$$(\'queue\').value.trim() || \'default\',\r\n            executionMode: document.quer" +
-"ySelector(\'input[name=\"execMode\"]:checked\').value,\r\n            includePerformCo" +
-"ntext: $$(\'chkPerformContext\').checked,\r\n            includeCancellationToken: $" +
-"$(\'chkCancellationToken\').checked,\r\n            parameters: null,\r\n            r" +
-"awParametersJson: null\r\n        };\r\n\r\n        if (mode === \'manual\') {\r\n        " +
-"    request.rawParametersJson = $$(\'jsonParams\').value.trim() || \'{}\';\r\n        " +
-"} else {\r\n            var paramsObj = {};\r\n            var allElements = documen" +
-"t.querySelectorAll(\'#paramsContainer [data-param-name]\');\r\n            allElemen" +
-"ts.forEach(function(el) {\r\n                var name = el.getAttribute(\'data-para" +
-"m-name\');\r\n                if (!name) return;\r\n                if (el.classList." +
-"contains(\'list-container\')) {\r\n                    var elementType = el.getAttri" +
-"bute(\'data-element-type\');\r\n                    var inputs = el.querySelectorAll" +
-"(\'.list-item input\');\r\n                    var values = [];\r\n                   " +
-" inputs.forEach(function(inp) {\r\n                        if (inp.value.trim() !=" +
-"= \'\') {\r\n                            values.push(convertToType(inp.value, elemen" +
-"tType, false));\r\n                        }\r\n                    });\r\n           " +
-"         paramsObj[name] = values;\r\n                } else if (el.classList.cont" +
-"ains(\'dict-container\')) {\r\n                    var rows = el.querySelectorAll(\'." +
-"dict-row\');\r\n                    var obj = {};\r\n                    rows.forEach" +
-"(function(row) {\r\n                        var keyInp = row.querySelector(\'.dict-" +
-"key\');\r\n                        var valInp = row.querySelector(\'.dict-value\');\r\n" +
-"                        if (keyInp && valInp && keyInp.value.trim() !== \'\') {\r\n " +
-"                           obj[keyInp.value] = valInp.value;\r\n                  " +
-"      }\r\n                    });\r\n                    paramsObj[name] = obj;\r\n  " +
-"              } else {\r\n                    var value;\r\n                    if (" +
-"el.type === \'checkbox\') {\r\n                        value = el.checked;\r\n        " +
-"            } else {\r\n                        value = el.value;\r\n               " +
-"     }\r\n                    var paramDef = selectedMethod ? selectedMethod.param" +
-"eters.find(function(p) { return p.name === name; }) : null;\r\n                   " +
-" if (paramDef) {\r\n                        value = convertToType(value, paramDef." +
-"type, paramDef.isComplex);\r\n                    }\r\n                    paramsObj" +
-"[name] = value;\r\n                }\r\n            });\r\n            request.rawPara" +
-"metersJson = JSON.stringify(paramsObj);\r\n            request.parameters = null;\r" +
-"\n        }\r\n\r\n        if (request.executionMode === \'Schedule\') {\r\n            r" +
-"equest.delayMinutes = parseInt($$(\'delayMinutes\').value) || 30;\r\n        }\r\n    " +
-"    if (request.executionMode === \'ScheduleDateTime\') {\r\n            request.sch" +
-"eduledDateTime = $$(\'scheduledDateTime\').value ? new Date($$(\'scheduledDateTime\'" +
-").value).toISOString() : null;\r\n        }\r\n        if (request.executionMode ===" +
-" \'Recurring\') {\r\n            request.cronExpression = $$(\'cronExpression\').value" +
-".trim() || \'* * * * *\';\r\n            request.recurringEngine = $$(\'recurringEngi" +
-"ne\').value; // Se envía siempre (Direct, BuiltIn o DynamicJobs)\r\n        }\r\n    " +
-"    if (request.executionMode === \'Continuation\') {\r\n            request.parentJ" +
-"obId = $$(\'parentJobId\').value.trim();\r\n        }\r\n        return request;\r\n    " +
-"}\r\n\r\n    // ====== PREVIEW ======\r\n    function showPreview() {\r\n        var req" +
-" = buildRequest();\r\n        var summary = \'Class: \' + req.className + \'\\nMethod:" +
-" \' + req.methodName + \'\\nQueue: \' + req.queue +\r\n                      \'\\nMode: " +
-"\' + req.executionMode + \'\\nEngine: \' + (req.recurringEngine || \'Direct\') +\r\n    " +
-"                  \'\\nParameters: \' + (req.rawParametersJson || JSON.stringify(re" +
-"q.parameters));\r\n        $$(\'previewContent\').textContent = summary;\r\n        $$" +
-"(\'previewPanel\').style.display = \'block\';\r\n    }\r\n\r\n    // ====== SUBMIT / LAUNC" +
-"H ======\r\n    var pendingLaunchRequest = null;\r\n\r\n    function submitJob() {\r\n  " +
-"      var req = buildRequest();\r\n        if (!req.className || !req.methodName) " +
-"{ alert(\'ClassName and MethodName are required.\'); return; }\r\n\r\n        if (isQu" +
-"eueCritical(req.queue)) {\r\n            pendingLaunchRequest = req;\r\n            " +
-"$$(\'criticalQueueName\').textContent = req.queue;\r\n            $$(\'criticalJobSum" +
-"mary\').textContent = \'Class: \' + req.className + \'\\nMethod: \' + req.methodName +" +
-" \'\\nMode: \' + req.executionMode;\r\n            $(\'#criticalConfirmModal\').modal(\'" +
-"show\');\r\n        } else {\r\n            launchJob(req);\r\n        }\r\n    }\r\n\r\n    " +
-"function confirmedLaunch() {\r\n        $(\'#criticalConfirmModal\').modal(\'hide\');\r" +
-"\n        if (pendingLaunchRequest) launchJob(pendingLaunchRequest);\r\n    }\r\n\r\n  " +
-"  function launchJob(req) {\r\n        var formData = new FormData();\r\n        for" +
-"mData.append(\'json\', JSON.stringify(req));\r\n\r\n        fetch(apiBaseUrl + \'/api/l" +
-"aunch\', {\r\n            method: \'POST\',\r\n            body: formData\r\n        })\r\n" +
-"        .then(function(r) { return r.json(); })\r\n          .then(function(result" +
-") {\r\n              var alertDiv = $$(\'launchResult\');\r\n              alertDiv.st" +
-"yle.display = \'block\';\r\n              if (result.success) {\r\n                  a" +
-"lertDiv.className = \'alert alert-success\';\r\n                  alertDiv.innerHTML" +
-" = \'Job launched successfully! <a href=\"\' + result.link + \'\" target=\"_blank\">\' +" +
-" result.jobId + \'</a>\';\r\n                  loadQueues();\r\n                  load" +
-"History();\r\n              } else {\r\n                  alertDiv.className = \'aler" +
-"t alert-danger\';\r\n                  alertDiv.textContent = \'Error: \' + (result.e" +
-"rror || \'Unknown error\');\r\n              }\r\n          }).catch(function(err) {\r\n" +
-"              var alertDiv = $$(\'launchResult\');\r\n              alertDiv.style.d" +
-"isplay = \'block\';\r\n              alertDiv.className = \'alert alert-danger\';\r\n   " +
-"           alertDiv.textContent = \'Network error: \' + err.message;\r\n          })" +
-";\r\n    }\r\n\r\n    // ====== HISTORY ======\r\n    function loadHistory() {\r\n        " +
-"var dashboardBaseUrl = \'");
+WriteLiteral("\';\r\n    var selectedMethod = null; // almacenará el MethodInfoDto actual\r\n\r\n    v" +
+"ar historyCurrentPage = 1;\r\n    var historyPageSize = 20;\r\n    var historyTotal " +
+"= 0;\r\n\r\n    var auditCurrentPage = 1;\r\n    var auditPageSize = 20;\r\n    var audi" +
+"tTotal = 0;\r\n\r\n    // ====== UTILIDADES ======\r\n    function $$(id){ return docu" +
+"ment.getElementById(id); }\r\n    function fetchJson(url, options){ return fetch(u" +
+"rl, options).then(r => r.json()); }\r\n\r\n    // ====== INICIALIZACIÓN ======\r\n    " +
+"document.addEventListener(\'DOMContentLoaded\', function() {\r\n        fetchJson(ap" +
+"iBaseUrl + \'/api/capabilities\').then(function(caps) {\r\n            dynamicJobsAv" +
+"ailable = caps.dynamicJobsAvailable;\r\n            buildRecurringEngineOptions();" +
+" // construir opciones según modo actual\r\n\r\n            // Mostrar pestaña de au" +
+"ditoría si está habilitada\r\n            if (caps.auditLogEnabled) {\r\n           " +
+"     document.getElementById(\'auditLogTab\').style.display = \'\';\r\n               " +
+" // Cargar datos de auditoría al hacer clic en la pestaña\r\n                docum" +
+"ent.querySelector(\'a[href=\"#auditLogPane\"]\').addEventListener(\'click\', function(" +
+") {\r\n                    loadAuditLog();\r\n                });\r\n            }\r\n  " +
+"      });\r\n        loadQueues();\r\n        bindEvents();\r\n        loadHistory();\r" +
+"\n        loadTemplates();\r\n    });\r\n\r\n    // Auditoría: cargar datos al abrir la" +
+" pestaña\r\n    function loadAuditLog(page) {\r\n        if (!page) page = 1;\r\n\r\n   " +
+"     var user = document.getElementById(\'auditUserFilter\').value.trim();\r\n      " +
+"  var from = toUtcString(document.getElementById(\'auditFromFilter\').value);\r\n   " +
+"     var to   = toUtcString(document.getElementById(\'auditToFilter\').value);\r\n  " +
+"      // El campo \"auditCountFilter\" lo usaremos como pageSize\r\n        var page" +
+"Size = parseInt(document.getElementById(\'auditCountFilter\').value) || 20;\r\n\r\n   " +
+"     var params = new URLSearchParams();\r\n        if (user) params.append(\'user\'" +
+", user);\r\n        if (from) params.append(\'from\', from);\r\n        if (to)   para" +
+"ms.append(\'to\', to);\r\n        params.append(\'page\', page);\r\n        params.appen" +
+"d(\'pageSize\', pageSize);\r\n\r\n        fetchJson(apiBaseUrl + \'/api/audit-log?\' + p" +
+"arams.toString())\r\n            .then(function(resp) {\r\n                // La API" +
+" ahora devuelve { items, total, page, pageSize }\r\n                var entries = " +
+"resp.items;\r\n                auditTotal = resp.total;\r\n                auditCurr" +
+"entPage = resp.page;\r\n                auditPageSize = resp.pageSize;\r\n\r\n        " +
+"        var tbody = document.querySelector(\'#auditLogTable tbody\');\r\n           " +
+"     tbody.innerHTML = \'\';\r\n                entries.forEach(function(e) {\r\n     " +
+"               var row = \'<tr>\' +\r\n                        \'<td>\' + new Date(e.t" +
+"imestamp) + \'</td>\' +\r\n                        \'<td>\' + (e.jobId || \'\') + \'</td>" +
+"\' +\r\n                        \'<td>\' + (e.className || \'\') + \'</td>\' +\r\n         " +
+"               \'<td>\' + (e.methodName || \'\') + \'</td>\' +\r\n                      " +
+"  \'<td>\' + (e.queue || \'\') + \'</td>\' +\r\n                        \'<td>\' + (e.mode" +
+" || \'\') + \'</td>\' +\r\n                        \'<td>\' + (e.engine || \'\') + \'</td>\'" +
+" +\r\n                        \'<td>\' + (e.user || \'\') + \'</td>\' +\r\n               " +
+"         \'</tr>\';\r\n                    tbody.innerHTML += row;\r\n                " +
+"});\r\n\r\n                // Actualizar la información de paginación\r\n             " +
+"   updateAuditPaginationControls();\r\n            });\r\n    }\r\n\r\n    function upda" +
+"teAuditPaginationControls() {\r\n        var totalPages = Math.ceil(auditTotal / a" +
+"uditPageSize) || 1;\r\n        var prevBtn = document.getElementById(\'btnAuditPrev" +
+"Page\');\r\n        var nextBtn = document.getElementById(\'btnAuditNextPage\');\r\n   " +
+"     var info = document.getElementById(\'auditPageInfo\');\r\n\r\n        info.textCo" +
+"ntent = \'Page \' + auditCurrentPage + \' of \' + totalPages + \' (Total: \' + auditTo" +
+"tal + \')\';\r\n\r\n        prevBtn.disabled = (auditCurrentPage <= 1);\r\n        nextB" +
+"tn.disabled = (auditCurrentPage >= totalPages);\r\n\r\n        prevBtn.onclick = fun" +
+"ction() {\r\n            if (auditCurrentPage > 1) loadAuditLog(auditCurrentPage -" +
+" 1);\r\n        };\r\n        nextBtn.onclick = function() {\r\n            if (auditC" +
+"urrentPage < totalPages) loadAuditLog(auditCurrentPage + 1);\r\n        };\r\n    }\r" +
+"\n\r\n\r\n    // Eventos de los botones de filtro y carga inicial (añadir en la inici" +
+"alización)\r\n\r\n    document.getElementById(\'btnApplyAuditFilters\').addEventListen" +
+"er(\'click\', loadAuditLog);\r\n    document.getElementById(\'btnClearAuditFilters\')." +
+"addEventListener(\'click\', function() {\r\n        document.getElementById(\'auditUs" +
+"erFilter\').value = \'\';\r\n        document.getElementById(\'auditFromFilter\').value" +
+" = \'\';\r\n        document.getElementById(\'auditToFilter\').value = \'\';\r\n        do" +
+"cument.getElementById(\'auditCountFilter\').value = \'20\';   // pageSize por defect" +
+"o\r\n        loadAuditLog(1);\r\n    });\r\n\r\n    function toUtcString(localDateTime) " +
+"{\r\n        if (!localDateTime) return \'\';\r\n        // Convierte hora local a UTC" +
+" y devuelve ISO 8601\r\n        return new Date(localDateTime).toISOString();\r\n   " +
+" }\r\n\r\n    // Configura las opciones del <select> del motor recurrente según el m" +
+"odo actual y disponibilidad de DynamicJobs\r\n    function buildRecurringEngineOpt" +
+"ions() {\r\n        var mode = document.querySelector(\'input[name=\"launchMode\"]:ch" +
+"ecked\').value;\r\n        var sel = $$(\'recurringEngine\');\r\n        sel.innerHTML " +
+"= \'\';\r\n\r\n        if (mode === \'assisted\') {\r\n            addOption(sel, \'Direct\'" +
+", \'Direct\', true); // siempre disponible en asistido (si no carga clase fallará " +
+"en backend)\r\n            addOption(sel, \'BuiltIn\', \'Built-in (lightweight)\', tru" +
+"e);\r\n            addOption(sel, \'DynamicJobs\', \'DynamicJobs (advanced)\', dynamic" +
+"JobsAvailable);\r\n        } else { // manual\r\n            addOption(sel, \'BuiltIn" +
+"\', \'Built-in (lightweight)\', true);\r\n            addOption(sel, \'DynamicJobs\', \'" +
+"DynamicJobs (advanced)\', dynamicJobsAvailable);\r\n        }\r\n\r\n        // Mostrar" +
+" advertencia si DynamicJobs no está disponible y está seleccionado\r\n        if (" +
+"!dynamicJobsAvailable && sel.value === \'DynamicJobs\') {\r\n            $$(\'dynamic" +
+"JobsWarning\').style.display = \'inline\';\r\n        } else {\r\n            $$(\'dynam" +
+"icJobsWarning\').style.display = \'none\';\r\n        }\r\n    }\r\n\r\n    function addOpt" +
+"ion(sel, value, text, enabled) {\r\n        var opt = document.createElement(\'opti" +
+"on\');\r\n        opt.value = value;\r\n        opt.textContent = text;\r\n        if (" +
+"!enabled) opt.disabled = true;\r\n        sel.appendChild(opt);\r\n    }\r\n\r\n    func" +
+"tion bindEvents() {\r\n        // Modo\r\n        var radios = document.querySelecto" +
+"rAll(\'input[name=\"launchMode\"]\');\r\n        radios.forEach(function(r) { r.addEve" +
+"ntListener(\'change\', toggleMode); });\r\n\r\n        // Load methods\r\n        $$(\'bt" +
+"nLoadMethods\').addEventListener(\'click\', loadMethods);\r\n\r\n        // Method sele" +
+"ct\r\n        $$(\'methodSelect\').addEventListener(\'change\', onMethodChange);\r\n\r\n  " +
+"      // Execution modes\r\n        var execRadios = document.querySelectorAll(\'in" +
+"put[name=\"execMode\"]\');\r\n        execRadios.forEach(function(r) { r.addEventList" +
+"ener(\'change\', toggleExecMode); });\r\n\r\n        // Validate/format JSON/suggest\r\n" +
+"        $$(\'validateJsonBtn\').addEventListener(\'click\', validateJson);\r\n        " +
+"$$(\'formatJsonBtn\').addEventListener(\'click\', formatJson);\r\n        $$(\'suggestJ" +
+"sonBtn\').addEventListener(\'click\', suggestJsonStructure);\r\n\r\n        // Cron\r\n  " +
+"      $$(\'btnValidateCron\').addEventListener(\'click\', validateCron);\r\n        $$" +
+"(\'btnOpenCronGenerator\').addEventListener(\'click\', function() {\r\n            $(\'" +
+"#cronGeneratorModal\').modal(\'show\');\r\n        });\r\n\r\n        // Botones principa" +
+"les\r\n        $$(\'btnPreview\').addEventListener(\'click\', showPreview);\r\n        $" +
+"$(\'btnLaunch\').addEventListener(\'click\', submitJob);\r\n        $$(\'confirmCritica" +
+"lLaunch\').addEventListener(\'click\', confirmedLaunch);\r\n\r\n        // History\r\n   " +
+"     $$(\'btnClearHistory\').addEventListener(\'click\', clearHistory);\r\n\r\n        /" +
+"/ Templates\r\n        $$(\'btnImport\').addEventListener(\'click\', importTemplate);\r" +
+"\n\r\n        // Atajo Ctrl+Enter\r\n        document.addEventListener(\'keydown\', fun" +
+"ction(e) {\r\n            if (e.ctrlKey && e.key === \'Enter\') { e.preventDefault()" +
+"; submitJob(); }\r\n        });\r\n\r\n        $$(\'btnSaveAsTemplate\').addEventListene" +
+"r(\'click\', saveCurrentAsTemplate);\r\n\r\n        // Mostrar/esconder campos de ejec" +
+"ución y opciones de motor\r\n        toggleExecMode();\r\n        toggleMode();\r\n   " +
+" }\r\n\r\n    // ====== MODO ASISTIDO / MANUAL ======\r\n    function toggleMode() {\r\n" +
+"        var mode = document.querySelector(\'input[name=\"launchMode\"]:checked\').va" +
+"lue;\r\n        if (mode === \'assisted\') {\r\n            $$(\'assistedFields\').style" +
+".display = \'block\';\r\n            $$(\'manualFields\').style.display = \'none\';\r\n   " +
+"     } else {\r\n            $$(\'assistedFields\').style.display = \'none\';\r\n       " +
+"     $$(\'manualFields\').style.display = \'block\';\r\n        }\r\n        buildRecurr" +
+"ingEngineOptions(); // Reconstruir opciones al cambiar modo\r\n        toggleExecM" +
+"ode(); // Para asegurar visibilidad de recurringFields y motor\r\n    }\r\n\r\n    // " +
+"====== MODO DE EJECUCIÓN ======\r\n    function toggleExecMode() {\r\n        var mo" +
+"de = document.querySelector(\'input[name=\"execMode\"]:checked\').value;\r\n        $$" +
+"(\'scheduleFields\').style.display = (mode === \'Schedule\') ? \'block\' : \'none\';\r\n  " +
+"      $$(\'scheduleDateTimeFields\').style.display = (mode === \'ScheduleDateTime\')" +
+" ? \'block\' : \'none\';\r\n        $$(\'recurringFields\').style.display = (mode === \'R" +
+"ecurring\') ? \'block\' : \'none\';\r\n        $$(\'continuationFields\').style.display =" +
+" (mode === \'Continuation\') ? \'block\' : \'none\';\r\n\r\n        // El grupo del motor " +
+"recurrente ahora siempre está visible cuando recurringFields está visible\r\n     " +
+"   // pero se mostrará/ocultará junto con recurringFields; no necesita lógica ad" +
+"icional.\r\n        // Sólo actualizamos opciones por si cambió dinámicamente la d" +
+"isponibilidad.\r\n        if (mode === \'Recurring\') {\r\n            buildRecurringE" +
+"ngineOptions();\r\n        }\r\n    }\r\n\r\n    // ====== CARGAR MÉTODOS (ASISTIDO) ===" +
+"===\r\n    function loadMethods() {\r\n        var className = $$(\'classNameAssisted" +
+"\').value.trim();\r\n        if (!className) { alert(\'Class name required\'); return" +
+"; }\r\n        fetchJson(apiBaseUrl + \'/api/methods?className=\' + encodeURICompone" +
+"nt(className))\r\n            .then(function(resp) {\r\n                if (!resp.su" +
+"ccess) {\r\n                    alert(resp.error + \' Switched to manual mode.\');\r\n" +
+"                    document.querySelector(\'input[name=\"launchMode\"][value=\"manu" +
+"al\"]\').checked = true;\r\n                    toggleMode();\r\n                    r" +
+"eturn;\r\n                }\r\n                currentMethods = resp.methods;\r\n     " +
+"           var sel = $$(\'methodSelect\');\r\n                sel.innerHTML = \'<opti" +
+"on value=\"\">-- Select method --</option>\';\r\n                currentMethods.forEa" +
+"ch(function(m, i) {\r\n                    var params = m.parameters.map(function(" +
+"p) { return p.name; }).join(\', \');\r\n                    var display = m.methodNa" +
+"me + \'(\' + params + \')\';\r\n                    sel.innerHTML += \'<option value=\"\'" +
+" + i + \'\">\' + display + \'</option>\';\r\n                });\r\n                $$(\'m" +
+"ethodSelectGroup\').style.display = \'block\';\r\n                $$(\'paramsContainer" +
+"\').innerHTML = \'\';\r\n            });\r\n    }\r\n\r\n    // ====== GENERAR PARÁMETROS D" +
+"INÁMICOS (ASISTIDO) ======\r\n    function onMethodChange() {\r\n        var idx = $" +
+"$(\'methodSelect\').value;\r\n        if (idx === \'\') { \r\n            $$(\'paramsCont" +
+"ainer\').innerHTML = \'\'; \r\n            selectedMethod = null; \r\n            retur" +
+"n; \r\n        }\r\n        var method = currentMethods[parseInt(idx)];\r\n        sel" +
+"ectedMethod = method;\r\n        var html = \'\';\r\n    \r\n        method.parameters.f" +
+"orEach(function(p) {\r\n            html += \'<div class=\"form-group param-field\">\'" +
+";\r\n            html += \'<label>\' + p.name + \' (\' + p.type + \')</label>\';\r\n      " +
+"  \r\n            if (p.isComplex) {\r\n                if (isListType(p.type)) {\r\n " +
+"                   html += generateListInput(p);\r\n                } else if (isD" +
+"ictType(p.type)) {\r\n                    html += generateDictionaryInput(p);\r\n   " +
+"             } else {\r\n                    html += \'<textarea class=\"form-contro" +
+"l param-complex\" data-param-name=\"\' + p.name + \'\" rows=\"3\" placeholder=\\\'Insert " +
+"JSON for \' + p.type + \'\\\'></textarea>\';\r\n                }\r\n            } else {" +
+"\r\n                html += generateInputForSimpleType(p);\r\n            }\r\n       " +
+"     html += \'</div>\';\r\n        });\r\n        $$(\'paramsContainer\').innerHTML = h" +
+"tml;\r\n\r\n        // Bindear eventos para listas y diccionarios\r\n        document." +
+"querySelectorAll(\'.add-list-item\').forEach(function(btn) {\r\n            btn.addE" +
+"ventListener(\'click\', function(e) {\r\n                e.preventDefault();\r\n      " +
+"          var container = this.closest(\'.list-container\');\r\n                var " +
+"elementType = container.getAttribute(\'data-element-type\');\r\n                var " +
+"itemsDiv = container.querySelector(\'.list-items\');\r\n                var newItem " +
+"= createListItem(elementType);\r\n                itemsDiv.insertAdjacentHTML(\'bef" +
+"oreend\', newItem);\r\n                bindRemoveItem(itemsDiv);\r\n            });\r\n" +
+"        });\r\n        document.querySelectorAll(\'.add-dict-item\').forEach(functio" +
+"n(btn) {\r\n            btn.addEventListener(\'click\', function(e) {\r\n             " +
+"   e.preventDefault();\r\n                var container = this.closest(\'.dict-cont" +
+"ainer\');\r\n                var keyType = container.getAttribute(\'data-key-type\');" +
+"\r\n                var valueType = container.getAttribute(\'data-value-type\');\r\n  " +
+"              var tbody = container.querySelector(\'.dict-items tbody\');\r\n       " +
+"         var newRow = createDictRow(keyType, valueType);\r\n                tbody." +
+"insertAdjacentHTML(\'beforeend\', newRow);\r\n                bindRemoveDictRow(tbod" +
+"y);\r\n            });\r\n        });\r\n        function bindRemoveItem(container) {\r" +
+"\n            container.querySelectorAll(\'.remove-list-item\').forEach(function(bt" +
+"n) {\r\n                btn.onclick = function() { this.closest(\'.list-item\').remo" +
+"ve(); };\r\n            });\r\n        }\r\n        function bindRemoveDictRow(tbody) " +
+"{\r\n            tbody.querySelectorAll(\'.remove-dict-row\').forEach(function(btn) " +
+"{\r\n                btn.onclick = function() { this.closest(\'.dict-row\').remove()" +
+"; };\r\n            });\r\n        }\r\n        // Inicializar remove en items ya exis" +
+"tentes (si se regeneran los campos)\r\n        document.querySelectorAll(\'.list-it" +
+"ems\').forEach(bindRemoveItem);\r\n        document.querySelectorAll(\'.dict-items t" +
+"body\').forEach(bindRemoveDictRow);\r\n    }\r\n\r\n    // Generadores de campos para l" +
+"istas y diccionarios\r\n    function generateListInput(paramInfo) {\r\n        var n" +
+"ame = paramInfo.name;\r\n        var elementType = extractGenericArgument(paramInf" +
+"o.type, 0) || \'string\';\r\n        var html = \'<div class=\"list-container\" data-pa" +
+"ram-name=\"\' + name + \'\" data-element-type=\"\' + elementType + \'\">\';\r\n        html" +
+" += \'<label>\' + name + \' (List of \' + elementType + \')</label>\';\r\n        html +" +
+"= \'<div class=\"list-items\"></div>\';\r\n        html += \'<button type=\"button\" clas" +
+"s=\"btn btn-xs btn-default add-list-item\">+ Add item</button>\';\r\n        html += " +
+"\'</div>\';\r\n        return html;\r\n    }\r\n\r\n    function generateDictionaryInput(p" +
+"aramInfo) {\r\n        var name = paramInfo.name;\r\n        var keyType = extractGe" +
+"nericArgument(paramInfo.type, 0) || \'string\';\r\n        var valueType = extractGe" +
+"nericArgument(paramInfo.type, 1) || \'string\';\r\n        var html = \'<div class=\"d" +
+"ict-container\" data-param-name=\"\' + name + \'\" data-key-type=\"\' + keyType + \'\" da" +
+"ta-value-type=\"\' + valueType + \'\">\';\r\n        html += \'<label>\' + name + \' (Dict" +
+"ionary<\' + keyType + \', \' + valueType + \'>)</label>\';\r\n        html += \'<table c" +
+"lass=\"table table-condensed dict-items\"><tbody></tbody></table>\';\r\n        html " +
+"+= \'<button type=\"button\" class=\"btn btn-xs btn-default add-dict-item\">+ Add ent" +
+"ry</button>\';\r\n        html += \'</div>\';\r\n        return html;\r\n    }\r\n\r\n    fun" +
+"ction createListItem(elementType) {\r\n        var inputType = getInputTypeForSimp" +
+"le(elementType);\r\n        return \'<div class=\"list-item\">\' +\r\n            \'<inpu" +
+"t type=\"\' + inputType + \'\" class=\"form-control input-sm\" value=\"\" />\' +\r\n       " +
+"     \'<button type=\"button\" class=\"btn btn-xs btn-danger remove-list-item\">×</bu" +
+"tton>\' +\r\n            \'</div>\';\r\n    }\r\n\r\n    function createDictRow(keyType, va" +
+"lueType) {\r\n        var keyInputType = getInputTypeForSimple(keyType);\r\n        " +
+"var valueInputType = getInputTypeForSimple(valueType);\r\n        return \'<tr clas" +
+"s=\"dict-row\">\' +\r\n            \'<td><input type=\"\' + keyInputType + \'\" class=\"for" +
+"m-control input-sm dict-key\" placeholder=\"key\" /></td>\' +\r\n            \'<td><inp" +
+"ut type=\"\' + valueInputType + \'\" class=\"form-control input-sm dict-value\" placeh" +
+"older=\"value\" /></td>\' +\r\n            \'<td><button type=\"button\" class=\"btn btn-" +
+"xs btn-danger remove-dict-row\">×</button></td>\' +\r\n            \'</tr>\';\r\n    }\r\n" +
+"\r\n    function getInputTypeForSimple(typeName) {\r\n        var t = typeName.toLow" +
+"erCase();\r\n        if (t.includes(\'int\') || t.includes(\'long\') || t.includes(\'sh" +
+"ort\') || t.includes(\'byte\') ||\r\n            t.includes(\'double\') || t.includes(\'" +
+"float\') || t.includes(\'decimal\')) return \'number\';\r\n        if (t.includes(\'date" +
+"time\')) return \'datetime-local\';\r\n        if (t.includes(\'bool\')) return \'checkb" +
+"ox\';\r\n        return \'text\';\r\n    }\r\n\r\n    function isListType(type) {\r\n        " +
+"return type.startsWith(\'System.Collections.Generic.List\') ||\r\n               typ" +
+"e.startsWith(\'System.Collections.Generic.IList\') ||\r\n               type.endsWit" +
+"h(\'[]\');\r\n    }\r\n\r\n    function isDictType(type) {\r\n        return type.startsWi" +
+"th(\'System.Collections.Generic.Dictionary\');\r\n    }\r\n\r\n    function extractGener" +
+"icArgument(typeName, index) {\r\n        var match = typeName.match(/<(.+)>/);\r\n  " +
+"      if (match) {\r\n            var args = match[1].split(\',\');\r\n            ret" +
+"urn args[index] ? args[index].trim() : null;\r\n        }\r\n        return null;\r\n " +
+"   }\r\n\r\n    function generateInputForSimpleType(paramInfo) {\r\n        var type =" +
+" paramInfo.type;\r\n        var name = paramInfo.name;\r\n        var isNullable = t" +
+"ype.endsWith(\'?\');\r\n        var underlyingType = isNullable ? type.slice(0, -1)." +
+"toLowerCase() : type.toLowerCase();\r\n    \r\n        var html = \'\';\r\n    \r\n       " +
+" if (underlyingType.includes(\'int\') || underlyingType.includes(\'long\') || \r\n    " +
+"        underlyingType.includes(\'short\') || underlyingType.includes(\'byte\')) {\r\n" +
+"            html = \'<input type=\"number\" class=\"form-control\" data-param-name=\"\'" +
+" + name + \'\" step=\"1\" value=\"\' + (isNullable ? \'\' : \'0\') + \'\" />\';\r\n        }\r\n " +
+"       else if (underlyingType.includes(\'double\') || underlyingType.includes(\'fl" +
+"oat\') || \r\n                 underlyingType.includes(\'decimal\') || underlyingType" +
+".includes(\'single\')) {\r\n            html = \'<input type=\"number\" class=\"form-con" +
+"trol\" data-param-name=\"\' + name + \'\" step=\"any\" value=\"\' + (isNullable ? \'\' : \'0" +
+".0\') + \'\" />\';\r\n        }\r\n        else if (underlyingType.includes(\'bool\')) {\r\n" +
+"            html = \'<select class=\"form-control\" data-param-name=\"\' + name + \'\">" +
+"\';\r\n            if (isNullable) html += \'<option value=\"\">-- Not set --</option>" +
+"\';\r\n            html += \'<option value=\"true\">True</option><option value=\"false\"" +
+">False</option>\';\r\n            html += \'</select>\';\r\n        }\r\n        else if " +
+"(underlyingType.includes(\'datetime\') || underlyingType.includes(\'datetimeoffset\'" +
+")) {\r\n            var defaultDate = isNullable ? \'\' : new Date(new Date().getTim" +
+"e() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16);\r\n     " +
+"       html = \'<input type=\"datetime-local\" class=\"form-control\" data-param-name" +
+"=\"\' + name + \'\" value=\"\' + defaultDate + \'\" />\';\r\n            html += \'<small cl" +
+"ass=\"help-block\">Click the calendar icon to select a date and time.</small>\';\r\n " +
+"       }\r\n        else if (underlyingType === \'system.datetime\' || underlyingTyp" +
+"e === \'datetime\') {\r\n            var defaultDate = isNullable ? \'\' : new Date()." +
+"toISOString().slice(0, 10);\r\n            html = \'<input type=\"date\" class=\"form-" +
+"control\" data-param-name=\"\' + name + \'\" value=\"\' + defaultDate + \'\" />\';\r\n      " +
+"  }\r\n        else if (underlyingType === \'system.guid\' || underlyingType === \'gu" +
+"id\') {\r\n            html = \'<input type=\"text\" class=\"form-control\" data-param-n" +
+"ame=\"\' + name + \'\" placeholder=\"00000000-0000-0000-0000-000000000000\" value=\"\' +" +
+" (isNullable ? \'\' : \'00000000-0000-0000-0000-000000000000\') + \'\" />\';\r\n        }" +
+"\r\n        else if (underlyingType === \'system.timespan\' || underlyingType === \'t" +
+"imespan\') {\r\n            html = \'<input type=\"text\" class=\"form-control\" data-pa" +
+"ram-name=\"\' + name + \'\" placeholder=\"hh:mm:ss\" value=\"\' + (isNullable ? \'\' : \'00" +
+":00:00\') + \'\" />\';\r\n        }\r\n        else if (underlyingType.includes(\'.\') && " +
+"!underlyingType.startsWith(\'system.\')) {\r\n            if (paramInfo.enumValues &" +
+"& paramInfo.enumValues.length > 0) {\r\n                html += \'<select class=\"fo" +
+"rm-control\" data-param-name=\"\' + name + \'\">\';\r\n                paramInfo.enumVal" +
+"ues.forEach(function(val) {\r\n                    html += \'<option value=\"\' + val" +
+" + \'\">\' + val + \'</option>\';\r\n                });\r\n                html += \'</se" +
+"lect>\';\r\n            } else {\r\n                html = \'<input type=\"text\" class=" +
+"\"form-control\" data-param-name=\"\' + name + \'\" placeholder=\"Enum value of \' + par" +
+"amInfo.type + \'\" />\';\r\n            }\r\n        }\r\n        else {\r\n            htm" +
+"l = \'<input type=\"text\" class=\"form-control\" data-param-name=\"\' + name + \'\" plac" +
+"eholder=\"\' + paramInfo.type + \'\" />\';\r\n        }\r\n    \r\n        if (isNullable) " +
+"{\r\n            html += \'<small class=\"text-muted\">(Optional, leave empty for nul" +
+"l)</small>\';\r\n        }\r\n    \r\n        return html;\r\n    }\r\n\r\n    // ====== JSON" +
+" VALIDATE / FORMAT / SUGGEST ======\r\n    function validateJson() {\r\n        var " +
+"text = $$(\'jsonParams\').value.trim();\r\n        if (!text) return;\r\n        try {" +
+" JSON.parse(text); $$(\'jsonValidationMsg\').style.display = \'none\'; alert(\'Valid " +
+"JSON.\'); }\r\n        catch(e) { $$(\'jsonValidationMsg\').style.display = \'inline\';" +
+" }\r\n    }\r\n    function formatJson() {\r\n        var text = $$(\'jsonParams\').valu" +
+"e.trim();\r\n        try { var obj = JSON.parse(text); $$(\'jsonParams\').value = JS" +
+"ON.stringify(obj, null, 2); $$(\'jsonValidationMsg\').style.display = \'none\'; }\r\n " +
+"       catch(e) { $$(\'jsonValidationMsg\').style.display = \'inline\'; }\r\n    }\r\n\r\n" +
+"    function suggestJsonStructure() {\r\n        var className = $$(\'classNameManu" +
+"al\').value.trim();\r\n        var methodName = $$(\'methodNameManual\').value.trim()" +
+";\r\n    \r\n        if (!className || !methodName) {\r\n            alert(\'Please ent" +
+"er Class Name and Method Name first.\');\r\n            return;\r\n        }\r\n    \r\n " +
+"       fetchJson(apiBaseUrl + \'/api/methods?className=\' + encodeURIComponent(cla" +
+"ssName))\r\n            .then(function(resp) {\r\n                if (!resp.success)" +
+" {\r\n                    alert(\'Assembly no disponible: \' + resp.error);\r\n       " +
+"             return;\r\n                }\r\n                var method = resp.metho" +
+"ds.find(function(m) { return m.methodName === methodName; });\r\n                i" +
+"f (!method) {\r\n                    alert(\'Method not found.\');\r\n                " +
+"    return;\r\n                }\r\n                var suggestion = {};\r\n          " +
+"      method.parameters.forEach(function(p) {\r\n                    suggestion[p." +
+"name] = getDefaultValueForType(p.type, p.isComplex);\r\n                });\r\n     " +
+"           $$(\'jsonParams\').value = JSON.stringify(suggestion, null, 2);\r\n      " +
+"      })\r\n            .catch(function(err) {\r\n                alert(\'Error loadi" +
+"ng suggestion: \' + err.message);\r\n            });\r\n    }\r\n\r\n    function getDefa" +
+"ultValueForType(type, isComplex) {\r\n        if (type.endsWith(\'?\')) {\r\n         " +
+"   return null;\r\n        }\r\n        if (isComplex) {\r\n            return {};\r\n  " +
+"      }\r\n        var t = type.toLowerCase();\r\n        if (t.includes(\'int\') || t" +
+".includes(\'long\') || t.includes(\'short\') || t.includes(\'byte\')) return 0;\r\n     " +
+"   if (t.includes(\'double\') || t.includes(\'float\') || t.includes(\'decimal\') || t" +
+".includes(\'single\')) return 0.0;\r\n        if (t.includes(\'bool\')) return true;\r\n" +
+"        if (t.includes(\'datetime\') || t.includes(\'datetimeoffset\')) return new D" +
+"ate().toISOString();\r\n        if (t === \'system.guid\' || t === \'guid\') return \'0" +
+"0000000-0000-0000-0000-000000000000\';\r\n        if (t === \'system.timespan\' || t " +
+"=== \'timespan\') return \'00:00:00\';\r\n        if (t === \'system.string\' || t === \'" +
+"string\') return \'\';\r\n        return \'\';\r\n    }\r\n\r\n    // ====== VALIDATE CRON ==" +
+"====\r\n    function validateCron() {\r\n        var expr = $$(\'cronExpression\').val" +
+"ue.trim();\r\n        if (!expr) { alert(\'Cron expression required\'); return; }\r\n " +
+"       fetchJson(apiBaseUrl + \'/api/validate-cron?expression=\' + encodeURICompon" +
+"ent(expr))\r\n            .then(function(resp) {\r\n                var div = $$(\'cr" +
+"onPreview\');\r\n                if (!resp.success) {\r\n                    div.inne" +
+"rHTML = \'<span class=\"text-danger\">\' + resp.error + \'</span>\';\r\n                " +
+"} else {\r\n                    div.innerHTML = \'Next occurrences: \' + resp.occurr" +
+"ences.join(\', \');\r\n                }\r\n                div.style.display = \'block" +
+"\';\r\n            });\r\n    }\r\n\r\n    // ====== CRON GENERATOR ======\r\n    function " +
+"buildCronExpressionFromModal() {\r\n        var minute = \'*\';\r\n        var hour = " +
+"\'*\';\r\n        var dayMonth = \'*\';\r\n        var month = \'*\';\r\n        var dayWeek" +
+" = \'*\';\r\n\r\n        var minEveryN = document.getElementById(\'minEveryN\').value;\r\n" +
+"        var minSpecific = document.getElementById(\'minSpecific\').value.trim();\r\n" +
+"        var minRangeFrom = document.getElementById(\'minRangeFrom\').value;\r\n     " +
+"   var minRangeTo = document.getElementById(\'minRangeTo\').value;\r\n        if (mi" +
+"nEveryN && minEveryN !== \'1\') {\r\n            minute = \'*/\' + minEveryN;\r\n       " +
+" } else if (minSpecific) {\r\n            minute = minSpecific;\r\n        } else if" +
+" (minRangeFrom && minRangeTo) {\r\n            minute = minRangeFrom + \'-\' + minRa" +
+"ngeTo;\r\n        }\r\n\r\n        var hourEveryN = document.getElementById(\'hourEvery" +
+"N\').value;\r\n        var hourSpecific = document.getElementById(\'hourSpecific\').v" +
+"alue.trim();\r\n        var hourRangeFrom = document.getElementById(\'hourRangeFrom" +
+"\').value;\r\n        var hourRangeTo = document.getElementById(\'hourRangeTo\').valu" +
+"e;\r\n        if (hourEveryN && hourEveryN !== \'1\') {\r\n            hour = \'*/\' + h" +
+"ourEveryN;\r\n        } else if (hourSpecific) {\r\n            hour = hourSpecific;" +
+"\r\n        } else if (hourRangeFrom && hourRangeTo) {\r\n            hour = hourRan" +
+"geFrom + \'-\' + hourRangeTo;\r\n        }\r\n\r\n        var dayMonthSpecific = documen" +
+"t.getElementById(\'dayMonthSpecific\').value.trim();\r\n        var dayMonthEveryN =" +
+" document.getElementById(\'dayMonthEveryN\').value;\r\n        var dayMonthStart = d" +
+"ocument.getElementById(\'dayMonthStart\').value;\r\n        var checkedDays = [];\r\n " +
+"       document.querySelectorAll(\'.day-month-check:checked\').forEach(function(cb" +
+") { checkedDays.push(cb.value); });\r\n        if (checkedDays.length > 0) {\r\n    " +
+"        dayMonth = checkedDays.join(\',\');\r\n        } else if (dayMonthSpecific) " +
+"{\r\n            dayMonth = dayMonthSpecific;\r\n        } else if (dayMonthEveryN &" +
+"& dayMonthEveryN !== \'1\') {\r\n            dayMonth = (dayMonthStart ? dayMonthSta" +
+"rt + \'/\' + dayMonthEveryN : \'*/\' + dayMonthEveryN);\r\n        }\r\n\r\n        var mo" +
+"nthSpecific = document.getElementById(\'monthSpecific\').value.trim();\r\n        va" +
+"r checkedMonths = [];\r\n        document.querySelectorAll(\'.month-check:checked\')" +
+".forEach(function(cb) { checkedMonths.push(cb.value); });\r\n        if (checkedMo" +
+"nths.length > 0) {\r\n            month = checkedMonths.join(\',\');\r\n        } else" +
+" if (monthSpecific) {\r\n            month = monthSpecific;\r\n        }\r\n\r\n        " +
+"var checkedWeekdays = [];\r\n        document.querySelectorAll(\'.weekday-check:che" +
+"cked\').forEach(function(cb) { checkedWeekdays.push(cb.value); });\r\n        var w" +
+"eekdaySpecific = document.getElementById(\'weekdaySpecific\').value.trim();\r\n     " +
+"   var weekdayEveryN = document.getElementById(\'weekdayEveryN\').value;\r\n        " +
+"var weekdayStart = document.getElementById(\'weekdayStart\').value;\r\n        if (c" +
+"heckedWeekdays.length > 0) {\r\n            dayWeek = checkedWeekdays.join(\',\');\r\n" +
+"        } else if (weekdaySpecific) {\r\n            dayWeek = weekdaySpecific;\r\n " +
+"       } else if (weekdayEveryN && weekdayEveryN !== \'1\') {\r\n            dayWeek" +
+" = (weekdayStart ? weekdayStart + \'/\' + weekdayEveryN : \'*/\' + weekdayEveryN);\r\n" +
+"        }\r\n\r\n        return minute + \' \' + hour + \' \' + dayMonth + \' \' + month +" +
+" \' \' + dayWeek;\r\n    }\r\n\r\n    function updateCronPreview() {\r\n        var expres" +
+"sion = buildCronExpressionFromModal();\r\n        document.getElementById(\'cronPre" +
+"viewExpression\').value = expression;\r\n        document.getElementById(\'cronExecu" +
+"tionsPreview\').innerHTML = \'\';\r\n        document.getElementById(\'cronDescription" +
+"\').textContent = generateCronDescription();\r\n    }\r\n\r\n    function showExecution" +
+"s() {\r\n        var expr = document.getElementById(\'cronPreviewExpression\').value" +
+";\r\n        if (!expr) return;\r\n        var fetchUrl = apiBaseUrl + \'/api/validat" +
+"e-cron?expression=\' + encodeURIComponent(expr);\r\n        fetchJson(fetchUrl)\r\n  " +
+"          .then(function(resp) {\r\n                var div = document.getElementB" +
+"yId(\'cronExecutionsPreview\');\r\n                if (!resp.success) {\r\n           " +
+"         div.innerHTML = \'<span class=\"text-danger\">\' + resp.error + \'</span>\';\r" +
+"\n                    return;\r\n                }\r\n                // Convertir fe" +
+"chas ISO a objetos moment y formatearlas\r\n                var occurrences = resp" +
+".occurrences.map(function(isoDate) {\r\n                    var m = moment.utc(iso" +
+"Date);\r\n                    return m.local().format(\'ddd, MMM Do YYYY, h:mm:ss A" +
+"\');\r\n                });\r\n                var firstMoment = moment.utc(resp.occu" +
+"rrences[0]);\r\n                var fromNow = firstMoment.fromNow();\r\n            " +
+"    var html = \'<strong>Next executions:</strong><br>\';\r\n                html +=" +
+" \'<span style=\"font-weight:bold; color:#337ab7;\">\' + fromNow + \'</span><br>\';\r\n " +
+"               html += occurrences.join(\'<br>\');\r\n                div.innerHTML " +
+"= html;\r\n            })\r\n            .catch(function(err) {\r\n                doc" +
+"ument.getElementById(\'cronExecutionsPreview\').innerHTML = \r\n                    " +
+"\'<span class=\"text-danger\">Error: \' + err.message + \'</span>\';\r\n            });\r" +
+"\n    }\r\n\r\n    function generateCronDescription() {\r\n        var parts = buildCro" +
+"nExpressionFromModal().split(\' \');\r\n        var minute = parts[0], hour = parts[" +
+"1], dayM = parts[2], month = parts[3], dayW = parts[4];\r\n        var desc = [];\r" +
+"\n\r\n        if (minute === \'*\') desc.push(\'every minute\');\r\n        else if (minu" +
+"te.startsWith(\'*/\')) desc.push(\'every \' + minute.slice(2) + \' minutes\');\r\n      " +
+"  else desc.push(\'at minute \' + minute);\r\n\r\n        if (hour === \'*\') desc.push(" +
+"\'of every hour\');\r\n        else if (hour.startsWith(\'*/\')) desc.push(\'every \' + " +
+"hour.slice(2) + \' hours\');\r\n        else desc.push(\'at \' + formatTime(hour, minu" +
+"te));\r\n\r\n        if (dayM !== \'*\') {\r\n            if (dayM.includes(\'/\')) {\r\n   " +
+"             var dmParts = dayM.split(\'/\');\r\n                desc.push(\'every \' " +
+"+ dmParts[1] + \' days starting on day \' + dmParts[0]);\r\n            } else {\r\n  " +
+"              desc.push(\'on day(s) \' + dayM);\r\n            }\r\n        }\r\n       " +
+" if (month !== \'*\') desc.push(\'in month(s) \' + month);\r\n        if (dayW !== \'*\'" +
+") {\r\n            var days = dayW.split(\',\').map(function(d) {\r\n                r" +
+"eturn moment().day(parseInt(d)).format(\'dddd\');\r\n            }).join(\', \');\r\n   " +
+"         desc.push(\'on \' + days);\r\n        }\r\n\r\n        return desc.join(\' \') ||" +
+" \'Custom expression\';\r\n    }\r\n\r\n    function formatTime(hour, minute) {\r\n       " +
+" var h = hour === \'*\' ? \'0\' : hour;\r\n        var m = minute === \'*\' ? \'0\' : minu" +
+"te;\r\n        return moment({hour: h, minute: m}).format(\'h:mm A\');\r\n    }\r\n\r\n   " +
+" function resetCronGenerator() {\r\n        document.getElementById(\'minEveryN\').v" +
+"alue = \'\';\r\n        document.getElementById(\'minSpecific\').value = \'\';\r\n        " +
+"document.getElementById(\'minRangeFrom\').value = \'\';\r\n        document.getElement" +
+"ById(\'minRangeTo\').value = \'\';\r\n\r\n        document.getElementById(\'hourEveryN\')." +
+"value = \'\';\r\n        document.getElementById(\'hourSpecific\').value = \'\';\r\n      " +
+"  document.getElementById(\'hourRangeFrom\').value = \'\';\r\n        document.getElem" +
+"entById(\'hourRangeTo\').value = \'\';\r\n\r\n        document.getElementById(\'dayMonthS" +
+"pecific\').value = \'\';\r\n        document.getElementById(\'dayMonthEveryN\').value =" +
+" \'1\';\r\n        document.getElementById(\'dayMonthStart\').value = \'1\';\r\n        do" +
+"cument.querySelectorAll(\'.day-month-check\').forEach(function(cb) { cb.checked = " +
+"false; });\r\n\r\n        document.getElementById(\'monthSpecific\').value = \'\';\r\n    " +
+"    document.querySelectorAll(\'.month-check\').forEach(function(cb) { cb.checked " +
+"= false; });\r\n\r\n        document.getElementById(\'weekdaySpecific\').value = \'\';\r\n" +
+"        document.getElementById(\'weekdayEveryN\').value = \'1\';\r\n        document." +
+"getElementById(\'weekdayStart\').value = \'1\';\r\n        document.querySelectorAll(\'" +
+".weekday-check\').forEach(function(cb) { cb.checked = false; });\r\n    }\r\n\r\n    do" +
+"cument.addEventListener(\'DOMContentLoaded\', function() {\r\n        $(\'#btnGenerat" +
+"eCron\').on(\'click\', function() {\r\n            var expression = buildCronExpressi" +
+"onFromModal();\r\n            if (expression) {\r\n                document.getEleme" +
+"ntById(\'cronExpression\').value = expression;\r\n                $(\'#cronGeneratorM" +
+"odal\').modal(\'hide\');\r\n                if (typeof validateCron === \'function\') v" +
+"alidateCron();\r\n            }\r\n        });\r\n\r\n        $(\'#cronGeneratorModal\').o" +
+"n(\'shown.bs.modal\', function () {\r\n            resetCronGenerator();\r\n          " +
+"  $(\'.nav-tabs a[href=\"#tabMinutes\"]\').tab(\'show\');\r\n            updateCronPrevi" +
+"ew();\r\n        });\r\n\r\n        $(\'#cronGeneratorModal\').on(\'change input\', \'input" +
+", select\', function() {\r\n            updateCronPreview();\r\n        });\r\n\r\n      " +
+"  $(\'a[data-toggle=\"tab\"]\').on(\'shown.bs.tab\', function () {\r\n            update" +
+"CronPreview();\r\n        });\r\n\r\n        $(\'#btnShowExecutions\').on(\'click\', showE" +
+"xecutions);\r\n    });\r\n\r\n\r\n    // ====== COLAS CRÍTICAS ======\r\n    function isQu" +
+"eueCritical(queue) {\r\n        return criticalQueues.indexOf(queue) >= 0;\r\n    }\r" +
+"\n\r\n    function checkCriticalQueue(queue) {\r\n        if (isQueueCritical(queue))" +
+" {\r\n            $$(\'criticalQueueWarning\').style.display = \'block\';\r\n           " +
+" return true;\r\n        } else {\r\n            $$(\'criticalQueueWarning\').style.di" +
+"splay = \'none\';\r\n            return false;\r\n        }\r\n    }\r\n\r\n    $$(\'queue\')." +
+"addEventListener(\'input\', function() { checkCriticalQueue(this.value); });\r\n    " +
+"$$(\'queue\').addEventListener(\'change\', function() { checkCriticalQueue(this.valu" +
+"e); });\r\n\r\n    // ====== CARGAR COLAS ======\r\n    function loadQueues() {\r\n     " +
+"   fetchJson(apiBaseUrl + \'/api/queues\').then(function(resp) {\r\n            var " +
+"datalist = $$(\'queueList\');\r\n            datalist.innerHTML = \'\';\r\n            (" +
+"resp.queues || []).forEach(function(q) {\r\n                datalist.innerHTML += " +
+"\'<option value=\"\' + q + \'\">\';\r\n            });\r\n        });\r\n    }\r\n\r\n    // ===" +
+"=== BUILD REQUEST OBJECT ======\r\n    function convertToType(value, type, isCompl" +
+"ex) {\r\n        var isNullable = type.endsWith(\'?\');\r\n        var underlyingType " +
+"= isNullable ? type.slice(0, -1).toLowerCase() : type.toLowerCase();\r\n    \r\n    " +
+"    if (isNullable && (value === \'\' || value === null || value === undefined)) {" +
+"\r\n            return null;\r\n        }\r\n    \r\n        if (isComplex) {\r\n         " +
+"   if (value === \'\' && isNullable) return null;\r\n            try {\r\n            " +
+"    return JSON.parse(value);\r\n            } catch(e) {\r\n                return " +
+"value;\r\n            }\r\n        }\r\n    \r\n        if (underlyingType.includes(\'int" +
+"\') || underlyingType.includes(\'long\') || \r\n            underlyingType.includes(\'" +
+"short\') || underlyingType.includes(\'byte\')) {\r\n            var num = parseInt(va" +
+"lue, 10);\r\n            return isNaN(num) ? (isNullable ? null : value) : num;\r\n " +
+"       }\r\n        if (underlyingType.includes(\'double\') || underlyingType.includ" +
+"es(\'float\') || \r\n            underlyingType.includes(\'decimal\') || underlyingTyp" +
+"e.includes(\'single\')) {\r\n            var num = parseFloat(value);\r\n            r" +
+"eturn isNaN(num) ? (isNullable ? null : value) : num;\r\n        }\r\n        if (un" +
+"derlyingType.includes(\'bool\')) {\r\n            if (typeof value === \'boolean\') re" +
+"turn value;\r\n            if (value === \'\' && isNullable) return null;\r\n         " +
+"   return value === \'true\' || value === \'1\' || value === \'on\';\r\n        }\r\n     " +
+"   return value;\r\n    }\r\n\r\n    function buildRequest() {\r\n        var mode = doc" +
+"ument.querySelector(\'input[name=\"launchMode\"]:checked\').value;\r\n        var clas" +
+"sName = mode === \'assisted\' ? $$(\'classNameAssisted\').value.trim() : $$(\'classNa" +
+"meManual\').value.trim();\r\n        var methodName = mode === \'assisted\' ? (functi" +
+"on() {\r\n            var idx = $$(\'methodSelect\').value;\r\n            return idx " +
+"=== \'\' ? \'\' : currentMethods[parseInt(idx)].methodName;\r\n        })() : $$(\'meth" +
+"odNameManual\').value.trim();\r\n\r\n        var request = {\r\n            mode: mode," +
+"\r\n            className: className,\r\n            methodName: methodName,\r\n      " +
+"      queue: $$(\'queue\').value.trim() || \'default\',\r\n            executionMode: " +
+"document.querySelector(\'input[name=\"execMode\"]:checked\').value,\r\n            inc" +
+"ludePerformContext: $$(\'chkPerformContext\').checked,\r\n            includeCancell" +
+"ationToken: $$(\'chkCancellationToken\').checked,\r\n            parameters: null,\r\n" +
+"            rawParametersJson: null\r\n        };\r\n\r\n        if (mode === \'manual\'" +
+") {\r\n            request.rawParametersJson = $$(\'jsonParams\').value.trim() || \'{" +
+"}\';\r\n        } else {\r\n            var paramsObj = {};\r\n            var allEleme" +
+"nts = document.querySelectorAll(\'#paramsContainer [data-param-name]\');\r\n        " +
+"    allElements.forEach(function(el) {\r\n                var name = el.getAttribu" +
+"te(\'data-param-name\');\r\n                if (!name) return;\r\n                if (" +
+"el.classList.contains(\'list-container\')) {\r\n                    var elementType " +
+"= el.getAttribute(\'data-element-type\');\r\n                    var inputs = el.que" +
+"rySelectorAll(\'.list-item input\');\r\n                    var values = [];\r\n      " +
+"              inputs.forEach(function(inp) {\r\n                        if (inp.va" +
+"lue.trim() !== \'\') {\r\n                            values.push(convertToType(inp." +
+"value, elementType, false));\r\n                        }\r\n                    });" +
+"\r\n                    paramsObj[name] = values;\r\n                } else if (el.c" +
+"lassList.contains(\'dict-container\')) {\r\n                    var rows = el.queryS" +
+"electorAll(\'.dict-row\');\r\n                    var obj = {};\r\n                   " +
+" rows.forEach(function(row) {\r\n                        var keyInp = row.querySel" +
+"ector(\'.dict-key\');\r\n                        var valInp = row.querySelector(\'.di" +
+"ct-value\');\r\n                        if (keyInp && valInp && keyInp.value.trim()" +
+" !== \'\') {\r\n                            obj[keyInp.value] = valInp.value;\r\n     " +
+"                   }\r\n                    });\r\n                    paramsObj[nam" +
+"e] = obj;\r\n                } else {\r\n                    var value;\r\n           " +
+"         if (el.type === \'checkbox\') {\r\n                        value = el.check" +
+"ed;\r\n                    } else {\r\n                        value = el.value;\r\n  " +
+"                  }\r\n                    var paramDef = selectedMethod ? selecte" +
+"dMethod.parameters.find(function(p) { return p.name === name; }) : null;\r\n      " +
+"              if (paramDef) {\r\n                        value = convertToType(val" +
+"ue, paramDef.type, paramDef.isComplex);\r\n                    }\r\n                " +
+"    paramsObj[name] = value;\r\n                }\r\n            });\r\n            re" +
+"quest.rawParametersJson = JSON.stringify(paramsObj);\r\n            request.parame" +
+"ters = null;\r\n        }\r\n\r\n        if (request.executionMode === \'Schedule\') {\r\n" +
+"            request.delayMinutes = parseInt($$(\'delayMinutes\').value) || 30;\r\n  " +
+"      }\r\n        if (request.executionMode === \'ScheduleDateTime\') {\r\n          " +
+"  request.scheduledDateTime = $$(\'scheduledDateTime\').value ? new Date($$(\'sched" +
+"uledDateTime\').value).toISOString() : null;\r\n        }\r\n        if (request.exec" +
+"utionMode === \'Recurring\') {\r\n            request.cronExpression = $$(\'cronExpre" +
+"ssion\').value.trim() || \'* * * * *\';\r\n            request.recurringEngine = $$(\'" +
+"recurringEngine\').value; // Se envía siempre (Direct, BuiltIn o DynamicJobs)\r\n  " +
+"      }\r\n        if (request.executionMode === \'Continuation\') {\r\n            re" +
+"quest.parentJobId = $$(\'parentJobId\').value.trim();\r\n        }\r\n        return r" +
+"equest;\r\n    }\r\n\r\n    // ====== PREVIEW ======\r\n    function showPreview() {\r\n  " +
+"      var req = buildRequest();\r\n        var summary = \'Class: \' + req.className" +
+" + \'\\nMethod: \' + req.methodName + \'\\nQueue: \' + req.queue +\r\n                  " +
+"    \'\\nMode: \' + req.executionMode + \'\\nEngine: \' + (req.recurringEngine || \'Dir" +
+"ect\') +\r\n                      \'\\nParameters: \' + (req.rawParametersJson || JSON" +
+".stringify(req.parameters));\r\n        $$(\'previewContent\').textContent = summary" +
+";\r\n        $$(\'previewPanel\').style.display = \'block\';\r\n    }\r\n\r\n    // ====== S" +
+"UBMIT / LAUNCH ======\r\n    var pendingLaunchRequest = null;\r\n\r\n    function subm" +
+"itJob() {\r\n        var req = buildRequest();\r\n        if (!req.className || !req" +
+".methodName) { alert(\'ClassName and MethodName are required.\'); return; }\r\n\r\n   " +
+"     if (isQueueCritical(req.queue)) {\r\n            pendingLaunchRequest = req;\r" +
+"\n            $$(\'criticalQueueName\').textContent = req.queue;\r\n            $$(\'c" +
+"riticalJobSummary\').textContent = \'Class: \' + req.className + \'\\nMethod: \' + req" +
+".methodName + \'\\nMode: \' + req.executionMode;\r\n            $(\'#criticalConfirmMo" +
+"dal\').modal(\'show\');\r\n        } else {\r\n            launchJob(req);\r\n        }\r\n" +
+"    }\r\n\r\n    function confirmedLaunch() {\r\n        $(\'#criticalConfirmModal\').mo" +
+"dal(\'hide\');\r\n        if (pendingLaunchRequest) launchJob(pendingLaunchRequest);" +
+"\r\n    }\r\n\r\n    function launchJob(req) {\r\n        var formData = new FormData();" +
+"\r\n        formData.append(\'json\', JSON.stringify(req));\r\n\r\n        fetch(apiBase" +
+"Url + \'/api/launch\', {\r\n            method: \'POST\',\r\n            body: formData\r" +
+"\n        })\r\n        .then(function(r) { return r.json(); })\r\n          .then(fu" +
+"nction(result) {\r\n              var alertDiv = $$(\'launchResult\');\r\n            " +
+"  alertDiv.style.display = \'block\';\r\n              if (result.success) {\r\n      " +
+"            alertDiv.className = \'alert alert-success\';\r\n                  alert" +
+"Div.innerHTML = \'Job launched successfully! <a href=\"\' + result.link + \'\" target" +
+"=\"_blank\">\' + result.jobId + \'</a>\';\r\n                  loadQueues();\r\n         " +
+"         loadHistory();\r\n              } else {\r\n                  alertDiv.clas" +
+"sName = \'alert alert-danger\';\r\n                  alertDiv.textContent = \'Error: " +
+"\' + (result.error || \'Unknown error\');\r\n              }\r\n          }).catch(func" +
+"tion(err) {\r\n              var alertDiv = $$(\'launchResult\');\r\n              ale" +
+"rtDiv.style.display = \'block\';\r\n              alertDiv.className = \'alert alert-" +
+"danger\';\r\n              alertDiv.textContent = \'Network error: \' + err.message;\r" +
+"\n          });\r\n    }\r\n\r\n    // ====== HISTORY ======\r\n    function loadHistory(" +
+"page) {\r\n        if (!page) page = 1;\r\n\r\n        var params = new URLSearchParam" +
+"s();\r\n        params.append(\'page\', page);\r\n        params.append(\'pageSize\', hi" +
+"storyPageSize);\r\n\r\n        fetchJson(apiBaseUrl + \'/api/history?\' + params.toStr" +
+"ing())\r\n            .then(function(resp) {\r\n                // resp contiene { i" +
+"tems, total, page, pageSize }\r\n                historyCurrentPage = resp.page;\r\n" +
+"                historyTotal = resp.total;\r\n\r\n                var entries = resp" +
+".items;\r\n\r\n                var tbody = document.querySelector(\'#historyTable tbo" +
+"dy\');\r\n                tbody.innerHTML = \'\';\r\n\r\n                var dashboardBas" +
+"eUrl = \'");
 
 
             
-            #line 1457 "..\..\Pages\JobLauncherPage.cshtml"
-                           Write(Url.To("/"));
+            #line 1532 "..\..\Pages\JobLauncherPage.cshtml"
+                                   Write(Url.To("/"));
 
             
             #line default
             #line hidden
-WriteLiteral("\';\r\n        fetchJson(apiBaseUrl + \'/api/history\').then(function(entries) {\r\n    " +
-"        var tbody = $$(\'historyTable\').querySelector(\'tbody\');\r\n            tbod" +
-"y.innerHTML = \'\';\r\n            entries.forEach(function(e) {\r\n                va" +
-"r entryJson = JSON.stringify(e).replace(/\'/g, \"&#39;\").replace(/\"/g, \"&quot;\");\r" +
-"\n                var row = \'<tr>\' +\r\n                    \'<td>\' + new Date(e.tim" +
-"estamp).toLocaleString() + \'</td>\' +\r\n                    \'<td><a href=\"\' + dash" +
-"boardBaseUrl + \'jobs/details/\' + e.jobId + \'\" target=\"_blank\">\' + e.jobId + \'</a" +
-"></td>\' +\r\n                    \'<td>\' + e.className + \'</td>\' +\r\n               " +
-"     \'<td>\' + e.methodName + \'</td>\' +\r\n                    \'<td>\' + e.queue + \'" +
-"</td>\' +\r\n                    \'<td>\' + e.mode + \'</td>\' +\r\n                    \'" +
-"<td>\' + e.engine + \'</td>\' +\r\n                    \'<td>\' +\r\n                    " +
-"\'<button class=\"btn btn-xs btn-default relaunch\" title=\"Load parameters into Lau" +
-"nch tab for editing\" data-entry=\\\'\' + entryJson + \'\\\'>Relaunch</button> \' +\r\n   " +
-"                 \'<button class=\"btn btn-xs btn-default clone-launch\" title=\"Clo" +
-"ne and launch immediately without editing\" data-entry=\\\'\' + entryJson + \'\\\'>Clon" +
-"e & Launch</button> \' +\r\n                    \'<button class=\"btn btn-xs btn-prim" +
-"ary save-as-template\" title=\"Save this job configuration as a template\" data-ent" +
-"ry=\\\'\' + entryJson + \'\\\'>Save as template</button>\' +\r\n                    \'</td" +
-">\' +\r\n                    \'</tr>\';\r\n                tbody.innerHTML += row;\r\n   " +
-"         });\r\n            document.querySelectorAll(\'.relaunch\').forEach(functio" +
-"n(btn) {\r\n                btn.addEventListener(\'click\', function() {\r\n          " +
-"          var entry = JSON.parse(this.getAttribute(\'data-entry\'));\r\n            " +
-"        loadEntryToForm(entry);\r\n                    document.querySelector(\'.na" +
-"v-tabs a[href=\"#launchTab\"]\').click();\r\n                });\r\n            });\r\n  " +
-"          document.querySelectorAll(\'.clone-launch\').forEach(function(btn) {\r\n  " +
-"              btn.addEventListener(\'click\', function() {\r\n                    va" +
-"r entry = JSON.parse(this.getAttribute(\'data-entry\'));\r\n                    if (" +
-"confirm(\'Clone and launch job with same parameters?\')) {\r\n                      " +
-"  var req = buildRequestFromHistory(entry);\r\n                        launchJob(r" +
-"eq);\r\n                    }\r\n                });\r\n            });\r\n            d" +
-"ocument.querySelectorAll(\'.save-as-template\').forEach(function(btn) {\r\n         " +
-"       btn.addEventListener(\'click\', function() {\r\n                    var entry" +
-" = JSON.parse(this.getAttribute(\'data-entry\'));\r\n                    saveEntryAs" +
-"Template(entry);\r\n                });\r\n            });\r\n        });\r\n    }\r\n\r\n  " +
-"  function clearHistory() {\r\n        if (!confirm(\'Clear history?\')) return;\r\n  " +
-"      fetch(apiBaseUrl + \'/api/history\', { method: \'DELETE\' }).then(function() {" +
-" loadHistory(); });\r\n    }\r\n\r\n    function loadEntryToForm(entry) {\r\n        var" +
-" mode = entry.mode || (entry.rawParametersJson && !entry.parameters ? \'manual\' :" +
-" \'assisted\');\r\n        var radio = document.querySelector(\'input[name=\"launchMod" +
-"e\"][value=\"\' + mode + \'\"]\');\r\n        if (radio) radio.checked = true;\r\n        " +
-"toggleMode();\r\n\r\n        $$(\'queue\').value = entry.queue || \'default\';\r\n        " +
-"$$(\'chkPerformContext\').checked = entry.includePerformContext || false;\r\n       " +
-" $$(\'chkCancellationToken\').checked = entry.includeCancellationToken || false;\r\n" +
-"\r\n        if (entry.executionMode) {\r\n            var execRadio = document.query" +
-"Selector(\'input[name=\"execMode\"][value=\"\' + entry.executionMode + \'\"]\');\r\n      " +
-"      if (execRadio) execRadio.checked = true;\r\n            toggleExecMode();\r\n " +
-"       }\r\n\r\n        if (entry.cronExpression) $$(\'cronExpression\').value = entry" +
-".cronExpression;\r\n        if (entry.delayMinutes) $$(\'delayMinutes\').value = ent" +
-"ry.delayMinutes;\r\n        if (entry.scheduledDateTime) {\r\n            var dt = n" +
-"ew Date(entry.scheduledDateTime);\r\n            if (!isNaN(dt)) {\r\n              " +
-"  var local = new Date(dt.getTime() - dt.getTimezoneOffset() * 60000).toISOStrin" +
-"g().slice(0, 16);\r\n                $$(\'scheduledDateTime\').value = local;\r\n     " +
-"       }\r\n        }\r\n        if (entry.parentJobId) $$(\'parentJobId\').value = en" +
-"try.parentJobId;\r\n        if (entry.recurringEngine || entry.engine) {\r\n        " +
-"    var eng = entry.recurringEngine || entry.engine;\r\n            var sel = $$(\'" +
-"recurringEngine\');\r\n            if (sel) {\r\n                // Asegurar que la o" +
-"pción exista (puede no estar si es \'Direct\' y estamos en modo manual, pero en mo" +
-"do manual no habrá \'Direct\')\r\n                var option = sel.querySelector(\'op" +
-"tion[value=\"\' + eng + \'\"]\');\r\n                if (option) sel.value = eng;\r\n    " +
-"        }\r\n        }\r\n\r\n        if (mode === \'manual\') {\r\n            $$(\'classN" +
-"ameManual\').value = entry.className || \'\';\r\n            $$(\'methodNameManual\').v" +
-"alue = entry.methodName || \'\';\r\n            $$(\'jsonParams\').value = entry.param" +
-"etersJson || \'{}\';\r\n        } else {\r\n            $$(\'classNameAssisted\').value " +
-"= entry.className || \'\';\r\n            if (entry.className && entry.methodName) {" +
-"\r\n                loadMethodsForTemplate(entry.className, entry.methodName, entr" +
-"y.parametersJson);\r\n            } else {\r\n                $$(\'methodSelectGroup\'" +
-").style.display = \'none\';\r\n                $$(\'paramsContainer\').innerHTML = \'\';" +
-"\r\n            }\r\n        }\r\n    }\r\n\r\n    function buildRequestFromHistory(entry)" +
-" {\r\n        return {\r\n            mode: entry.mode,\r\n            className: entr" +
-"y.className,\r\n            methodName: entry.methodName,\r\n            queue: entr" +
-"y.queue,\r\n            executionMode: entry.executionMode,\r\n            cronExpre" +
-"ssion: entry.cronExpression,\r\n            delayMinutes: entry.delayMinutes,\r\n   " +
-"         scheduledDateTime: entry.scheduledDateTime,\r\n            parentJobId: e" +
-"ntry.parentJobId,\r\n            recurringEngine: entry.recurringEngine || entry.e" +
-"ngine || \'BuiltIn\',\r\n            includePerformContext: entry.includePerformCont" +
-"ext,\r\n            includeCancellationToken: entry.includeCancellationToken,\r\n   " +
-"         rawParametersJson: entry.parametersJson,\r\n            parameters: null\r" +
-"\n        };\r\n    }\r\n\r\n    // ====== TEMPLATES ======\r\n    function loadTemplates" +
-"() {\r\n        fetchJson(apiBaseUrl + \'/api/templates\').then(function(templates) " +
-"{\r\n            var tbody = $$(\'templatesTable\').querySelector(\'tbody\');\r\n       " +
-"     tbody.innerHTML = \'\';\r\n            templates.forEach(function(t) {\r\n       " +
-"         var row = \'<tr>\' +\r\n                    \'<td>\' + t.name + \'</td>\' +\r\n  " +
-"                  \'<td>\' + t.className + \'</td>\' +\r\n                    \'<td>\' +" +
-" t.methodName + \'</td>\' +\r\n                    \'<td>\' + t.queue + \'</td>\' +\r\n   " +
-"                 \'<td>\' + t.executionMode + \'</td>\' +\r\n                    \'<td>" +
-"\' +\r\n                    \'<button class=\"btn btn-xs btn-default load-template\" d" +
-"ata-name=\"\' + t.name + \'\">Load</button> \' +\r\n                    \'<button class=" +
-"\"btn btn-xs btn-default clone-template\" data-name=\"\' + t.name + \'\">Clone & Launc" +
-"h</button> \' +\r\n                    \'<button class=\"btn btn-xs btn-danger delete" +
-"-template\" data-name=\"\' + t.name + \'\">Delete</button> \' +\r\n                    \'" +
-"<button class=\"btn btn-xs btn-info export-template\" data-name=\"\' + t.name + \'\">E" +
-"xport</button> \' +\r\n                    \'<button class=\"btn btn-xs btn-default p" +
-"review-template\" data-name=\"\' + t.name + \'\">Preview</button>\' +\r\n               " +
-"     \'</td>\' +\r\n                    \'</tr>\';\r\n                tbody.innerHTML +=" +
-" row;\r\n            });\r\n            bindTemplateEvents();\r\n        });\r\n    }\r\n\r" +
-"\n    function bindTemplateEvents() {\r\n        document.querySelectorAll(\'.load-t" +
-"emplate\').forEach(function(btn) {\r\n            btn.addEventListener(\'click\', fun" +
-"ction() {\r\n                var name = this.getAttribute(\'data-name\');\r\n         " +
-"       fetchJson(apiBaseUrl + \'/api/templates?name=\' + encodeURIComponent(name))" +
-"\r\n                    .then(function(t) { loadTemplateToForm(t); document.queryS" +
-"elector(\'.nav-tabs a[href=\"#launchTab\"]\').click(); });\r\n            });\r\n       " +
-" });\r\n        document.querySelectorAll(\'.clone-template\').forEach(function(btn)" +
-" {\r\n            btn.addEventListener(\'click\', function() {\r\n                var " +
-"name = this.getAttribute(\'data-name\');\r\n                fetchJson(apiBaseUrl + \'" +
-"/api/templates?name=\' + encodeURIComponent(name))\r\n                    .then(fun" +
-"ction(t) {\r\n                        var req = buildRequestFromTemplate(t);\r\n    " +
-"                    if (confirm(\'Clone and launch?\')) launchJob(req);\r\n         " +
-"           });\r\n            });\r\n        });\r\n        document.querySelectorAll(" +
-"\'.delete-template\').forEach(function(btn) {\r\n            btn.addEventListener(\'c" +
-"lick\', function() {\r\n                var name = this.getAttribute(\'data-name\');\r" +
-"\n                if (confirm(\'Delete template \' + name + \'?\')) {\r\n              " +
-"      fetch(apiBaseUrl + \'/api/templates?name=\' + encodeURIComponent(name), { me" +
-"thod: \'DELETE\' })\r\n                        .then(function() { loadTemplates(); }" +
-");\r\n                }\r\n            });\r\n        });\r\n        document.querySelec" +
-"torAll(\'.export-template\').forEach(function(btn) {\r\n            btn.addEventList" +
-"ener(\'click\', function() {\r\n                var name = this.getAttribute(\'data-n" +
-"ame\');\r\n                var downloadUrl = apiBaseUrl + \'/api/export-import?actio" +
-"n=export&templateName=\' + encodeURIComponent(name);\r\n                fetch(downl" +
-"oadUrl)\r\n                    .then(function(response) { return response.blob(); " +
-"})\r\n                    .then(function(blob) {\r\n                        var url " +
-"= URL.createObjectURL(blob);\r\n                        var a = document.createEle" +
-"ment(\'a\');\r\n                        a.href = url;\r\n                        a.dow" +
-"nload = name + \'.json\';\r\n                        document.body.appendChild(a);\r\n" +
-"                        a.click();\r\n                        document.body.remove" +
-"Child(a);\r\n                        URL.revokeObjectURL(url);\r\n                  " +
-"  })\r\n                    .catch(function(err) { alert(\'Error downloading templa" +
-"te: \' + err.message); });\r\n            });\r\n        });\r\n        document.queryS" +
-"electorAll(\'.preview-template\').forEach(function(btn) {\r\n            btn.addEven" +
-"tListener(\'click\', function() {\r\n                var name = this.getAttribute(\'d" +
-"ata-name\');\r\n                fetchJson(apiBaseUrl + \'/api/templates?name=\' + enc" +
-"odeURIComponent(name))\r\n                    .then(function(template) {\r\n        " +
-"                $$(\'previewTemplateName\').textContent = template.name;\r\n        " +
-"                $$(\'prevClass\').textContent = template.className || \'\';\r\n       " +
-"                 $$(\'prevMethod\').textContent = template.methodName || \'\';\r\n    " +
-"                    $$(\'prevQueue\').textContent = template.queue || \'default\';\r\n" +
-"                        $$(\'prevExecMode\').textContent = template.executionMode " +
-"|| \'\';\r\n                        $$(\'prevCron\').textContent = template.cronExpres" +
-"sion || \'N/A\';\r\n                        $$(\'prevEngine\').textContent = template." +
-"recurringEngine || (template.engine || \'N/A\');\r\n                        $$(\'prev" +
-"Mode\').textContent = template.mode || \'N/A\';\r\n                        $$(\'prevPe" +
-"rformContext\').textContent = template.includePerformContext ? \'Yes\' : \'No\';\r\n   " +
-"                     $$(\'prevCancellationToken\').textContent = template.includeC" +
-"ancellationToken ? \'Yes\' : \'No\';\r\n\r\n                        var rawParams = temp" +
-"late.rawParametersJson || \'{}\';\r\n                        try {\r\n                " +
-"            var parsed = JSON.parse(rawParams);\r\n                            $$(" +
-"\'prevParams\').textContent = JSON.stringify(parsed, null, 2);\r\n                  " +
-"      } catch(e) {\r\n                            $$(\'prevParams\').textContent = r" +
-"awParams;\r\n                        }\r\n                        $(\'#templatePrevie" +
-"wModal\').modal(\'show\');\r\n                    });\r\n            });\r\n        });\r\n" +
-"    }\r\n\r\n    function saveCurrentAsTemplate() {\r\n        var req = buildRequest(" +
-");\r\n        if (!req.className || !req.methodName) {\r\n            alert(\'Please " +
-"configure a class and method before saving as template.\');\r\n            return;\r" +
-"\n        }\r\n        var name = prompt(\'Template name:\', req.className + \'.\' + re" +
-"q.methodName);\r\n        if (!name) return;\r\n\r\n        var template = {\r\n        " +
-"    name: name,\r\n            mode: req.mode,\r\n            className: req.classNa" +
-"me,\r\n            methodName: req.methodName,\r\n            queue: req.queue,\r\n   " +
-"         executionMode: req.executionMode,\r\n            cronExpression: req.cron" +
-"Expression,\r\n            delayMinutes: req.delayMinutes,\r\n            scheduledD" +
-"ateTime: req.scheduledDateTime,\r\n            parentJobId: req.parentJobId,\r\n    " +
-"        recurringEngine: req.recurringEngine,\r\n            includePerformContext" +
-": req.includePerformContext,\r\n            includeCancellationToken: req.includeC" +
-"ancellationToken,\r\n            rawParametersJson: req.rawParametersJson,\r\n      " +
-"      parameters: req.parameters\r\n        };\r\n\r\n        var formData = new FormD" +
-"ata();\r\n        formData.append(\'json\', JSON.stringify(template));\r\n        fetc" +
-"h(apiBaseUrl + \'/api/templates\', { method: \'POST\', body: formData })\r\n          " +
-"  .then(function(r) { return r.json(); })\r\n            .then(function(res) {\r\n  " +
-"              if (res.success) {\r\n                    alert(\'Template \"\' + name " +
-"+ \'\" saved.\');\r\n                    loadTemplates();\r\n                } else {\r\n" +
-"                    alert(\'Error: \' + (res.error || res.message));\r\n            " +
-"    }\r\n            });\r\n    }\r\n\r\n    function loadTemplateToForm(template) {\r\n  " +
-"      var mode = template.mode;\r\n        if (!mode) {\r\n            inferModeAndL" +
-"oad(template);\r\n            return;\r\n        }\r\n        var radio = document.que" +
-"rySelector(\'input[name=\"launchMode\"][value=\"\' + mode + \'\"]\');\r\n        if (radio" +
-") radio.checked = true;\r\n        toggleMode();\r\n        fillCommonFields(templat" +
-"e);\r\n        if (template.executionMode) {\r\n            var execRadio = document" +
-".querySelector(\'input[name=\"execMode\"][value=\"\' + template.executionMode + \'\"]\')" +
-";\r\n            if (execRadio) execRadio.checked = true;\r\n            toggleExecM" +
-"ode();\r\n            fillExecModeFields(template);\r\n        }\r\n        if (mode =" +
-"== \'manual\') {\r\n            fillManualFields(template);\r\n        } else {\r\n     " +
-"       fillAssistedFieldsForTemplate(template);\r\n        }\r\n    }\r\n\r\n    functio" +
-"n loadMethodsForTemplate(className, methodName, rawParametersJson) {\r\n        fe" +
-"tchJson(apiBaseUrl + \'/api/methods?className=\' + encodeURIComponent(className))\r" +
-"\n            .then(function(resp) {\r\n                if (!resp.success) {\r\n     " +
-"               document.querySelector(\'input[name=\"launchMode\"][value=\"manual\"]\'" +
-").checked = true;\r\n                    toggleMode();\r\n                    $$(\'cl" +
-"assNameManual\').value = className;\r\n                    $$(\'methodNameManual\').v" +
-"alue = methodName;\r\n                    $$(\'jsonParams\').value = rawParametersJs" +
-"on || \'{}\';\r\n                    return;\r\n                }\r\n                cur" +
-"rentMethods = resp.methods;\r\n                var sel = $$(\'methodSelect\');\r\n    " +
-"            sel.innerHTML = \'<option value=\"\">-- Select method --</option>\';\r\n  " +
-"              var targetIndex = -1;\r\n                currentMethods.forEach(func" +
-"tion(m, i) {\r\n                    var params = m.parameters.map(function(p) { re" +
-"turn p.name; }).join(\', \');\r\n                    var display = m.methodName + \'(" +
-"\' + params + \')\';\r\n                    sel.innerHTML += \'<option value=\"\' + i + " +
-"\'\">\' + display + \'</option>\';\r\n                    if (m.methodName === methodNa" +
-"me) targetIndex = i;\r\n                });\r\n                $$(\'methodSelectGroup" +
-"\').style.display = \'block\';\r\n                if (targetIndex >= 0) {\r\n          " +
-"          sel.value = targetIndex;\r\n                    selectedMethod = current" +
-"Methods[targetIndex];\r\n                    onMethodChange();\r\n                  " +
-"  if (rawParametersJson) {\r\n                        try {\r\n                     " +
-"       var paramsObj = JSON.parse(rawParametersJson);\r\n                         " +
-"   fillAssistedFields(paramsObj);\r\n                        } catch(e) {}\r\n      " +
-"              }\r\n                } else {\r\n                    $$(\'paramsContain" +
-"er\').innerHTML = \'\';\r\n                }\r\n            });\r\n    }\r\n\r\n    function " +
-"inferModeAndLoad(template) {\r\n        if (!template.className || !template.metho" +
-"dName) {\r\n            template.mode = \'manual\';\r\n            loadTemplateToForm(" +
-"template);\r\n            return;\r\n        }\r\n        fetchJson(apiBaseUrl + \'/api" +
-"/methods?className=\' + encodeURIComponent(template.className))\r\n            .the" +
-"n(function(resp) {\r\n                if (resp.success) {\r\n                    tem" +
-"plate.mode = \'assisted\';\r\n                    updateTemplateModeSilently(templat" +
-"e.name, \'assisted\');\r\n                } else {\r\n                    template.mod" +
-"e = \'manual\';\r\n                    updateTemplateModeSilently(template.name, \'ma" +
-"nual\');\r\n                }\r\n            })\r\n            .catch(function() {\r\n   " +
-"             template.mode = \'manual\';\r\n            })\r\n            .finally(fun" +
-"ction() {\r\n                loadTemplateToForm(template);\r\n            });\r\n    }" +
-"\r\n\r\n    function updateTemplateModeSilently(templateName, mode) {\r\n        if (!" +
-"templateName) return;\r\n        fetchJson(apiBaseUrl + \'/api/templates?name=\' + e" +
-"ncodeURIComponent(templateName))\r\n            .then(function(t) {\r\n             " +
-"   t.mode = mode;\r\n                var formData = new FormData();\r\n             " +
-"   formData.append(\'json\', JSON.stringify(t));\r\n                fetch(apiBaseUrl" +
-" + \'/api/templates\', { method: \'POST\', body: formData });\r\n            })\r\n     " +
-"       .catch(function() {});\r\n    }\r\n\r\n    function fillCommonFields(template) " +
-"{\r\n        $$(\'queue\').value = template.queue || \'default\';\r\n        $$(\'chkPerf" +
-"ormContext\').checked = template.includePerformContext || false;\r\n        $$(\'chk" +
-"CancellationToken\').checked = template.includeCancellationToken || false;\r\n    }" +
-"\r\n\r\n    function fillExecModeFields(template) {\r\n        if (template.cronExpres" +
-"sion) $$(\'cronExpression\').value = template.cronExpression;\r\n        if (templat" +
-"e.delayMinutes) $$(\'delayMinutes\').value = template.delayMinutes;\r\n        if (t" +
-"emplate.scheduledDateTime) {\r\n            var dt = new Date(template.scheduledDa" +
-"teTime);\r\n            if (!isNaN(dt)) {\r\n                var local = new Date(dt" +
-".getTime() - dt.getTimezoneOffset() * 60000).toISOString().slice(0, 16);\r\n      " +
-"          $$(\'scheduledDateTime\').value = local;\r\n            }\r\n        }\r\n    " +
-"    if (template.parentJobId) $$(\'parentJobId\').value = template.parentJobId;\r\n " +
-"       if (template.recurringEngine) {\r\n            var sel = $$(\'recurringEngin" +
-"e\');\r\n            if (sel) {\r\n                var opt = sel.querySelector(\'optio" +
-"n[value=\"\' + template.recurringEngine + \'\"]\');\r\n                if (opt) sel.val" +
-"ue = template.recurringEngine;\r\n            }\r\n        }\r\n    }\r\n\r\n    function " +
-"fillManualFields(template) {\r\n        $$(\'classNameManual\').value = template.cla" +
-"ssName || \'\';\r\n        $$(\'methodNameManual\').value = template.methodName || \'\';" +
-"\r\n        $$(\'jsonParams\').value = template.rawParametersJson || \'{}\';\r\n    }\r\n\r" +
-"\n    function fillAssistedFieldsForTemplate(template) {\r\n        $$(\'classNameAs" +
-"sisted\').value = template.className || \'\';\r\n        if (template.className && te" +
-"mplate.methodName) {\r\n            loadMethodsForTemplate(template.className, tem" +
-"plate.methodName, template.rawParametersJson);\r\n        } else {\r\n            $$" +
-"(\'methodSelectGroup\').style.display = \'none\';\r\n            $$(\'paramsContainer\')" +
-".innerHTML = \'\';\r\n        }\r\n    }\r\n\r\n    function fillAssistedFields(paramsObj)" +
-" {\r\n        document.querySelectorAll(\'#paramsContainer .list-container\').forEac" +
-"h(function(container) {\r\n            var name = container.getAttribute(\'data-par" +
-"am-name\');\r\n            var arr = paramsObj[name];\r\n            if (arr && Array" +
-".isArray(arr)) {\r\n                var elementType = container.getAttribute(\'data" +
-"-element-type\');\r\n                var itemsDiv = container.querySelector(\'.list-" +
-"items\');\r\n                itemsDiv.innerHTML = \'\';\r\n                arr.forEach(" +
-"function(val) {\r\n                    var html = createListItem(elementType);\r\n  " +
-"                  itemsDiv.insertAdjacentHTML(\'beforeend\', html);\r\n             " +
-"       var lastInput = itemsDiv.lastElementChild.querySelector(\'input\');\r\n      " +
-"              if (lastInput) lastInput.value = val != null ? val : \'\';\r\n        " +
-"        });\r\n            }\r\n        });\r\n        document.querySelectorAll(\'#par" +
-"amsContainer .dict-container\').forEach(function(container) {\r\n            var na" +
-"me = container.getAttribute(\'data-param-name\');\r\n            var obj = paramsObj" +
-"[name];\r\n            if (obj && typeof obj === \'object\' && !Array.isArray(obj)) " +
-"{\r\n                var keyType = container.getAttribute(\'data-key-type\');\r\n     " +
-"           var valueType = container.getAttribute(\'data-value-type\');\r\n         " +
-"       var tbody = container.querySelector(\'.dict-items tbody\');\r\n              " +
-"  tbody.innerHTML = \'\';\r\n                Object.keys(obj).forEach(function(key) " +
-"{\r\n                    var html = createDictRow(keyType, valueType);\r\n          " +
-"          tbody.insertAdjacentHTML(\'beforeend\', html);\r\n                    var " +
-"row = tbody.lastElementChild;\r\n                    row.querySelector(\'.dict-key\'" +
-").value = key;\r\n                    row.querySelector(\'.dict-value\').value = obj" +
-"[key] != null ? obj[key] : \'\';\r\n                });\r\n            }\r\n        });\r" +
-"\n        var fields = document.querySelectorAll(\'#paramsContainer .param-field\')" +
-";\r\n        fields.forEach(function(field) {\r\n            var input = field.query" +
-"Selector(\'[data-param-name]:not(.list-container):not(.dict-container)\');\r\n      " +
-"      if (!input) return;\r\n            var name = input.getAttribute(\'data-param" +
-"-name\');\r\n            if (paramsObj.hasOwnProperty(name)) {\r\n                var" +
-" value = paramsObj[name];\r\n                if (input.type === \'checkbox\') {\r\n   " +
-"                 input.checked = (value === true || value === \'true\');\r\n        " +
-"        } else if (input.type === \'number\') {\r\n                    input.value =" +
-" value != null ? value : \'\';\r\n                } else if (input.type === \'datetim" +
-"e-local\') {\r\n                    if (value) {\r\n                        var dt = " +
-"new Date(value);\r\n                        if (!isNaN(dt)) {\r\n                   " +
-"         input.value = new Date(dt.getTime() - dt.getTimezoneOffset() * 60000).t" +
-"oISOString().slice(0, 16);\r\n                        }\r\n                    }\r\n  " +
-"              } else if (input.tagName === \'TEXTAREA\') {\r\n                    in" +
-"put.value = typeof value === \'string\' ? value : JSON.stringify(value);\r\n        " +
-"        } else if (input.tagName === \'SELECT\') {\r\n                    input.valu" +
-"e = value != null ? value : \'\';\r\n                } else {\r\n                    i" +
-"nput.value = value != null ? value : \'\';\r\n                }\r\n            }\r\n    " +
-"    });\r\n    }\r\n\r\n    function buildRequestFromTemplate(template) {\r\n        ret" +
-"urn {\r\n            mode: template.mode,\r\n            className: template.classNa" +
-"me,\r\n            methodName: template.methodName,\r\n            queue: template.q" +
-"ueue,\r\n            executionMode: template.executionMode,\r\n            cronExpre" +
-"ssion: template.cronExpression,\r\n            delayMinutes: template.delayMinutes" +
-",\r\n            scheduledDateTime: template.scheduledDateTime,\r\n            paren" +
-"tJobId: template.parentJobId,\r\n            recurringEngine: template.recurringEn" +
-"gine,\r\n            includePerformContext: template.includePerformContext,\r\n     " +
-"       includeCancellationToken: template.includeCancellationToken,\r\n           " +
-" rawParametersJson: template.rawParametersJson,\r\n            parameters: templat" +
-"e.parameters\r\n        };\r\n    }\r\n\r\n    function saveEntryAsTemplate(entry) {\r\n  " +
-"      var name = prompt(\'Template name:\', entry.className + \'.\' + entry.methodNa" +
-"me);\r\n        if (!name) return;\r\n        var template = {\r\n            name: na" +
-"me,\r\n            mode: entry.mode,\r\n            className: entry.className,\r\n   " +
-"         methodName: entry.methodName,\r\n            queue: entry.queue,\r\n       " +
-"     executionMode: entry.executionMode,\r\n            cronExpression: entry.cron" +
-"Expression,\r\n            delayMinutes: entry.delayMinutes,\r\n            schedule" +
-"dDateTime: entry.scheduledDateTime,\r\n            parentJobId: entry.parentJobId," +
-"\r\n            recurringEngine: entry.recurringEngine || entry.engine || \'BuiltIn" +
-"\',\r\n            includePerformContext: entry.includePerformContext,\r\n           " +
-" includeCancellationToken: entry.includeCancellationToken,\r\n            rawParam" +
-"etersJson: entry.parametersJson,\r\n            parameters: null\r\n        };\r\n    " +
-"    var formData = new FormData();\r\n        formData.append(\'json\', JSON.stringi" +
-"fy(template));\r\n        fetch(apiBaseUrl + \'/api/templates\', { method: \'POST\', b" +
-"ody: formData })\r\n            .then(function(r) { return r.json(); })\r\n         " +
-"   .then(function(res) {\r\n                if (res.success) {\r\n                  " +
-"  alert(\'Template \"\' + name + \'\" saved.\');\r\n                    loadTemplates();" +
-"\r\n                } else {\r\n                    alert(\'Error: \' + (res.error || " +
-"res.message));\r\n                }\r\n            });\r\n    }\r\n\r\n    function import" +
-"Template() {\r\n        var fileInput = $$(\'importFile\');\r\n        if (!fileInput." +
-"files[0]) { alert(\'Select a file.\'); return; }\r\n        var reader = new FileRea" +
-"der();\r\n        reader.onload = function(e) {\r\n            var template = JSON.p" +
-"arse(e.target.result);\r\n            var formData = new FormData();\r\n            " +
-"formData.append(\'json\', JSON.stringify(template));\r\n            fetch(apiBaseUrl" +
-" + \'/api/templates\', { method: \'POST\', body: formData })\r\n                .then(" +
-"function(r) { return r.json(); })\r\n                .then(function(res) {\r\n      " +
-"              if (res.conflict) {\r\n                        if (confirm(res.messa" +
-"ge + \' Overwrite?\')) {\r\n                            fetch(apiBaseUrl + \'/api/tem" +
-"plates\', { method: \'POST\', body: formData })\r\n                                .t" +
-"hen(function() { loadTemplates(); });\r\n                        }\r\n              " +
-"      } else {\r\n                        alert(res.message || \'Imported.\');\r\n    " +
-"                    loadTemplates();\r\n                    }\r\n                });" +
-"\r\n        };\r\n        reader.readAsText(fileInput.files[0]);\r\n    }\r\n</script>");
+WriteLiteral("\';\r\n                entries.forEach(function(e) {\r\n                    var entryJ" +
+"son = JSON.stringify(e).replace(/\'/g, \"&#39;\").replace(/\"/g, \"&quot;\");\r\n       " +
+"             var row = \'<tr>\' +\r\n                        \'<td>\' + new Date(e.tim" +
+"estamp).toLocaleString() + \'</td>\' +\r\n                        \'<td><a href=\"\' + " +
+"dashboardBaseUrl + \'jobs/details/\' + e.jobId + \'\" target=\"_blank\">\' + e.jobId + " +
+"\'</a></td>\' +\r\n                        \'<td>\' + e.className + \'</td>\' +\r\n       " +
+"                 \'<td>\' + e.methodName + \'</td>\' +\r\n                        \'<td" +
+">\' + e.queue + \'</td>\' +\r\n                        \'<td>\' + e.mode + \'</td>\' +\r\n " +
+"                       \'<td>\' + e.engine + \'</td>\' +\r\n                        \'<" +
+"td>\' +\r\n                        \'<button class=\"btn btn-xs btn-default relaunch\"" +
+" title=\"Load parameters into Launch tab for editing\" data-entry=\\\'\' + entryJson " +
+"+ \'\\\'>Relaunch</button> \' +\r\n                        \'<button class=\"btn btn-xs " +
+"btn-default clone-launch\" title=\"Clone and launch immediately without editing\" d" +
+"ata-entry=\\\'\' + entryJson + \'\\\'>Clone & Launch</button> \' +\r\n                   " +
+"     \'<button class=\"btn btn-xs btn-primary save-as-template\" title=\"Save this j" +
+"ob configuration as a template\" data-entry=\\\'\' + entryJson + \'\\\'>Save as templat" +
+"e</button>\' +\r\n                        \'</td>\' +\r\n                        \'</tr>" +
+"\';\r\n                    tbody.innerHTML += row;\r\n                });\r\n\r\n        " +
+"        // Re-bindear los botones de acción\r\n                bindHistoryActionBu" +
+"ttons();\r\n\r\n                // Actualizar controles de paginación\r\n             " +
+"   updatePaginationControls();\r\n            });\r\n    }\r\n\r\n    function bindHisto" +
+"ryActionButtons() {\r\n        document.querySelectorAll(\'.relaunch\').forEach(func" +
+"tion(btn) {\r\n            btn.addEventListener(\'click\', function() {\r\n           " +
+"     var entry = JSON.parse(this.getAttribute(\'data-entry\'));\r\n                l" +
+"oadEntryToForm(entry);\r\n                document.querySelector(\'.nav-tabs a[href" +
+"=\"#launchTab\"]\').click();\r\n            });\r\n        });\r\n        document.queryS" +
+"electorAll(\'.clone-launch\').forEach(function(btn) {\r\n            btn.addEventLis" +
+"tener(\'click\', function() {\r\n                var entry = JSON.parse(this.getAttr" +
+"ibute(\'data-entry\'));\r\n                if (confirm(\'Clone and launch job with sa" +
+"me parameters?\')) {\r\n                    var req = buildRequestFromHistory(entry" +
+");\r\n                    launchJob(req);\r\n                }\r\n            });\r\n   " +
+"     });\r\n        document.querySelectorAll(\'.save-as-template\').forEach(functio" +
+"n(btn) {\r\n            btn.addEventListener(\'click\', function() {\r\n              " +
+"  var entry = JSON.parse(this.getAttribute(\'data-entry\'));\r\n                save" +
+"EntryAsTemplate(entry);\r\n            });\r\n        });\r\n    }\r\n\r\n    function upd" +
+"atePaginationControls() {\r\n        var totalPages = Math.ceil(historyTotal / his" +
+"toryPageSize) || 1;\r\n        var prevBtn = document.getElementById(\'btnPrevPage\'" +
+");\r\n        var nextBtn = document.getElementById(\'btnNextPage\');\r\n        var i" +
+"nfo = document.getElementById(\'historyPageInfo\');\r\n\r\n        info.textContent = " +
+"\'Page \' + historyCurrentPage + \' of \' + totalPages + \' (Total: \' + historyTotal " +
+"+ \')\';\r\n\r\n        prevBtn.disabled = (historyCurrentPage <= 1);\r\n        nextBtn" +
+".disabled = (historyCurrentPage >= totalPages);\r\n\r\n        // Limpiar eventos pr" +
+"evios (mejor clonar nodos o usar flags, aquí simplemente asignamos onclick)\r\n   " +
+"     prevBtn.onclick = function() {\r\n            if (historyCurrentPage > 1) loa" +
+"dHistory(historyCurrentPage - 1);\r\n        };\r\n        nextBtn.onclick = functio" +
+"n() {\r\n            if (historyCurrentPage < totalPages) loadHistory(historyCurre" +
+"ntPage + 1);\r\n        };\r\n    }\r\n\r\n    function clearHistory() {\r\n        if (!c" +
+"onfirm(\'Clear history?\')) return;\r\n        fetch(apiBaseUrl + \'/api/history\', { " +
+"method: \'DELETE\' }).then(function() {\r\n            loadHistory(1);   // recargar" +
+" desde la primera página\r\n        });\r\n    }\r\n\r\n    function loadEntryToForm(ent" +
+"ry) {\r\n        var mode = entry.mode || (entry.rawParametersJson && !entry.param" +
+"eters ? \'manual\' : \'assisted\');\r\n        var radio = document.querySelector(\'inp" +
+"ut[name=\"launchMode\"][value=\"\' + mode + \'\"]\');\r\n        if (radio) radio.checked" +
+" = true;\r\n        toggleMode();\r\n\r\n        $$(\'queue\').value = entry.queue || \'d" +
+"efault\';\r\n        $$(\'chkPerformContext\').checked = entry.includePerformContext " +
+"|| false;\r\n        $$(\'chkCancellationToken\').checked = entry.includeCancellatio" +
+"nToken || false;\r\n\r\n        if (entry.executionMode) {\r\n            var execRadi" +
+"o = document.querySelector(\'input[name=\"execMode\"][value=\"\' + entry.executionMod" +
+"e + \'\"]\');\r\n            if (execRadio) execRadio.checked = true;\r\n            to" +
+"ggleExecMode();\r\n        }\r\n\r\n        if (entry.cronExpression) $$(\'cronExpressi" +
+"on\').value = entry.cronExpression;\r\n        if (entry.delayMinutes) $$(\'delayMin" +
+"utes\').value = entry.delayMinutes;\r\n        if (entry.scheduledDateTime) {\r\n    " +
+"        var dt = new Date(entry.scheduledDateTime);\r\n            if (!isNaN(dt))" +
+" {\r\n                var local = new Date(dt.getTime() - dt.getTimezoneOffset() *" +
+" 60000).toISOString().slice(0, 16);\r\n                $$(\'scheduledDateTime\').val" +
+"ue = local;\r\n            }\r\n        }\r\n        if (entry.parentJobId) $$(\'parent" +
+"JobId\').value = entry.parentJobId;\r\n        if (entry.recurringEngine || entry.e" +
+"ngine) {\r\n            var eng = entry.recurringEngine || entry.engine;\r\n        " +
+"    var sel = $$(\'recurringEngine\');\r\n            if (sel) {\r\n                //" +
+" Asegurar que la opción exista (puede no estar si es \'Direct\' y estamos en modo " +
+"manual, pero en modo manual no habrá \'Direct\')\r\n                var option = sel" +
+".querySelector(\'option[value=\"\' + eng + \'\"]\');\r\n                if (option) sel." +
+"value = eng;\r\n            }\r\n        }\r\n\r\n        if (mode === \'manual\') {\r\n    " +
+"        $$(\'classNameManual\').value = entry.className || \'\';\r\n            $$(\'me" +
+"thodNameManual\').value = entry.methodName || \'\';\r\n            $$(\'jsonParams\').v" +
+"alue = entry.parametersJson || \'{}\';\r\n        } else {\r\n            $$(\'classNam" +
+"eAssisted\').value = entry.className || \'\';\r\n            if (entry.className && e" +
+"ntry.methodName) {\r\n                loadMethodsForTemplate(entry.className, entr" +
+"y.methodName, entry.parametersJson);\r\n            } else {\r\n                $$(\'" +
+"methodSelectGroup\').style.display = \'none\';\r\n                $$(\'paramsContainer" +
+"\').innerHTML = \'\';\r\n            }\r\n        }\r\n    }\r\n\r\n    function buildRequest" +
+"FromHistory(entry) {\r\n        return {\r\n            mode: entry.mode,\r\n         " +
+"   className: entry.className,\r\n            methodName: entry.methodName,\r\n     " +
+"       queue: entry.queue,\r\n            executionMode: entry.executionMode,\r\n   " +
+"         cronExpression: entry.cronExpression,\r\n            delayMinutes: entry." +
+"delayMinutes,\r\n            scheduledDateTime: entry.scheduledDateTime,\r\n        " +
+"    parentJobId: entry.parentJobId,\r\n            recurringEngine: entry.recurrin" +
+"gEngine || entry.engine || \'BuiltIn\',\r\n            includePerformContext: entry." +
+"includePerformContext,\r\n            includeCancellationToken: entry.includeCance" +
+"llationToken,\r\n            rawParametersJson: entry.parametersJson,\r\n           " +
+" parameters: null\r\n        };\r\n    }\r\n\r\n    // ====== TEMPLATES ======\r\n    func" +
+"tion loadTemplates() {\r\n        fetchJson(apiBaseUrl + \'/api/templates\').then(fu" +
+"nction(templates) {\r\n            var tbody = $$(\'templatesTable\').querySelector(" +
+"\'tbody\');\r\n            tbody.innerHTML = \'\';\r\n            templates.forEach(func" +
+"tion(t) {\r\n                var row = \'<tr>\' +\r\n                    \'<td>\' + t.na" +
+"me + \'</td>\' +\r\n                    \'<td>\' + t.className + \'</td>\' +\r\n          " +
+"          \'<td>\' + t.methodName + \'</td>\' +\r\n                    \'<td>\' + t.queu" +
+"e + \'</td>\' +\r\n                    \'<td>\' + t.executionMode + \'</td>\' +\r\n       " +
+"             \'<td>\' +\r\n                    \'<button class=\"btn btn-xs btn-defaul" +
+"t load-template\" data-name=\"\' + t.name + \'\">Load</button> \' +\r\n                 " +
+"   \'<button class=\"btn btn-xs btn-default clone-template\" data-name=\"\' + t.name " +
+"+ \'\">Clone & Launch</button> \' +\r\n                    \'<button class=\"btn btn-xs" +
+" btn-danger delete-template\" data-name=\"\' + t.name + \'\">Delete</button> \' +\r\n   " +
+"                 \'<button class=\"btn btn-xs btn-info export-template\" data-name=" +
+"\"\' + t.name + \'\">Export</button> \' +\r\n                    \'<button class=\"btn bt" +
+"n-xs btn-default preview-template\" data-name=\"\' + t.name + \'\">Preview</button>\' " +
+"+\r\n                    \'</td>\' +\r\n                    \'</tr>\';\r\n                " +
+"tbody.innerHTML += row;\r\n            });\r\n            bindTemplateEvents();\r\n   " +
+"     });\r\n    }\r\n\r\n    function bindTemplateEvents() {\r\n        document.querySe" +
+"lectorAll(\'.load-template\').forEach(function(btn) {\r\n            btn.addEventLis" +
+"tener(\'click\', function() {\r\n                var name = this.getAttribute(\'data-" +
+"name\');\r\n                fetchJson(apiBaseUrl + \'/api/templates?name=\' + encodeU" +
+"RIComponent(name))\r\n                    .then(function(t) { loadTemplateToForm(t" +
+"); document.querySelector(\'.nav-tabs a[href=\"#launchTab\"]\').click(); });\r\n      " +
+"      });\r\n        });\r\n        document.querySelectorAll(\'.clone-template\').for" +
+"Each(function(btn) {\r\n            btn.addEventListener(\'click\', function() {\r\n  " +
+"              var name = this.getAttribute(\'data-name\');\r\n                fetchJ" +
+"son(apiBaseUrl + \'/api/templates?name=\' + encodeURIComponent(name))\r\n           " +
+"         .then(function(t) {\r\n                        var req = buildRequestFrom" +
+"Template(t);\r\n                        if (confirm(\'Clone and launch?\')) launchJo" +
+"b(req);\r\n                    });\r\n            });\r\n        });\r\n        document" +
+".querySelectorAll(\'.delete-template\').forEach(function(btn) {\r\n            btn.a" +
+"ddEventListener(\'click\', function() {\r\n                var name = this.getAttrib" +
+"ute(\'data-name\');\r\n                if (confirm(\'Delete template \' + name + \'?\'))" +
+" {\r\n                    fetch(apiBaseUrl + \'/api/templates?name=\' + encodeURICom" +
+"ponent(name), { method: \'DELETE\' })\r\n                        .then(function() { " +
+"loadTemplates(); });\r\n                }\r\n            });\r\n        });\r\n        d" +
+"ocument.querySelectorAll(\'.export-template\').forEach(function(btn) {\r\n          " +
+"  btn.addEventListener(\'click\', function() {\r\n                var name = this.ge" +
+"tAttribute(\'data-name\');\r\n                var downloadUrl = apiBaseUrl + \'/api/e" +
+"xport-import?action=export&templateName=\' + encodeURIComponent(name);\r\n         " +
+"       fetch(downloadUrl)\r\n                    .then(function(response) { return" +
+" response.blob(); })\r\n                    .then(function(blob) {\r\n              " +
+"          var url = URL.createObjectURL(blob);\r\n                        var a = " +
+"document.createElement(\'a\');\r\n                        a.href = url;\r\n           " +
+"             a.download = name + \'.json\';\r\n                        document.body" +
+".appendChild(a);\r\n                        a.click();\r\n                        do" +
+"cument.body.removeChild(a);\r\n                        URL.revokeObjectURL(url);\r\n" +
+"                    })\r\n                    .catch(function(err) { alert(\'Error " +
+"downloading template: \' + err.message); });\r\n            });\r\n        });\r\n     " +
+"   document.querySelectorAll(\'.preview-template\').forEach(function(btn) {\r\n     " +
+"       btn.addEventListener(\'click\', function() {\r\n                var name = th" +
+"is.getAttribute(\'data-name\');\r\n                fetchJson(apiBaseUrl + \'/api/temp" +
+"lates?name=\' + encodeURIComponent(name))\r\n                    .then(function(tem" +
+"plate) {\r\n                        $$(\'previewTemplateName\').textContent = templa" +
+"te.name;\r\n                        $$(\'prevClass\').textContent = template.classNa" +
+"me || \'\';\r\n                        $$(\'prevMethod\').textContent = template.metho" +
+"dName || \'\';\r\n                        $$(\'prevQueue\').textContent = template.que" +
+"ue || \'default\';\r\n                        $$(\'prevExecMode\').textContent = templ" +
+"ate.executionMode || \'\';\r\n                        $$(\'prevCron\').textContent = t" +
+"emplate.cronExpression || \'N/A\';\r\n                        $$(\'prevEngine\').textC" +
+"ontent = template.recurringEngine || (template.engine || \'N/A\');\r\n              " +
+"          $$(\'prevMode\').textContent = template.mode || \'N/A\';\r\n                " +
+"        $$(\'prevPerformContext\').textContent = template.includePerformContext ? " +
+"\'Yes\' : \'No\';\r\n                        $$(\'prevCancellationToken\').textContent =" +
+" template.includeCancellationToken ? \'Yes\' : \'No\';\r\n\r\n                        va" +
+"r rawParams = template.rawParametersJson || \'{}\';\r\n                        try {" +
+"\r\n                            var parsed = JSON.parse(rawParams);\r\n             " +
+"               $$(\'prevParams\').textContent = JSON.stringify(parsed, null, 2);\r\n" +
+"                        } catch(e) {\r\n                            $$(\'prevParams" +
+"\').textContent = rawParams;\r\n                        }\r\n                        " +
+"$(\'#templatePreviewModal\').modal(\'show\');\r\n                    });\r\n            " +
+"});\r\n        });\r\n    }\r\n\r\n    function saveCurrentAsTemplate() {\r\n        var r" +
+"eq = buildRequest();\r\n        if (!req.className || !req.methodName) {\r\n        " +
+"    alert(\'Please configure a class and method before saving as template.\');\r\n  " +
+"          return;\r\n        }\r\n        var name = prompt(\'Template name:\', req.cl" +
+"assName + \'.\' + req.methodName);\r\n        if (!name) return;\r\n\r\n        var temp" +
+"late = {\r\n            name: name,\r\n            mode: req.mode,\r\n            clas" +
+"sName: req.className,\r\n            methodName: req.methodName,\r\n            queu" +
+"e: req.queue,\r\n            executionMode: req.executionMode,\r\n            cronEx" +
+"pression: req.cronExpression,\r\n            delayMinutes: req.delayMinutes,\r\n    " +
+"        scheduledDateTime: req.scheduledDateTime,\r\n            parentJobId: req." +
+"parentJobId,\r\n            recurringEngine: req.recurringEngine,\r\n            inc" +
+"ludePerformContext: req.includePerformContext,\r\n            includeCancellationT" +
+"oken: req.includeCancellationToken,\r\n            rawParametersJson: req.rawParam" +
+"etersJson,\r\n            parameters: req.parameters\r\n        };\r\n\r\n        var fo" +
+"rmData = new FormData();\r\n        formData.append(\'json\', JSON.stringify(templat" +
+"e));\r\n        fetch(apiBaseUrl + \'/api/templates\', { method: \'POST\', body: formD" +
+"ata })\r\n            .then(function(r) { return r.json(); })\r\n            .then(f" +
+"unction(res) {\r\n                if (res.success) {\r\n                    alert(\'T" +
+"emplate \"\' + name + \'\" saved.\');\r\n                    loadTemplates();\r\n        " +
+"        } else {\r\n                    alert(\'Error: \' + (res.error || res.messag" +
+"e));\r\n                }\r\n            });\r\n    }\r\n\r\n    function loadTemplateToFo" +
+"rm(template) {\r\n        var mode = template.mode;\r\n        if (!mode) {\r\n       " +
+"     inferModeAndLoad(template);\r\n            return;\r\n        }\r\n        var ra" +
+"dio = document.querySelector(\'input[name=\"launchMode\"][value=\"\' + mode + \'\"]\');\r" +
+"\n        if (radio) radio.checked = true;\r\n        toggleMode();\r\n        fillCo" +
+"mmonFields(template);\r\n        if (template.executionMode) {\r\n            var ex" +
+"ecRadio = document.querySelector(\'input[name=\"execMode\"][value=\"\' + template.exe" +
+"cutionMode + \'\"]\');\r\n            if (execRadio) execRadio.checked = true;\r\n     " +
+"       toggleExecMode();\r\n            fillExecModeFields(template);\r\n        }\r\n" +
+"        if (mode === \'manual\') {\r\n            fillManualFields(template);\r\n     " +
+"   } else {\r\n            fillAssistedFieldsForTemplate(template);\r\n        }\r\n  " +
+"  }\r\n\r\n    function loadMethodsForTemplate(className, methodName, rawParametersJ" +
+"son) {\r\n        fetchJson(apiBaseUrl + \'/api/methods?className=\' + encodeURIComp" +
+"onent(className))\r\n            .then(function(resp) {\r\n                if (!resp" +
+".success) {\r\n                    document.querySelector(\'input[name=\"launchMode\"" +
+"][value=\"manual\"]\').checked = true;\r\n                    toggleMode();\r\n        " +
+"            $$(\'classNameManual\').value = className;\r\n                    $$(\'me" +
+"thodNameManual\').value = methodName;\r\n                    $$(\'jsonParams\').value" +
+" = rawParametersJson || \'{}\';\r\n                    return;\r\n                }\r\n " +
+"               currentMethods = resp.methods;\r\n                var sel = $$(\'met" +
+"hodSelect\');\r\n                sel.innerHTML = \'<option value=\"\">-- Select method" +
+" --</option>\';\r\n                var targetIndex = -1;\r\n                currentMe" +
+"thods.forEach(function(m, i) {\r\n                    var params = m.parameters.ma" +
+"p(function(p) { return p.name; }).join(\', \');\r\n                    var display =" +
+" m.methodName + \'(\' + params + \')\';\r\n                    sel.innerHTML += \'<opti" +
+"on value=\"\' + i + \'\">\' + display + \'</option>\';\r\n                    if (m.metho" +
+"dName === methodName) targetIndex = i;\r\n                });\r\n                $$(" +
+"\'methodSelectGroup\').style.display = \'block\';\r\n                if (targetIndex >" +
+"= 0) {\r\n                    sel.value = targetIndex;\r\n                    select" +
+"edMethod = currentMethods[targetIndex];\r\n                    onMethodChange();\r\n" +
+"                    if (rawParametersJson) {\r\n                        try {\r\n   " +
+"                         var paramsObj = JSON.parse(rawParametersJson);\r\n       " +
+"                     fillAssistedFields(paramsObj);\r\n                        } c" +
+"atch(e) {}\r\n                    }\r\n                } else {\r\n                   " +
+" $$(\'paramsContainer\').innerHTML = \'\';\r\n                }\r\n            });\r\n    " +
+"}\r\n\r\n    function inferModeAndLoad(template) {\r\n        if (!template.className " +
+"|| !template.methodName) {\r\n            template.mode = \'manual\';\r\n            l" +
+"oadTemplateToForm(template);\r\n            return;\r\n        }\r\n        fetchJson(" +
+"apiBaseUrl + \'/api/methods?className=\' + encodeURIComponent(template.className))" +
+"\r\n            .then(function(resp) {\r\n                if (resp.success) {\r\n     " +
+"               template.mode = \'assisted\';\r\n                    updateTemplateMo" +
+"deSilently(template.name, \'assisted\');\r\n                } else {\r\n              " +
+"      template.mode = \'manual\';\r\n                    updateTemplateModeSilently(" +
+"template.name, \'manual\');\r\n                }\r\n            })\r\n            .catch" +
+"(function() {\r\n                template.mode = \'manual\';\r\n            })\r\n      " +
+"      .finally(function() {\r\n                loadTemplateToForm(template);\r\n    " +
+"        });\r\n    }\r\n\r\n    function updateTemplateModeSilently(templateName, mode" +
+") {\r\n        if (!templateName) return;\r\n        fetchJson(apiBaseUrl + \'/api/te" +
+"mplates?name=\' + encodeURIComponent(templateName))\r\n            .then(function(t" +
+") {\r\n                t.mode = mode;\r\n                var formData = new FormData" +
+"();\r\n                formData.append(\'json\', JSON.stringify(t));\r\n              " +
+"  fetch(apiBaseUrl + \'/api/templates\', { method: \'POST\', body: formData });\r\n   " +
+"         })\r\n            .catch(function() {});\r\n    }\r\n\r\n    function fillCommo" +
+"nFields(template) {\r\n        $$(\'queue\').value = template.queue || \'default\';\r\n " +
+"       $$(\'chkPerformContext\').checked = template.includePerformContext || false" +
+";\r\n        $$(\'chkCancellationToken\').checked = template.includeCancellationToke" +
+"n || false;\r\n    }\r\n\r\n    function fillExecModeFields(template) {\r\n        if (t" +
+"emplate.cronExpression) $$(\'cronExpression\').value = template.cronExpression;\r\n " +
+"       if (template.delayMinutes) $$(\'delayMinutes\').value = template.delayMinut" +
+"es;\r\n        if (template.scheduledDateTime) {\r\n            var dt = new Date(te" +
+"mplate.scheduledDateTime);\r\n            if (!isNaN(dt)) {\r\n                var l" +
+"ocal = new Date(dt.getTime() - dt.getTimezoneOffset() * 60000).toISOString().sli" +
+"ce(0, 16);\r\n                $$(\'scheduledDateTime\').value = local;\r\n            " +
+"}\r\n        }\r\n        if (template.parentJobId) $$(\'parentJobId\').value = templa" +
+"te.parentJobId;\r\n        if (template.recurringEngine) {\r\n            var sel = " +
+"$$(\'recurringEngine\');\r\n            if (sel) {\r\n                var opt = sel.qu" +
+"erySelector(\'option[value=\"\' + template.recurringEngine + \'\"]\');\r\n              " +
+"  if (opt) sel.value = template.recurringEngine;\r\n            }\r\n        }\r\n    " +
+"}\r\n\r\n    function fillManualFields(template) {\r\n        $$(\'classNameManual\').va" +
+"lue = template.className || \'\';\r\n        $$(\'methodNameManual\').value = template" +
+".methodName || \'\';\r\n        $$(\'jsonParams\').value = template.rawParametersJson " +
+"|| \'{}\';\r\n    }\r\n\r\n    function fillAssistedFieldsForTemplate(template) {\r\n     " +
+"   $$(\'classNameAssisted\').value = template.className || \'\';\r\n        if (templa" +
+"te.className && template.methodName) {\r\n            loadMethodsForTemplate(templ" +
+"ate.className, template.methodName, template.rawParametersJson);\r\n        } else" +
+" {\r\n            $$(\'methodSelectGroup\').style.display = \'none\';\r\n            $$(" +
+"\'paramsContainer\').innerHTML = \'\';\r\n        }\r\n    }\r\n\r\n    function fillAssiste" +
+"dFields(paramsObj) {\r\n        document.querySelectorAll(\'#paramsContainer .list-" +
+"container\').forEach(function(container) {\r\n            var name = container.getA" +
+"ttribute(\'data-param-name\');\r\n            var arr = paramsObj[name];\r\n          " +
+"  if (arr && Array.isArray(arr)) {\r\n                var elementType = container." +
+"getAttribute(\'data-element-type\');\r\n                var itemsDiv = container.que" +
+"rySelector(\'.list-items\');\r\n                itemsDiv.innerHTML = \'\';\r\n          " +
+"      arr.forEach(function(val) {\r\n                    var html = createListItem" +
+"(elementType);\r\n                    itemsDiv.insertAdjacentHTML(\'beforeend\', htm" +
+"l);\r\n                    var lastInput = itemsDiv.lastElementChild.querySelector" +
+"(\'input\');\r\n                    if (lastInput) lastInput.value = val != null ? v" +
+"al : \'\';\r\n                });\r\n            }\r\n        });\r\n        document.quer" +
+"ySelectorAll(\'#paramsContainer .dict-container\').forEach(function(container) {\r\n" +
+"            var name = container.getAttribute(\'data-param-name\');\r\n            v" +
+"ar obj = paramsObj[name];\r\n            if (obj && typeof obj === \'object\' && !Ar" +
+"ray.isArray(obj)) {\r\n                var keyType = container.getAttribute(\'data-" +
+"key-type\');\r\n                var valueType = container.getAttribute(\'data-value-" +
+"type\');\r\n                var tbody = container.querySelector(\'.dict-items tbody\'" +
+");\r\n                tbody.innerHTML = \'\';\r\n                Object.keys(obj).forE" +
+"ach(function(key) {\r\n                    var html = createDictRow(keyType, value" +
+"Type);\r\n                    tbody.insertAdjacentHTML(\'beforeend\', html);\r\n      " +
+"              var row = tbody.lastElementChild;\r\n                    row.querySe" +
+"lector(\'.dict-key\').value = key;\r\n                    row.querySelector(\'.dict-v" +
+"alue\').value = obj[key] != null ? obj[key] : \'\';\r\n                });\r\n         " +
+"   }\r\n        });\r\n        var fields = document.querySelectorAll(\'#paramsContai" +
+"ner .param-field\');\r\n        fields.forEach(function(field) {\r\n            var i" +
+"nput = field.querySelector(\'[data-param-name]:not(.list-container):not(.dict-con" +
+"tainer)\');\r\n            if (!input) return;\r\n            var name = input.getAtt" +
+"ribute(\'data-param-name\');\r\n            if (paramsObj.hasOwnProperty(name)) {\r\n " +
+"               var value = paramsObj[name];\r\n                if (input.type === " +
+"\'checkbox\') {\r\n                    input.checked = (value === true || value === " +
+"\'true\');\r\n                } else if (input.type === \'number\') {\r\n               " +
+"     input.value = value != null ? value : \'\';\r\n                } else if (input" +
+".type === \'datetime-local\') {\r\n                    if (value) {\r\n               " +
+"         var dt = new Date(value);\r\n                        if (!isNaN(dt)) {\r\n " +
+"                           input.value = new Date(dt.getTime() - dt.getTimezoneO" +
+"ffset() * 60000).toISOString().slice(0, 16);\r\n                        }\r\n       " +
+"             }\r\n                } else if (input.tagName === \'TEXTAREA\') {\r\n    " +
+"                input.value = typeof value === \'string\' ? value : JSON.stringify" +
+"(value);\r\n                } else if (input.tagName === \'SELECT\') {\r\n            " +
+"        input.value = value != null ? value : \'\';\r\n                } else {\r\n   " +
+"                 input.value = value != null ? value : \'\';\r\n                }\r\n " +
+"           }\r\n        });\r\n    }\r\n\r\n    function buildRequestFromTemplate(templa" +
+"te) {\r\n        return {\r\n            mode: template.mode,\r\n            className" +
+": template.className,\r\n            methodName: template.methodName,\r\n           " +
+" queue: template.queue,\r\n            executionMode: template.executionMode,\r\n   " +
+"         cronExpression: template.cronExpression,\r\n            delayMinutes: tem" +
+"plate.delayMinutes,\r\n            scheduledDateTime: template.scheduledDateTime,\r" +
+"\n            parentJobId: template.parentJobId,\r\n            recurringEngine: te" +
+"mplate.recurringEngine,\r\n            includePerformContext: template.includePerf" +
+"ormContext,\r\n            includeCancellationToken: template.includeCancellationT" +
+"oken,\r\n            rawParametersJson: template.rawParametersJson,\r\n            p" +
+"arameters: template.parameters\r\n        };\r\n    }\r\n\r\n    function saveEntryAsTem" +
+"plate(entry) {\r\n        var name = prompt(\'Template name:\', entry.className + \'." +
+"\' + entry.methodName);\r\n        if (!name) return;\r\n        var template = {\r\n  " +
+"          name: name,\r\n            mode: entry.mode,\r\n            className: ent" +
+"ry.className,\r\n            methodName: entry.methodName,\r\n            queue: ent" +
+"ry.queue,\r\n            executionMode: entry.executionMode,\r\n            cronExpr" +
+"ession: entry.cronExpression,\r\n            delayMinutes: entry.delayMinutes,\r\n  " +
+"          scheduledDateTime: entry.scheduledDateTime,\r\n            parentJobId: " +
+"entry.parentJobId,\r\n            recurringEngine: entry.recurringEngine || entry." +
+"engine || \'BuiltIn\',\r\n            includePerformContext: entry.includePerformCon" +
+"text,\r\n            includeCancellationToken: entry.includeCancellationToken,\r\n  " +
+"          rawParametersJson: entry.parametersJson,\r\n            parameters: null" +
+"\r\n        };\r\n        var formData = new FormData();\r\n        formData.append(\'j" +
+"son\', JSON.stringify(template));\r\n        fetch(apiBaseUrl + \'/api/templates\', {" +
+" method: \'POST\', body: formData })\r\n            .then(function(r) { return r.jso" +
+"n(); })\r\n            .then(function(res) {\r\n                if (res.success) {\r\n" +
+"                    alert(\'Template \"\' + name + \'\" saved.\');\r\n                  " +
+"  loadTemplates();\r\n                } else {\r\n                    alert(\'Error: " +
+"\' + (res.error || res.message));\r\n                }\r\n            });\r\n    }\r\n\r\n " +
+"   function importTemplate() {\r\n        var fileInput = $$(\'importFile\');\r\n     " +
+"   if (!fileInput.files[0]) { alert(\'Select a file.\'); return; }\r\n        var re" +
+"ader = new FileReader();\r\n        reader.onload = function(e) {\r\n            var" +
+" template = JSON.parse(e.target.result);\r\n            var formData = new FormDat" +
+"a();\r\n            formData.append(\'json\', JSON.stringify(template));\r\n          " +
+"  fetch(apiBaseUrl + \'/api/templates\', { method: \'POST\', body: formData })\r\n    " +
+"            .then(function(r) { return r.json(); })\r\n                .then(funct" +
+"ion(res) {\r\n                    if (res.conflict) {\r\n                        if " +
+"(confirm(res.message + \' Overwrite?\')) {\r\n                            fetch(apiB" +
+"aseUrl + \'/api/templates\', { method: \'POST\', body: formData })\r\n                " +
+"                .then(function() { loadTemplates(); });\r\n                       " +
+" }\r\n                    } else {\r\n                        alert(res.message || \'" +
+"Imported.\');\r\n                        loadTemplates();\r\n                    }\r\n " +
+"               });\r\n        };\r\n        reader.readAsText(fileInput.files[0]);\r\n" +
+"    }\r\n</script>");
 
 
         }

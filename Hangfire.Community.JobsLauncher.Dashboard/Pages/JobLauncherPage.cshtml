@@ -199,6 +199,16 @@
                     <thead><tr><th>Timestamp</th><th>JobId</th><th>Class</th><th>Method</th><th>Queue</th><th>Mode</th><th>Engine</th><th></th></tr></thead>
                     <tbody></tbody>
                 </table>
+                <!-- Paginación -->
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-sm-6">
+                        <span id="historyPageInfo"></span>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <button class="btn btn-xs btn-default" id="btnPrevPage" disabled>Prev</button>
+                        <button class="btn btn-xs btn-default" id="btnNextPage" disabled>Next</button>
+                    </div>
+                </div>
                 <div class="alert alert-info" style="margin-top:15px;">
                     <strong>About the buttons:</strong>
                     <ul style="margin-bottom:0;">
@@ -311,6 +321,13 @@
                     </thead>
                     <tbody></tbody>
                 </table>
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-sm-6"><span id="auditPageInfo"></span></div>
+                    <div class="col-sm-6 text-right">
+                        <button class="btn btn-xs btn-default" id="btnAuditPrevPage" disabled>Prev</button>
+                        <button class="btn btn-xs btn-default" id="btnAuditNextPage" disabled>Next</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -559,6 +576,14 @@
     var apiBaseUrl = '@Url.To("/joblauncher")';
     var selectedMethod = null; // almacenará el MethodInfoDto actual
 
+    var historyCurrentPage = 1;
+    var historyPageSize = 20;
+    var historyTotal = 0;
+
+    var auditCurrentPage = 1;
+    var auditPageSize = 20;
+    var auditTotal = 0;
+
     // ====== UTILIDADES ======
     function $$(id){ return document.getElementById(id); }
     function fetchJson(url, options){ return fetch(url, options).then(r => r.json()); }
@@ -585,25 +610,35 @@
     });
 
     // Auditoría: cargar datos al abrir la pestaña
-    function loadAuditLog() {
+    function loadAuditLog(page) {
+        if (!page) page = 1;
+
         var user = document.getElementById('auditUserFilter').value.trim();
         var from = toUtcString(document.getElementById('auditFromFilter').value);
         var to   = toUtcString(document.getElementById('auditToFilter').value);
-        var count = document.getElementById('auditCountFilter').value || '200';
+        // El campo "auditCountFilter" lo usaremos como pageSize
+        var pageSize = parseInt(document.getElementById('auditCountFilter').value) || 20;
 
         var params = new URLSearchParams();
         if (user) params.append('user', user);
         if (from) params.append('from', from);
         if (to)   params.append('to', to);
-        params.append('count', count);
+        params.append('page', page);
+        params.append('pageSize', pageSize);
 
         fetchJson(apiBaseUrl + '/api/audit-log?' + params.toString())
-            .then(function(entries) {
+            .then(function(resp) {
+                // La API ahora devuelve { items, total, page, pageSize }
+                var entries = resp.items;
+                auditTotal = resp.total;
+                auditCurrentPage = resp.page;
+                auditPageSize = resp.pageSize;
+
                 var tbody = document.querySelector('#auditLogTable tbody');
                 tbody.innerHTML = '';
                 entries.forEach(function(e) {
                     var row = '<tr>' +
-                        '<td>' + new Date(e.timestamp).toLocaleString() + '</td>' +
+                        '<td>' + new Date(e.timestamp) + '</td>' +
                         '<td>' + (e.jobId || '') + '</td>' +
                         '<td>' + (e.className || '') + '</td>' +
                         '<td>' + (e.methodName || '') + '</td>' +
@@ -614,8 +649,31 @@
                         '</tr>';
                     tbody.innerHTML += row;
                 });
+
+                // Actualizar la información de paginación
+                updateAuditPaginationControls();
             });
     }
+
+    function updateAuditPaginationControls() {
+        var totalPages = Math.ceil(auditTotal / auditPageSize) || 1;
+        var prevBtn = document.getElementById('btnAuditPrevPage');
+        var nextBtn = document.getElementById('btnAuditNextPage');
+        var info = document.getElementById('auditPageInfo');
+
+        info.textContent = 'Page ' + auditCurrentPage + ' of ' + totalPages + ' (Total: ' + auditTotal + ')';
+
+        prevBtn.disabled = (auditCurrentPage <= 1);
+        nextBtn.disabled = (auditCurrentPage >= totalPages);
+
+        prevBtn.onclick = function() {
+            if (auditCurrentPage > 1) loadAuditLog(auditCurrentPage - 1);
+        };
+        nextBtn.onclick = function() {
+            if (auditCurrentPage < totalPages) loadAuditLog(auditCurrentPage + 1);
+        };
+    }
+
 
     // Eventos de los botones de filtro y carga inicial (añadir en la inicialización)
 
@@ -624,8 +682,8 @@
         document.getElementById('auditUserFilter').value = '';
         document.getElementById('auditFromFilter').value = '';
         document.getElementById('auditToFilter').value = '';
-        document.getElementById('auditCountFilter').value = '200';
-        loadAuditLog();
+        document.getElementById('auditCountFilter').value = '20';   // pageSize por defecto
+        loadAuditLog(1);
     });
 
     function toUtcString(localDateTime) {
@@ -1453,57 +1511,102 @@
     }
 
     // ====== HISTORY ======
-    function loadHistory() {
-        var dashboardBaseUrl = '@Url.To("/")';
-        fetchJson(apiBaseUrl + '/api/history').then(function(entries) {
-            var tbody = $$('historyTable').querySelector('tbody');
-            tbody.innerHTML = '';
-            entries.forEach(function(e) {
-                var entryJson = JSON.stringify(e).replace(/'/g, "&#39;").replace(/"/g, "&quot;");
-                var row = '<tr>' +
-                    '<td>' + new Date(e.timestamp).toLocaleString() + '</td>' +
-                    '<td><a href="' + dashboardBaseUrl + 'jobs/details/' + e.jobId + '" target="_blank">' + e.jobId + '</a></td>' +
-                    '<td>' + e.className + '</td>' +
-                    '<td>' + e.methodName + '</td>' +
-                    '<td>' + e.queue + '</td>' +
-                    '<td>' + e.mode + '</td>' +
-                    '<td>' + e.engine + '</td>' +
-                    '<td>' +
-                    '<button class="btn btn-xs btn-default relaunch" title="Load parameters into Launch tab for editing" data-entry=\'' + entryJson + '\'>Relaunch</button> ' +
-                    '<button class="btn btn-xs btn-default clone-launch" title="Clone and launch immediately without editing" data-entry=\'' + entryJson + '\'>Clone & Launch</button> ' +
-                    '<button class="btn btn-xs btn-primary save-as-template" title="Save this job configuration as a template" data-entry=\'' + entryJson + '\'>Save as template</button>' +
-                    '</td>' +
-                    '</tr>';
-                tbody.innerHTML += row;
-            });
-            document.querySelectorAll('.relaunch').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var entry = JSON.parse(this.getAttribute('data-entry'));
-                    loadEntryToForm(entry);
-                    document.querySelector('.nav-tabs a[href="#launchTab"]').click();
+    function loadHistory(page) {
+        if (!page) page = 1;
+
+        var params = new URLSearchParams();
+        params.append('page', page);
+        params.append('pageSize', historyPageSize);
+
+        fetchJson(apiBaseUrl + '/api/history?' + params.toString())
+            .then(function(resp) {
+                // resp contiene { items, total, page, pageSize }
+                historyCurrentPage = resp.page;
+                historyTotal = resp.total;
+
+                var entries = resp.items;
+
+                var tbody = document.querySelector('#historyTable tbody');
+                tbody.innerHTML = '';
+
+                var dashboardBaseUrl = '@Url.To("/")';
+                entries.forEach(function(e) {
+                    var entryJson = JSON.stringify(e).replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+                    var row = '<tr>' +
+                        '<td>' + new Date(e.timestamp).toLocaleString() + '</td>' +
+                        '<td><a href="' + dashboardBaseUrl + 'jobs/details/' + e.jobId + '" target="_blank">' + e.jobId + '</a></td>' +
+                        '<td>' + e.className + '</td>' +
+                        '<td>' + e.methodName + '</td>' +
+                        '<td>' + e.queue + '</td>' +
+                        '<td>' + e.mode + '</td>' +
+                        '<td>' + e.engine + '</td>' +
+                        '<td>' +
+                        '<button class="btn btn-xs btn-default relaunch" title="Load parameters into Launch tab for editing" data-entry=\'' + entryJson + '\'>Relaunch</button> ' +
+                        '<button class="btn btn-xs btn-default clone-launch" title="Clone and launch immediately without editing" data-entry=\'' + entryJson + '\'>Clone & Launch</button> ' +
+                        '<button class="btn btn-xs btn-primary save-as-template" title="Save this job configuration as a template" data-entry=\'' + entryJson + '\'>Save as template</button>' +
+                        '</td>' +
+                        '</tr>';
+                    tbody.innerHTML += row;
                 });
+
+                // Re-bindear los botones de acción
+                bindHistoryActionButtons();
+
+                // Actualizar controles de paginación
+                updatePaginationControls();
             });
-            document.querySelectorAll('.clone-launch').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var entry = JSON.parse(this.getAttribute('data-entry'));
-                    if (confirm('Clone and launch job with same parameters?')) {
-                        var req = buildRequestFromHistory(entry);
-                        launchJob(req);
-                    }
-                });
+    }
+
+    function bindHistoryActionButtons() {
+        document.querySelectorAll('.relaunch').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var entry = JSON.parse(this.getAttribute('data-entry'));
+                loadEntryToForm(entry);
+                document.querySelector('.nav-tabs a[href="#launchTab"]').click();
             });
-            document.querySelectorAll('.save-as-template').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var entry = JSON.parse(this.getAttribute('data-entry'));
-                    saveEntryAsTemplate(entry);
-                });
+        });
+        document.querySelectorAll('.clone-launch').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var entry = JSON.parse(this.getAttribute('data-entry'));
+                if (confirm('Clone and launch job with same parameters?')) {
+                    var req = buildRequestFromHistory(entry);
+                    launchJob(req);
+                }
+            });
+        });
+        document.querySelectorAll('.save-as-template').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var entry = JSON.parse(this.getAttribute('data-entry'));
+                saveEntryAsTemplate(entry);
             });
         });
     }
 
+    function updatePaginationControls() {
+        var totalPages = Math.ceil(historyTotal / historyPageSize) || 1;
+        var prevBtn = document.getElementById('btnPrevPage');
+        var nextBtn = document.getElementById('btnNextPage');
+        var info = document.getElementById('historyPageInfo');
+
+        info.textContent = 'Page ' + historyCurrentPage + ' of ' + totalPages + ' (Total: ' + historyTotal + ')';
+
+        prevBtn.disabled = (historyCurrentPage <= 1);
+        nextBtn.disabled = (historyCurrentPage >= totalPages);
+
+        // Limpiar eventos previos (mejor clonar nodos o usar flags, aquí simplemente asignamos onclick)
+        prevBtn.onclick = function() {
+            if (historyCurrentPage > 1) loadHistory(historyCurrentPage - 1);
+        };
+        nextBtn.onclick = function() {
+            if (historyCurrentPage < totalPages) loadHistory(historyCurrentPage + 1);
+        };
+    }
+
     function clearHistory() {
         if (!confirm('Clear history?')) return;
-        fetch(apiBaseUrl + '/api/history', { method: 'DELETE' }).then(function() { loadHistory(); });
+        fetch(apiBaseUrl + '/api/history', { method: 'DELETE' }).then(function() {
+            loadHistory(1);   // recargar desde la primera página
+        });
     }
 
     function loadEntryToForm(entry) {
