@@ -109,6 +109,55 @@ GlobalConfiguration.Configuration.UseJobLauncher(new JobLauncherOptions
 });
 ```
 
+
+## Setup for ASP.NET Core
+
+```csharp
+using Hangfire;
+using Hangfire.Community.JobsLauncher.Dashboard;
+
+namespace Application
+{
+    public class Startup
+    {
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddHangfire(configuration =>
+            {
+                configuration
+                    .UseMemoryStorage()          // or your storage
+                    .UseJobLauncher();          // Add the Jobs launcher page
+            });
+
+            services.AddHangfireServer();
+        }
+    }
+}
+```
+
+## Setup for ASP.NET (.NET Framework)
+
+```csharp
+using Hangfire;
+using Hangfire.Community.JobsLauncher.Dashboard;
+
+namespace Application
+{
+    public class Startup
+    {
+        public void Configuration(IAppBuilder app)
+        {
+            GlobalConfiguration.Configuration
+                .UseJobLauncher();             // Add the Jobs launcher page
+
+            app.UseHangfireDashboard();
+        }
+    }
+}
+
+```
+
+
 Register the dashboard in your application:
 
 ```csharp
