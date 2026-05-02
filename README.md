@@ -35,7 +35,6 @@ A Hangfire Dashboard extension that fills the gap between scheduled automation a
 ## 📸 Screenshots
 
 ### Launch Tab (Assisted & Manual)
-https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.Dashboard.JobsInsights/refs/heads/main/images/detail1.png
 ![Launch - Fire & Forget](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture1.png)
 ![Launch - Schedule (minutes)](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture4-shmin.png)
 ![Launch - Schedule (date)](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture2.png)
@@ -74,23 +73,23 @@ https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.Dashboard.J
 
 Add the NuGet package to the project where you configure the dashboard:
 
-\`\`\`
+```
 dotnet add package Hangfire.Community.JobsLauncher.Dashboard
-\`\`\`
+```
 
 ### 2. Workers (only if you launch jobs in manual mode)
 
 Install the common library in the worker projects that will execute manually launched jobs:
 
-\`\`\`
+```
 dotnet add package Hangfire.Community.JobsLauncher.Common
-\`\`\`
+```
 
 During worker startup, add this line to avoid "unused package" warnings and clearly document the intent:
 
-\`\`\`csharp
+```csharp
 Hangfire.Community.JobsLauncher.Common.JobLauncherDispatcher.EnableDynamicJobSupport();
-\`\`\`
+```
 
 Workers **do not need the common library** if you only use assisted mode (with assemblies available) or never run manual jobs.
 
@@ -100,7 +99,7 @@ Workers **do not need the common library** if you only use assisted mode (with a
 
 In the method where you set up Hangfire (e.g., `Startup.cs`), add:
 
-\`\`\`csharp
+```csharp
 GlobalConfiguration.Configuration.UseJobLauncher(new JobLauncherOptions
 {
     CriticalQueues = new List<string> { "production", "critical" },
@@ -108,16 +107,16 @@ GlobalConfiguration.Configuration.UseJobLauncher(new JobLauncherOptions
     EnableAuditLog = true,
     InheritTheme = true
 });
-\`\`\`
+```
 
 Register the dashboard in your application:
 
-\`\`\`csharp
+```csharp
 app.UseHangfireDashboard("/hangfire", new DashboardOptions
 {
     // ... your authorization configuration, etc.
 });
-\`\`\`
+```
 
 The plugin automatically appears as a new **"Job Launcher"** tab in the navigation menu.
 
