@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+
+		<IsPackable>true</IsPackable>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageOutputPath>artifacts</PackageOutputPath>
+		<PackageId>Hangfire.Community.JobsLauncher.Common</PackageId>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/frankyjquintero/Hangfire.Community.JobsLauncher</RepositoryUrl>
+		<Description>Lightweight dispatcher library for Hangfire.Community.JobsLauncher. Enables workers to execute manually launched jobs without needing business assemblies on the dashboard. Resolves types and methods at runtime using reflection and serialized parameters. Required on worker projects when using manual mode. Optionally supports Hangfire.DynamicJobs.</Description>
+		<PackageTags>hangfire;jobs-launcher;dispatcher;common;manual;worker;runtime;dynamicjobs</PackageTags>
+		<Authors>FrankyJquintero</Authors>
+		<Product>Hangfire.Community.JobsLauncher.Common</Product>
+		<Version>1.0.0</Version>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<LangVersion>7.3</LangVersion>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+		<RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
+		<IncludeContentInPack>true</IncludeContentInPack>
+		<RazorViewsCodeGenDirectory>$(MSBuildProjectDirectory)\</RazorViewsCodeGenDirectory>
+	</PropertyGroup>
+
+  <ItemGroup>
+	<PackageReference Include="HangFire.Core" Version="1.7.28" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
+  </ItemGroup>
+
+  <!-- README -->
+  <ItemGroup>
+	<Content Include="README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+</Project>

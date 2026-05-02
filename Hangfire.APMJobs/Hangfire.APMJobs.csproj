@@ -20,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Hangfire.Community.JobsLauncher.Common\Hangfire.Community.JobsLauncher.Common.csproj" />
     <ProjectReference Include="..\Hangfire.Community.JobsLauncher.Dashboard\Hangfire.Community.JobsLauncher.Dashboard.csproj" />
-    <ProjectReference Include="..\Hangfire.JobLauncher.Common\Hangfire.Community.JobLauncher.Common.csproj" />
   </ItemGroup>
 
 </Project>

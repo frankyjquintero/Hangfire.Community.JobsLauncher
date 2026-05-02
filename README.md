@@ -1,61 +1,104 @@
 # Hangfire.Community.JobsLauncher.Dashboard
 
-Plugin para el dashboard de [Hangfire](https://www.hangfire.io/) que permite **lanzar jobs manualmente** desde una interfaz gráfica amigable, con soporte para:
-
-- **Modo asistido**: descubre clases, métodos y parámetros mediante reflexión si la assembly está disponible.
-- **Modo manual**: sin necesidad de assemblies de negocio; escribes el tipo, método y parámetros en JSON.
-- **Múltiples modos de ejecución**: Fire & Forget, Schedule (con delay o fecha exacta), Recurring (con elección de motor) y Continuation.
-- **Motor de recurrentes dual**: Built‑in ligero o DynamicJobs (si está instalado).
-- **Editor de parámetros dinámico**: inputs nativos para tipos simples, editor JSON para tipos complejos (listas, clases, diccionarios, nulos, enums…).
-- **Plantillas reutilizables**: guarda, carga, exporta e importa configuraciones de jobs por nombre.
-- **Historial de lanzamientos**: registro de los últimos jobs lanzados con opción de relanzar o clonar.
-- **Validación de Cron**, vista previa del job, enlace directo al job creado, atajos de teclado (`Ctrl+Enter`) y confirmación para colas críticas.
-- **Log de auditoría** opcional e independiente del historial volátil.
-- **Arquitectura desacoplada**: el dashboard nunca necesita dependencias directas a tus clases de negocio cuando usas el modo manual; un dispatcher ligero (`JobLauncherDispatcher`) se encarga de ejecutar el job en el worker.
+A Hangfire Dashboard extension that fills the gap between scheduled automation and ad‑hoc operations. It was born from the need to **launch jobs on demand without redeploying** and to keep a permanent, searchable audit trail of those manual interventions.
 
 ---
 
-## 📦 Requisitos
+## ✨ Highlights
 
-- Hangfire 1.7 o superior
-- .NET Standard 2.0 (compatible con .NET Core 2.1+ y .NET Framework 4.6.1+)
-- **Librería común** `Hangfire.Community.JobsLauncher.Common` (obligatoria solo para los workers si se va a usar el modo manual)
-- Bootstrap 3 y jQuery (ya incluidos en el dashboard de Hangfire)
-- **[Opcional]** [Hangfire.DynamicJobs](https://github.com/HangfireIO/Hangfire.DynamicJobs) si se desea usar el motor avanzado de recurrentes
+| Area | What you can do |
+|------|-----------------|
+| **Assisted Launch** | Discover classes, methods and parameters via reflection if the business assembly is loaded in the dashboard. |
+| **Manual Launch** | Type the class name, method and a JSON payload – no business dependencies required on the dashboard side. |
+| **Execution Modes** | Fire & Forget, Schedule (delay or UTC date), Recurring (with Cron expression) and Continuation. |
+| **Recurring Engines** | Built‑in (lightweight, uses the dispatcher) or **DynamicJobs** – selectable directly from the UI. |
+| **Smart Parameter Editor** | Native inputs for simple types; JSON editor for complex types (lists, dictionaries, objects, enums, nullables). |
+| **Cron Generator** | Visual builder with minute / hour / day / month / weekday tabs, preview of next executions and human‑readable description. |
+| **Reusable Templates** | Save any job configuration as a named template, load it later, or export/import as JSON files. |
+| **History with Pagination** | Browse recent launches with full pagination, relaunch, clone‑and‑launch or save as template. |
+| **Immutable Audit Log** | Optional, read‑only log of every launch, independent of the volatile history. Support for filtering by user, date range and pagination. |
+| **Critical Queues** | Warns the user when targeting a production queue and asks for explicit confirmation. |
+| **Live Preview & Shortcuts** | See a summary of the job before launching and use `Ctrl+Enter` to fire. |
+| **Decoupled Execution** | The dashboard never references your business classes directly; a lightweight `JobLauncherDispatcher` is enqueued and resolves the real type at runtime on the worker. |
 
 ---
 
-## 📥 Instalación
+## 🔧 Recent Enhancements
+
+- **Scalable storage**: history and audit log are stored in Hangfire’s native **List** data structure, permitting efficient trimming and pagination without ever loading the entire collection when using a supported storage (SQL Server, Redis, etc.).
+- **Pagination** on both history and audit tabs, with configurable page size and prev/next navigation.
+- **Audit filters**: search by user, UTC date range and page size; dates are parsed once for performance.
+- **Recurring engine per launch**: in assisted mode you can choose Direct, Built‑In or DynamicJobs; in manual mode Built‑In or DynamicJobs. The backend automatically builds the correct expression or dynamic job.
+- **Queue awareness**: all non‑recurring jobs are now enqueued to the chosen queue using the `BackgroundJobClient`.
+- **Multiple bug fixes** and robustness improvements across the launcher, history and audit APIs.
+
+## 📸 Screenshots
+
+### Launch Tab (Assisted & Manual)
+https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.Dashboard.JobsInsights/refs/heads/main/images/detail1.png
+![Launch - Fire & Forget](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture1.png)
+![Launch - Schedule (minutes)](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture4-shmin.png)
+![Launch - Schedule (date)](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture2.png)
+![Launch - Schedule DateTime](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture4-shdate.png)
+![Launch - Recurring](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture4-recurrent.png)
+![Launch - Continuation](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture4-continue.png)
+![Launch - Manual mode](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture3.png)
+
+### Recurring Jobs
+
+![Recurring - Built‑in / LauncherCommon](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture-recurrent-build-launchercommon.png)
+![Recurring - History & Recurrent Types](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture-recurrent-history-recurrent-types.png)
+
+### Cron Generator
+
+![Cron Generator](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture7crongenerator.png)
+
+### History & Templates
+
+![History](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture6history.png)
+![Templates](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture5template.png)
+![Templates - detail](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture5template2.png)
+
+## 📦 Requirements
+
+- Hangfire 1.7 or later
+- .NET Standard 2.0 (compatible with .NET Core 2.1+ and .NET Framework 4.6.1+)
+- **Common library** `Hangfire.Community.JobsLauncher.Common` (required only on workers if manual mode is going to be used)
+- Bootstrap 3 and jQuery (already included in the Hangfire dashboard)
+- **[Optional]** [Hangfire.DynamicJobs](https://github.com/HangfireIO/Hangfire.DynamicJobs) if you want to use the advanced recurring engine
+- 
+---
+## 📥 Installation
 
 ### 1. Dashboard
 
-Agrega el paquete NuGet al proyecto donde configuras el dashboard:
+Add the NuGet package to the project where you configure the dashboard:
 
 \`\`\`
 dotnet add package Hangfire.Community.JobsLauncher.Dashboard
 \`\`\`
 
-### 2. Workers (solo si se lanzan jobs en modo manual)
+### 2. Workers (only if you launch jobs in manual mode)
 
-Instala la librería común en los proyectos worker que vayan a ejecutar jobs lanzados manualmente:
+Install the common library in the worker projects that will execute manually launched jobs:
 
 \`\`\`
 dotnet add package Hangfire.Community.JobsLauncher.Common
 \`\`\`
 
-En el código de arranque del worker, añade esta línea para evitar advertencias de paquete no utilizado y documentar la intención:
+During worker startup, add this line to avoid "unused package" warnings and clearly document the intent:
 
 \`\`\`csharp
 Hangfire.Community.JobsLauncher.Common.JobLauncherDispatcher.EnableDynamicJobSupport();
 \`\`\`
 
-Los workers **no necesitan la librería común** si solo se usa el modo asistido (con assemblies disponibles) o si nunca se ejecutarán jobs manuales.
+Workers **do not need the common library** if you only use assisted mode (with assemblies available) or never run manual jobs.
 
 ---
 
-## ⚙️ Configuración
+## ⚙️ Configuration
 
-En el método donde configuras Hangfire (por ejemplo, `Startup.cs`), añade:
+In the method where you set up Hangfire (e.g., `Startup.cs`), add:
 
 \`\`\`csharp
 GlobalConfiguration.Configuration.UseJobLauncher(new JobLauncherOptions
@@ -67,86 +110,84 @@ GlobalConfiguration.Configuration.UseJobLauncher(new JobLauncherOptions
 });
 \`\`\`
 
-Registra el dashboard en la aplicación:
+Register the dashboard in your application:
 
 \`\`\`csharp
 app.UseHangfireDashboard("/hangfire", new DashboardOptions
 {
-    // ... tu configuración de autorización, etc.
+    // ... your authorization configuration, etc.
 });
 \`\`\`
 
-El plugin aparecerá automáticamente como una nueva pestaña **"Job Launcher"** en el menú de navegación.
+The plugin automatically appears as a new **"Job Launcher"** tab in the navigation menu.
 
 ---
 
-## 🚀 Uso
+## 🚀 Usage
 
-### Pestaña Launch
+### Launch Tab
 
-1. **Modo Assisted** (requiere que la clase esté disponible en el AppDomain):
-   - Escribe el nombre completo de la clase (`Namespace.ClassName`) y pulsa **Load Methods**.
-   - Selecciona un método de la lista.
-   - Completa los parámetros: se generan inputs adecuados para tipos simples (números, fechas, texto) y un editor JSON para tipos complejos.
-   - Elige el modo de ejecución: Fire & Forget, Schedule, Recurring, Continuation.
-   - Especifica la cola (con autocompletado de colas conocidas).
-   - Opcionalmente, marca las casillas *PerformContext* o *CancellationToken*.
-   - Pulsa **Launch Job**. Si la cola es crítica, se pedirá confirmación adicional.
+1. **Assisted mode** (requires the class to be available in the AppDomain):
+   - Enter the full class name (`Namespace.ClassName`) and click **Load Methods**.
+   - Pick a method from the list.
+   - Fill in the parameters: suitable inputs are generated for simple types (numbers, dates, text), and a JSON editor for complex types.
+   - Choose the execution mode: Fire & Forget, Schedule, Recurring, Continuation.
+   - Specify the queue (with autocomplete from known queues).
+   - Optionally, check *PerformContext* or *CancellationToken*.
+   - Click **Launch Job**. If the queue is critical, an additional confirmation will be required.
 
-2. **Modo Manual** (sin acceso a la assembly):
-   - Introduce manualmente el nombre de la clase, el método y los parámetros en formato JSON.
-   - Valida y formatea el JSON con los botones correspondientes.
-   - El resto del proceso es idéntico al modo asistido.
-   - Para jobs recurrentes, aparecerá un selector para elegir entre el motor **Built‑in** (ligero) o **DynamicJobs** (si está instalado).
-   
-### Pestaña History
+2. **Manual mode** (without access to the assembly):
+   - Manually enter the class name, method, and a JSON payload.
+   - Validate and format the JSON using the provided buttons.
+   - The rest of the process is identical to assisted mode.
+   - For recurring jobs, a dropdown lets you choose between the **Built‑in** engine (lightweight) and **DynamicJobs** (if installed).
 
-- Muestra los últimos lanzamientos (hasta `HistoryMaxEntries`).
-- Cada entrada ofrece:
-  - **Relaunch**: carga los datos en el formulario de Launch.
-  - **Clone & Launch**: lanza una copia exacta sin modificar el formulario.
-- El botón **Clear history** borra el historial volátil (no afecta al log de auditoría).
+### History Tab
 
-### Pestaña Templates
+- Shows the last launches (up to `HistoryMaxEntries`).
+- Each entry offers:
+  - **Relaunch**: loads the job parameters into the Launch form.
+  - **Clone & Launch**: creates and enqueues an identical copy without modifying the form.
+- The **Clear history** button deletes the volatile history (it does not affect the audit log).
 
-- Guarda la configuración actual del formulario como plantilla (nombre único).
-- Carga una plantilla para precargar el formulario.
-- Elimina plantillas que ya no necesites.
-- **Exporta** una plantilla individual como archivo JSON.
-- **Importa** una plantilla desde un archivo JSON (con aviso si el nombre ya existe).
+### Templates Tab
 
----
-
-## 🧱 Arquitectura interna
-
-| Proyecto | Descripción |
-|----------|-------------|
-| `Hangfire.Community.JobsLauncher.Dashboard` | Plugin del dashboard (APIs, página Razor) |
-| `Hangfire.Community.JobsLauncher.Common` | Librería compartida con `JobLauncherDispatcher` |
-
-### Dualidad de ejecución
-
-- **Si la clase de negocio está disponible** en el dashboard, se usa `DirectJobInvoker` para encolar el job directamente con los tipos reales (sin dispatcher). El worker solo necesita la assembly de negocio.
-- **Si la clase no está disponible**, se usa `JobLauncherDispatcher.ExecuteJob(...)`, que recibe el nombre de la clase, método y parámetros serializados en JSON. El dispatcher se encarga de la reflexión en el worker. El worker necesita la librería común.
+- Save the current form configuration as a named template.
+- Load a template to prefill the form.
+- Delete templates you no longer need.
+- **Export** a single template as a JSON file.
+- **Import** a template from a JSON file (prompting if the name already exists).
 
 ---
 
-## 🔒 Seguridad
+## 🧱 Internal Architecture
 
-- Las colas críticas se pueden configurar para que requieran confirmación explícita antes del lanzamiento.
-- El dashboard hereda la autorización configurada en `DashboardOptions`.
-- Opcionalmente, se puede restringir la búsqueda de tipos en el modo asistido a prefijos de ensamblado permitidos.
+| Project | Description |
+|---------|-------------|
+| `Hangfire.Community.JobsLauncher.Dashboard` | Dashboard plugin (APIs, Razor page) |
+| `Hangfire.Community.JobsLauncher.Common` | Shared library containing `JobLauncherDispatcher` |
+
+### Execution duality
+
+- **If the business class is available** in the dashboard, a `DirectJobInvoker` enqueues the job directly with real types (no dispatcher involved). The worker only needs the business assembly.
+- **If the class is not available**, `JobLauncherDispatcher.ExecuteJob(...)` is used, receiving the class name, method, and serialized parameters as JSON. The dispatcher performs the reflection on the worker. The worker requires the common library.
+
+---
+
+## 🔒 Security
+
+- Critical queues can be configured to require explicit confirmation before a job is launched.
+- The dashboard inherits the authorization configured in `DashboardOptions`.
+- Optionally, assisted mode type discovery can be restricted to allowed assembly prefixes.
 
 ---
 
-## 📄 Licencia
+## 📄 License
 
-Este proyecto se distribuye bajo la licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
-
----
-
-## 🤝 Contribuciones
-
-Toda contribución es bienvenida. Por favor, abre un issue o un pull request en el repositorio oficial.
+This project is distributed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
+
+## 🤝 Contributing
+
+All contributions are welcome. Please open an issue or pull request in the official repository.
