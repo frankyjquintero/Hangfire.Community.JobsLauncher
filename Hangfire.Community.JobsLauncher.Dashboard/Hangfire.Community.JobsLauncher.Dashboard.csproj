@@ -17,7 +17,7 @@
 		<AssemblyVersion>1.0.0</AssemblyVersion>
 		<LangVersion>7.3</LangVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		
+
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
@@ -26,11 +26,11 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <NoWarn>1701;1702;CS2002;2002</NoWarn>
+		<NoWarn>1701;1702;CS2002;2002</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-	  <NoWarn>1701;1702;CS2002;2002</NoWarn>
+		<NoWarn>1701;1702;CS2002;2002</NoWarn>
 	</PropertyGroup>
 
 	<!-- README -->
@@ -47,18 +47,35 @@
 		<!-- Agrega más archivos aquí siguiendo el mismo patrón -->
 	</ItemGroup>
 
+	<!-- Embedded dashboard assets (CSS/JS) -->
+	<ItemGroup>
+		<EmbeddedResource Include="Pages\Css\Launcher.css" />
+		<EmbeddedResource Include="Pages\Js\Launcher.State.js" />
+		<EmbeddedResource Include="Pages\Js\Launcher.Utils.js" />
+		<EmbeddedResource Include="Pages\Js\Launcher.Api.js" />
+		<EmbeddedResource Include="Pages\Js\Launcher.Params.js" />
+		<EmbeddedResource Include="Pages\Js\Launcher.UI.js" />
+		<EmbeddedResource Include="Pages\Js\Launcher.Cron.js" />
+		<EmbeddedResource Include="Pages\Js\Launcher.History.js" />
+		<EmbeddedResource Include="Pages\Js\Launcher.Templates.js" />
+		<EmbeddedResource Include="Pages\Js\Launcher.Audit.js" />
+		<EmbeddedResource Include="Pages\Js\Launcher.Init.js" />
+	</ItemGroup>
+
 	<!-- Dependencias -->
 	<ItemGroup>
 		<PackageReference Include="Cronos" Version="0.13.0" />
-		<PackageReference Include="HangFire.Core" Version="1.7.28" />
+		<PackageReference Include="HangFire.Core" Version="1.8.0" />
 		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 		<PackageReference Include="RazorGenerator.MsBuild" Version="2.5.0" PrivateAssets="all" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Services\" />
+		<Folder Include="Pages\Css\" />
+		<Folder Include="Dispatchers\" />
+		<Folder Include="Services\" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\Hangfire.Community.JobsLauncher.Common\Hangfire.Community.JobsLauncher.Common.csproj" />
+		<ProjectReference Include="..\Hangfire.Community.JobsLauncher.Common\Hangfire.Community.JobsLauncher.Common.csproj" />
 	</ItemGroup>
 
 </Project>

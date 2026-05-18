@@ -1,0 +1,123 @@
+/* ============================================
+   JobLauncher Dashboard - Estilos personalizados
+   Prefijo: jobslauncher-
+   ============================================ */
+
+/* --- Utilidades de display --- */
+.jobslauncher-hidden {
+    display: none !important;
+}
+
+.jobslauncher-block {
+    display: block !important;
+}
+
+/* --- Márgenes --- */
+.jobslauncher-mt-5 {
+    margin-top: 5px !important;
+}
+
+.jobslauncher-mt-10 {
+    margin-top: 10px !important;
+}
+
+.jobslauncher-mt-15 {
+    margin-top: 15px !important;
+}
+
+.jobslauncher-mb-10 {
+    margin-bottom: 10px !important;
+}
+
+.jobslauncher-no-margin-bottom {
+    margin-bottom: 0 !important;
+}
+
+.jobslauncher-no-margin {
+    margin: 0 !important;
+}
+
+/* --- Padding --- */
+.jobslauncher-tab-content {
+    padding-top: 15px;
+}
+
+.jobslauncher-cron-modal-body {
+    padding: 20px;
+}
+
+/* --- Componentes específicos --- */
+.jobslauncher-cron-preview {
+    margin-top: 5px;
+    display: none;
+}
+
+/* Resultado de lanzamiento */
+.jobslauncher-launch-result {
+    margin-top: 10px;
+    display: none;
+}
+
+/* Paginación de History */
+.jobslauncher-history-pagination {
+    margin-top: 5px;
+}
+
+.jobslauncher-history-alert {
+    margin-top: 15px;
+}
+
+/* Preview de parámetros en Templates */
+.jobslauncher-params-preview {
+    max-height: 300px;
+    overflow-y: auto;
+    background: #f5f5f5;
+    padding: 10px;
+}
+
+/* Fila de filtros de Auditoría */
+.jobslauncher-audit-filters-row {
+    margin-bottom: 10px;
+}
+
+/* Paginación de Auditoría */
+.jobslauncher-audit-pagination {
+    margin-top: 5px;
+}
+
+/* Modal del generador de Cron */
+.jobslauncher-cron-modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.jobslauncher-cron-tabs {
+    margin-bottom: 15px;
+}
+
+.jobslauncher-cron-tab-content {
+    min-height: 250px;
+}
+
+.jobslauncher-font-mono {
+    font-family: monospace;
+}
+
+.jobslauncher-cron-description {
+    font-style: italic;
+    color: #555;
+}
+
+.jobslauncher-cron-executions-preview {
+    margin-top: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+    font-size: 12px;
+}
+
+/* Ajustes para checkboxes en el generador de Cron */
+.jobslauncher-no-margin .col-xs-3,
+.jobslauncher-no-margin .col-xs-4,
+.jobslauncher-no-margin .col-xs-6 {
+    /* Las columnas dentro de filas sin margen se comportan normalmente */
+}

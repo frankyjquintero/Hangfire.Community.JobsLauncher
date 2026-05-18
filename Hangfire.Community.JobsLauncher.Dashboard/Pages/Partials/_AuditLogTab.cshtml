@@ -1,0 +1,53 @@
+﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True Namespace: Hangfire.Community.JobLauncher.Dashboard.Pages *@
+@using Hangfire.Dashboard
+@using Hangfire.Dashboard.Pages
+@inherits Hangfire.Dashboard.RazorPage
+<div role="tabpanel" class="tab-pane fade" id="auditLogPane">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <strong>Audit Log (read-only)</strong>
+        </div>
+        <div class="panel-body">
+            <div class="row jobslauncher-audit-filters-row">
+                <div class="col-sm-3">
+                    <input type="text" id="auditUserFilter" class="form-control input-sm" placeholder="User">
+                </div>
+                <div class="col-sm-2">
+                    <input type="datetime-local" id="auditFromFilter" class="form-control input-sm" placeholder="From">
+                </div>
+                <div class="col-sm-2">
+                    <input type="datetime-local" id="auditToFilter" class="form-control input-sm" placeholder="To">
+                </div>
+                <div class="col-sm-2">
+                    <input type="number" id="auditCountFilter" class="form-control input-sm" value="200" min="1" max="1000" placeholder="Count">
+                </div>
+                <div class="col-sm-3">
+                    <button class="btn btn-sm btn-default" id="btnApplyAuditFilters">Apply Filters</button>
+                    <button class="btn btn-sm btn-default" id="btnClearAuditFilters">Clear</button>
+                </div>
+            </div>
+            <table class="table table-condensed" id="auditLogTable">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>JobId</th>
+                        <th>Class</th>
+                        <th>Method</th>
+                        <th>Queue</th>
+                        <th>Mode</th>
+                        <th>Engine</th>
+                        <th>User</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div class="row jobslauncher-audit-pagination">
+                <div class="col-sm-6"><span id="auditPageInfo"></span></div>
+                <div class="col-sm-6 text-right">
+                    <button class="btn btn-xs btn-default" id="btnAuditPrevPage" disabled>Prev</button>
+                    <button class="btn btn-xs btn-default" id="btnAuditNextPage" disabled>Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,9 +1,18 @@
 ﻿using Hangfire.Community.JobLauncher.Dashboard.Pages;
 using Hangfire.Community.JobsLauncher.Dashboard.Apis;
+using Hangfire.Community.JobsLauncher.Dashboard.Dispatchers;
 using Hangfire.Community.JobsLauncher.Dashboard.Filters;
 using Hangfire.Dashboard;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
+using Hangfire.Common;
+using Hangfire.Dashboard;
+using Hangfire.Storage;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace Hangfire.Community.JobsLauncher.Dashboard
@@ -25,11 +34,26 @@ namespace Hangfire.Community.JobsLauncher.Dashboard
 
     public static class JobLauncherExtensions
     {
+        private const string AssetPrefix = "Hangfire.Community.JobsLauncher.Dashboard.Pages";
+
         public static IGlobalConfiguration UseJobLauncher(
             this IGlobalConfiguration config,
             JobLauncherOptions options = null)
         {
             var opts = options ?? new JobLauncherOptions();
+
+            var asm = typeof(JobLauncherExtensions).GetTypeInfo().Assembly;
+
+            DashboardRoutes.AddJavaScript(asm, $"{AssetPrefix}.Js.Launcher.State.js");
+            DashboardRoutes.AddJavaScript(asm, $"{AssetPrefix}.Js.Launcher.Utils.js");
+            DashboardRoutes.AddJavaScript(asm, $"{AssetPrefix}.Js.Launcher.Api.js");
+            DashboardRoutes.AddJavaScript(asm, $"{AssetPrefix}.Js.Launcher.Params.js");
+            DashboardRoutes.AddJavaScript(asm, $"{AssetPrefix}.Js.Launcher.UI.js");
+            DashboardRoutes.AddJavaScript(asm, $"{AssetPrefix}.Js.Launcher.Cron.js");
+            DashboardRoutes.AddJavaScript(asm, $"{AssetPrefix}.Js.Launcher.History.js");
+            DashboardRoutes.AddJavaScript(asm, $"{AssetPrefix}.Js.Launcher.Templates.js");
+            DashboardRoutes.AddJavaScript(asm, $"{AssetPrefix}.Js.Launcher.Audit.js");
+            DashboardRoutes.AddJavaScript(asm, $"{AssetPrefix}.Js.Launcher.Init.js");
 
             // APIs
             DashboardRoutes.Routes.Add("/joblauncher/api/capabilities", new CapabilitiesApi(opts));
