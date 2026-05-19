@@ -25,6 +25,11 @@
 		<RazorViewsCodeGenDirectory>$(MSBuildProjectDirectory)\</RazorViewsCodeGenDirectory>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<UseRazorGenerator Condition="'$(CI)' == 'true'">false</UseRazorGenerator>
+		<UseRazorGenerator Condition="'$(UseRazorGenerator)' == ''">true</UseRazorGenerator>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<NoWarn>1701;1702;CS2002;2002</NoWarn>
 	</PropertyGroup>
@@ -39,7 +44,7 @@
 	</ItemGroup>
 
 	<!-- Razor -->
-	<ItemGroup>
+	<ItemGroup Condition="'$(UseRazorGenerator)' == 'true'">
 		<None Update="Pages\JobLauncherPage.cshtml">
 			<Generator>RazorGenerator</Generator>
 			<LastGenOutput>JobLauncher.cshtml.cs</LastGenOutput>
@@ -90,6 +95,8 @@
 		<PackageReference Include="Cronos" Version="0.13.0" />
 		<PackageReference Include="HangFire.Core" Version="[1.8.0,)" />
 		<PackageReference Include="System.Text.Json" Version="8.0.5" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(UseRazorGenerator)' == 'true'">
 		<PackageReference Include="RazorGenerator.MsBuild" Version="2.5.0" PrivateAssets="all" />
 	</ItemGroup>
 	<ItemGroup>
