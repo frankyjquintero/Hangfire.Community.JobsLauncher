@@ -36,29 +36,35 @@ A Hangfire Dashboard extension that fills the gap between scheduled automation a
 
 ### Launch Tab (Assisted & Manual)
 
-<img width="1919" height="887" alt="image" src="https://github.com/user-attachments/assets/144a8dc8-f9c8-4ef9-89b5-10fb3e170b46" />
+![1](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/main/images/black/1.png)
 
-<img width="1916" height="870" alt="image" src="https://github.com/user-attachments/assets/687a2a8c-95c2-4694-adbd-2bf73713503e" />
-<img width="1884" height="954" alt="image" src="https://github.com/user-attachments/assets/04eff762-df6d-4f1e-a6e7-4a72b1457cdf" />
+![2](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/main/images/black/2.png)
 
-<img width="1887" height="933" alt="image" src="https://github.com/user-attachments/assets/1224016f-2500-47b2-87a1-4c38346071a1" />
-<img width="1824" height="946" alt="image" src="https://github.com/user-attachments/assets/6a30df13-4290-4e31-8f9a-d479afd898ea" />
-<img width="1890" height="947" alt="image" src="https://github.com/user-attachments/assets/d7d24092-ce80-40e8-8cc8-5516e3859f76" />
-<img width="1881" height="946" alt="image" src="https://github.com/user-attachments/assets/66f44bd0-cf09-4328-893d-c783bfb57d20" />
-<img width="948" height="537" alt="image" src="https://github.com/user-attachments/assets/79e50b1f-ba9d-42eb-9edd-3f5b144b0a3a" />
+![3](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/main/images/black/3.png)
 
-<img width="1045" height="755" alt="image" src="https://github.com/user-attachments/assets/d0b70445-14b2-480b-97f1-c0984dafe55e" />
+![4](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/main/images/black/4.png)
 
-<img width="1878" height="944" alt="image" src="https://github.com/user-attachments/assets/41868bf2-86e6-425e-9b15-68e85796ed6d" />
+![5](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/main/images/black/5.png)
 
-<img width="1886" height="944" alt="image" src="https://github.com/user-attachments/assets/42eac170-fc06-49f8-af23-9ec74d84fe9b" />
+![6](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/main/images/black/6.png)
+
+![7](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/main/images/black/7.png)
+
+![8](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/main/images/black/8.png)
+
+![9](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/main/images/black/9.png)
+
+![91](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/main/images/black/91.png)
+
+![92](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/main/images/black/92.png)
 
 
 ### History & Templates
 
-<img width="1894" height="938" alt="image" src="https://github.com/user-attachments/assets/3683620d-6349-4197-b1dc-caaf6200a5c3" />
+![93](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/main/images/black/93.png)
 
-<img width="1872" height="929" alt="image" src="https://github.com/user-attachments/assets/75bf6ad2-7645-4f73-9df7-6c0ab0bab3ab" />
+![94](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/main/images/black/94.png)
+
 
 ## 📦 Requirements
 
