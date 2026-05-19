@@ -1,150 +1,144 @@
-﻿using Hangfire.Community.JobsLauncher.Common;
+﻿using Hangfire.Common;
+using Hangfire.Community.JobsLauncher.Common;
 using Hangfire.Server;
+using Hangfire.States;
+using Hangfire.Storage;
 using System;
-using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Hangfire.Community.JobLauncher.Common
 {
     public static class JobLauncherDispatcher
     {
-        [LauncherJobDisplayNameAttribute]
-        public static void ExecuteJob(
-            string className,
-            string methodName,
-            string queue,
-            string serializedParameters,
-            bool includePerformContext = false,
-            bool includeCancellationToken = false)
-        {
-            var type = AppDomain.CurrentDomain.GetAssemblies()
-                .Select(assm => assm.GetType(className))
-                .FirstOrDefault(t => t != null)
-                ?? throw new InvalidOperationException($"Type '{className}' not found in any loaded assembly.");
+        private static readonly BackgroundJobPerformer Performer = new BackgroundJobPerformer(JobFilterProviders.Providers, JobActivator.Current);
+        private static readonly ConcurrentDictionary<string, Type> Types = new ConcurrentDictionary<string, Type>(StringComparer.Ordinal);
+        private static readonly ConcurrentDictionary<(Type Type, string Method), MethodInfo> Methods = new ConcurrentDictionary<(Type Type, string Method), MethodInfo>();
 
-            var method = type.GetMethod(methodName,
-                BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
-            object instance = method.IsStatic ? null : Activator.CreateInstance(type);
-            object[] parameters = BuildParameterArray(
-                method.GetParameters(),
-                serializedParameters,
-                includePerformContext,
-                includeCancellationToken);
-            method.Invoke(instance, parameters);
+        [LauncherJobDisplayName]
+        public static void ExecuteJob(string className, string methodName, string serializedParameters, PerformContext context = null)
+        {
+            var job = CreateJob(className, methodName, serializedParameters);
+
+            var bgJob = new BackgroundJob(
+                context.BackgroundJob.Id,
+                job,
+                context.BackgroundJob.CreatedAt);
+
+            var performContext = new PerformContext(
+                context.Storage,
+                context.Connection,
+                bgJob,
+                context.CancellationToken);
+
+            try
+            {
+                Performer.Perform(performContext);
+            }
+            catch (JobPerformanceException ex) when (ex.InnerException != null)
+            {
+                ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+            }
         }
 
-        private static object[] BuildParameterArray(
-            ParameterInfo[] paramInfos, string json,
-            bool includePerformContext, bool includeCancellationToken)
+        public static Job CreateJob(string className, string methodName, string serializedParameters)
         {
-            var dict = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
-            var list = new List<object>();
-            foreach (var p in paramInfos)
-            {
-                if (p.ParameterType == typeof(PerformContext) && includePerformContext)
-                {
-                    list.Add(null); // Hangfire inyecta el contexto real
-                    continue;
-                }
-                if (p.ParameterType == typeof(IJobCancellationToken) && includeCancellationToken)
-                {
-                    list.Add(JobCancellationToken.Null);
-                    continue;
-                }
-                if (dict.TryGetValue(p.Name, out var element))
-                    list.Add(ConvertJsonElement(element, p.ParameterType));
-                else
-                    list.Add(p.DefaultValue ?? (p.ParameterType.IsValueType ?
-                        Activator.CreateInstance(p.ParameterType) : null));
-            }
-            return list.ToArray();
+            var type = ResolveType(className);
+
+            var lambda = CreateDirectExpression(type, methodName, serializedParameters);
+
+            return CreateJobFrom(lambda);
         }
 
-        public static object ConvertJsonElement(JsonElement element, Type targetType)
+        public static Job CreateJobFrom(LambdaExpression lambda)
         {
-            // Tipos primitivos (string, int, etc.)
-            if (targetType == typeof(string)) return element.GetString();
-            if (targetType == typeof(int)) return element.GetInt32();
-            if (targetType == typeof(long)) return element.GetInt64();
-            if (targetType == typeof(bool)) return element.GetBoolean();
-            if (targetType == typeof(double)) return element.GetDouble();
-            if (targetType == typeof(float)) return element.GetSingle();
-            if (targetType == typeof(decimal)) return element.GetDecimal();
-            if (targetType == typeof(DateTime)) return element.GetDateTime();
-            if (targetType == typeof(DateTimeOffset)) return element.GetDateTimeOffset();
-            if (targetType == typeof(Guid)) return element.GetGuid();
-            if (targetType == typeof(TimeSpan)) return TimeSpan.Parse(element.GetString());
-
-            // Nullable<T>
-            if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Nullable<>))
-            {
-                if (element.ValueKind == JsonValueKind.Null) return null;
-                return ConvertJsonElement(element, Nullable.GetUnderlyingType(targetType));
-            }
-
-            // Enum
-            if (targetType.IsEnum)
-                return Enum.Parse(targetType, element.GetString() ?? element.GetRawText());
-
-            // Listas, arrays y colecciones
-            if (targetType.IsGenericType &&
-                (targetType.GetGenericTypeDefinition() == typeof(List<>) ||
-                 targetType.GetGenericTypeDefinition() == typeof(IList<>) ||
-                 targetType.GetGenericTypeDefinition() == typeof(IEnumerable<>)) ||
-                (targetType.IsArray))
-            {
-                Type elementType = targetType.IsArray
-                    ? targetType.GetElementType()
-                    : targetType.GetGenericArguments()[0];
-
-                var items = new List<object>();
-                foreach (var jsonItem in element.EnumerateArray())
-                {
-                    items.Add(ConvertJsonElement(jsonItem, elementType));
-                }
-
-                if (targetType.IsArray)
-                {
-                    Array array = Array.CreateInstance(elementType, items.Count);
-                    for (int i = 0; i < items.Count; i++)
-                        array.SetValue(items[i], i);
-                    return array;
-                }
-                else
-                {
-                    // Crear List<T>
-                    Type listType = typeof(List<>).MakeGenericType(elementType);
-                    var list = (System.Collections.IList)Activator.CreateInstance(listType);
-                    foreach (var item in items)
-                        list.Add(item);
-                    return list;
-                }
-            }
-
-            // Diccionarios
-            if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
-            {
-                var keyType = targetType.GetGenericArguments()[0];
-                var valueType = targetType.GetGenericArguments()[1];
-                var dictObj = Activator.CreateInstance(targetType);
-                var addMethod = targetType.GetMethod("Add");
-                foreach (var property in element.EnumerateObject())
-                {
-                    var key = Convert.ChangeType(property.Name, keyType);
-                    var value = ConvertJsonElement(property.Value, valueType);
-                    addMethod.Invoke(dictObj, new[] { key, value });
-                }
-                return dictObj;
-            }
-
-            // Objetos complejos (clases)
-            return JsonSerializer.Deserialize(element.GetRawText(), targetType);
+            if (lambda is Expression<Action> actionExpr3)
+                return Job.FromExpression(actionExpr3);
+            else if (lambda is Expression<Func<Task>> taskExpr3)
+                return Job.FromExpression(taskExpr3);
+            else
+                throw new InvalidOperationException("Invalid lambda type");
         }
 
-        /// <summary>Marcador para evitar advertencias de paquete no utilizado en workers.</summary>
-        public static void EnableDynamicJobSupport() { }
+        public static LambdaExpression CreateDirectExpression(Type jobType, string methodName, string serializedParams)
+        {
+            var method = Methods.GetOrAdd((jobType, methodName), x =>
+                x.Type.GetMethod(x.Method, BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
+                ?? throw new InvalidOperationException($"Method '{x.Method}' not found in '{x.Type.FullName}'."));
+
+            var json = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(serializedParams)
+               ?? new Dictionary<string, JsonElement>();
+
+            var parameters = method.GetParameters();
+
+            var args = parameters.Select(p => JobLauncherDispatcher.ResolveArgument(p, json)).ToArray();            
+
+            var paramExpressions = parameters.Select((p, i) =>
+            {
+                if (i >= args.Length)
+                    throw new InvalidOperationException("Mismatch between method parameters and arguments.");
+                var arg = args[i];
+                return Expression.Constant(arg, p.ParameterType);
+            }).ToArray();
+
+            if (method.IsStatic)
+            {
+                var call = Expression.Call(method, paramExpressions);
+                if (method.ReturnType == typeof(void))
+                    return Expression.Lambda<Action>(call);
+                if (method.ReturnType == typeof(Task))
+                    return Expression.Lambda<Func<Task>>(call);
+                throw new NotSupportedException($"Return type {method.ReturnType} not supported.");
+            }
+            else
+            {
+                var instance = Expression.New(method.DeclaringType.GetConstructor(Type.EmptyTypes));
+                var call = Expression.Call(instance, method, paramExpressions);
+                if (method.ReturnType == typeof(void))
+                    return Expression.Lambda<Action>(call);
+                if (method.ReturnType == typeof(Task))
+                    return Expression.Lambda<Func<Task>>(call);
+                throw new NotSupportedException($"Return type {method.ReturnType} not supported.");
+            }
+        }
+
+        public static object ResolveArgument(ParameterInfo p, Dictionary<string, JsonElement> json)
+        {
+            var type = Nullable.GetUnderlyingType(p.ParameterType) ?? p.ParameterType;
+
+            if (type == typeof(PerformContext) ||
+                type == typeof(IJobCancellationToken) ||
+                type == typeof(CancellationToken))
+                return null;
+
+            if (!json.TryGetValue(p.Name, out var value))
+                return p.HasDefaultValue
+                    ? p.DefaultValue
+                    : type.IsValueType
+                        ? Activator.CreateInstance(type)
+                        : null;
+
+            if (type.IsEnum)
+                return Enum.Parse(type, value.GetString() ?? value.GetRawText(), true);
+
+            if (type == typeof(TimeSpan))
+                return TimeSpan.Parse(value.GetString());
+
+            return JsonSerializer.Deserialize(value.GetRawText(), type);
+        }
+
+        public static Type ResolveType(string className) =>
+            Types.GetOrAdd(className, name =>
+                AppDomain.CurrentDomain.GetAssemblies()
+                    .Select(a => a.GetType(name, false, false))
+                    .FirstOrDefault(t => t != null)
+                ?? throw new InvalidOperationException($"Type '{name}' not found."));
     }
 }

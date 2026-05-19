@@ -68,42 +68,41 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
             {
                 await WriteJson(context, new LaunchResult { Success = false, Error = "ClassName y MethodName son obligatorios." });
                 return;
-            }
-
-            // Preparar parámetros serializados
-            string serializedParams = request.RawParametersJson
-                ?? JsonSerializer.Serialize(request.Parameters ?? new Dictionary<string, string>());
-
-            Type jobType = TypeResolver.FindType(request.ClassName);
-
-            string jobId = null;
-            string engineUsed = jobType != null ? "Direct" : "BuiltIn"; // Para historial
+            }           
 
             try
             {
-                // Para trabajos recurrentes que NO usan el motor "Direct", forzamos siempre el dispatcher
-                bool forceDispatcherForRecurring = request.ExecutionMode == "Recurring"
-                                   && request.RecurringEngine == "BuiltIn";
+                Type jobType = JobLauncherDispatcher.ResolveType(request.ClassName);
 
+                // Preparar parámetros serializados
+                string serializedParams = request.RawParametersJson
+                    ?? JsonSerializer.Serialize(request.Parameters ?? new Dictionary<string, string>());
+
+                string jobId = null;
+                string engineUsed = jobType != null ? "Direct" : "BuiltIn"; // Para historial
+
+                // Para trabajos recurrentes que NO usan el motor "Direct", forzamos siempre el dispatcher
+                bool forceDispatcherForRecurring = request.ExecutionMode == "Recurring" && request.RecurringEngine == "BuiltIn";
+
+                // Si existe el type object quiere decir que esta dentro del appdomain de la aplicacion
+                // por ende puede ejecutarse sin envoltorio, lo que permite aprovechar la resolución de dependencias y otras características de Hangfire.
+                // si es recurrente tomara la definicion del job para ello, si no es recurrente se lanzara directamente con el tipo y método indicado.
                 if (jobType != null && !forceDispatcherForRecurring)
                 {
-                    var method = jobType.GetMethod(request.MethodName,
-                        BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
-                    if (method == null)
-                        throw new ArgumentException($"Method {request.MethodName} not found in {jobType.FullName}");
-
-                    object[] args = ConvertParametersForDirectCall(method, serializedParams,
-                        request.IncludePerformContext, request.IncludeCancellationToken);
-                    LambdaExpression directLambda = CreateDirectExpression(method, args);
+                    LambdaExpression directLambda = JobLauncherDispatcher.CreateDirectExpression(jobType, request.MethodName, serializedParams);
 
                     // El motor se decide según el request (para todos los modos de ejecución)
                     if (request.ExecutionMode == "Recurring")
                     {
-                        jobId = LaunchRecurringJob(request, serializedParams, jobType, method, args, directLambda);
+                        // job recurrente conociendo el tipo se define el metodo de lanzamiento específico para recurrentes,
+                        // que permite aprovechar la definición del job y otras características, y se elige el motor según el request (Direct o BuiltIn o Dynamic jobs)                        
+                        jobId = LaunchRecurringJob(request, serializedParams, jobType, directLambda);
                         engineUsed = request.RecurringEngine ?? "Direct";
                     }
                     else
                     {
+                        // Lanzamos un job directamente desde el ensamblado de la aplicación, sin pasar por el dispatcher,
+                        // lo que permite aprovechar la resolución de dependencias y otras características de Hangfire.                        
                         jobId = LaunchNonRecurringDirect(request, directLambda);
                         engineUsed = "Direct";
                     }
@@ -113,7 +112,7 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
                     // Sin tipo, usamos el dispatcher común para todo
                     if (request.ExecutionMode == "Recurring")
                     {
-                        jobId = LaunchRecurringJob(request, serializedParams, null, null, null, null);
+                        jobId = LaunchRecurringJob(request, serializedParams, null, null);
                         engineUsed = request.RecurringEngine ?? "BuiltIn";
                     }
                     else
@@ -143,25 +142,17 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
         private string LaunchNonRecurringDirect(LaunchRequest request, LambdaExpression lambda)
         {
             var client = new BackgroundJobClient();
+            var jobDirect = JobLauncherDispatcher.CreateJobFrom(lambda);
 
             switch (request.ExecutionMode)
             {
                 case "FireAndForget":
-                    if (lambda is Expression<Action> actionExpr)
-                        return client.Create(Job.FromExpression(actionExpr), new EnqueuedState(request.Queue));
-                    else if (lambda is Expression<Func<Task>> taskExpr)
-                        return client.Create(Job.FromExpression(taskExpr), new EnqueuedState(request.Queue));
-                    throw new InvalidOperationException("Invalid lambda type");
+                    return client.Create(jobDirect, new EnqueuedState(request.Queue));
 
                 case "Schedule":
                     var delay = TimeSpan.FromMinutes(request.DelayMinutes ?? 30);
                     string jobId;
-                    if (lambda is Expression<Action> actionExpr2)
-                        jobId = client.Create(Job.FromExpression(actionExpr2), new ScheduledState(delay));
-                    else if (lambda is Expression<Func<Task>> taskExpr2)
-                        jobId = client.Create(Job.FromExpression(taskExpr2), new ScheduledState(delay));
-                    else
-                        throw new InvalidOperationException("Invalid lambda type");
+                    jobId = client.Create(jobDirect, new ScheduledState(delay));
 
                     // Asignar la cola mediante el parámetro del trabajo (única forma con ScheduledState)
                     SetJobQueue(jobId, request.Queue);
@@ -174,12 +165,7 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
                     string schedJobId;
                     var scheduledTime = request.ScheduledDateTime.Value;
                     var scheduledState = new ScheduledState(scheduledTime);
-                    if (lambda is Expression<Action> actionExpr3)
-                        schedJobId = client.Create(Job.FromExpression(actionExpr3), scheduledState);
-                    else if (lambda is Expression<Func<Task>> taskExpr3)
-                        schedJobId = client.Create(Job.FromExpression(taskExpr3), scheduledState);
-                    else
-                        throw new InvalidOperationException("Invalid lambda type");
+                    schedJobId = client.Create(jobDirect, scheduledState);
 
                     SetJobQueue(schedJobId, request.Queue);
                     return schedJobId;
@@ -215,8 +201,8 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
                 case "FireAndForget":
                     return client.Create(
                         Job.FromExpression(() => JobLauncherDispatcher.ExecuteJob(
-                            request.ClassName, request.MethodName, request.Queue,
-                            serializedParams, request.IncludePerformContext, request.IncludeCancellationToken)),
+                            request.ClassName, request.MethodName,
+                            serializedParams, null)),
                         new EnqueuedState(request.Queue));
 
                 case "Schedule":
@@ -224,8 +210,8 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
                     var delay = TimeSpan.FromMinutes(request.DelayMinutes.Value);
                     var jobId = client.Create(
                         Job.FromExpression(() => JobLauncherDispatcher.ExecuteJob(
-                            request.ClassName, request.MethodName, request.Queue,
-                            serializedParams, request.IncludePerformContext, request.IncludeCancellationToken)),
+                            request.ClassName, request.MethodName,
+                            serializedParams, null)),
                         new ScheduledState(delay));
                     SetJobQueue(jobId, request.Queue);
                     return jobId;
@@ -235,8 +221,8 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
                     var schedTime = request.ScheduledDateTime.Value;
                     var schedJobId = client.Create(
                         Job.FromExpression(() => JobLauncherDispatcher.ExecuteJob(
-                            request.ClassName, request.MethodName, request.Queue,
-                            serializedParams, request.IncludePerformContext, request.IncludeCancellationToken)),
+                            request.ClassName, request.MethodName,
+                            serializedParams, null)),
                         new ScheduledState(schedTime));
                     SetJobQueue(schedJobId, request.Queue);
                     return schedJobId;
@@ -246,22 +232,21 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
                     // Continuación sin cola explícita (hereda del padre)
                     return BackgroundJob.ContinueJobWith(request.ParentJobId,
                         () => JobLauncherDispatcher.ExecuteJob(
-                            request.ClassName, request.MethodName, request.Queue,
-                            serializedParams, request.IncludePerformContext, request.IncludeCancellationToken));
+                            request.ClassName, request.MethodName,
+                            serializedParams, null));
 
                 default:
                     throw new ArgumentException($"Modo de ejecución no soportado: {request.ExecutionMode}");
             }
         }
 
+
         // Método centralizado para lanzar trabajos recurrentes, independientemente del motor y si es directo o dispatcher
         private string LaunchRecurringJob(
             LaunchRequest request,
             string serializedParams,
-            Type jobType,                // null si es vía dispatcher
-            MethodInfo method,           // null si dispatcher
-            object[] args,               // null si dispatcher
-            LambdaExpression directLambda // null si dispatcher
+            Type jobType,
+            LambdaExpression directLambda
         )
         {
             var recurringId = $"joblauncher-{Guid.NewGuid():N}";
@@ -277,20 +262,13 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
                 }
                 else
                 {
-                    // Construir expresión para dispatcher
-                    if (request.IncludePerformContext || request.IncludeCancellationToken)
-                    {
-                        // La firma del dispatcher no acepta PerformContext/CancellationToken, se ignoran
-                    }
                     builtInLambda = Expression.Lambda<Action>(
                         Expression.Call(
                             typeof(JobLauncherDispatcher).GetMethod(nameof(JobLauncherDispatcher.ExecuteJob)),
                             Expression.Constant(request.ClassName),
                             Expression.Constant(request.MethodName),
-                            Expression.Constant(request.Queue),
                             Expression.Constant(serializedParams),
-                            Expression.Constant(request.IncludePerformContext),
-                            Expression.Constant(request.IncludeCancellationToken)
+                            Expression.Constant(null, typeof(PerformContext))
                         )
                     );
                 }
@@ -303,18 +281,18 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
                         throw new InvalidOperationException("Direct engine requires a resolved type.");
                     // Usar expresión directa
                     if (directLambda is Expression<Action> actionExpr)
-                        RecurringJob.AddOrUpdate(recurringId, actionExpr, request.CronExpression, queue: request.Queue);
+                        RecurringJob.AddOrUpdate(recurringId, request.Queue, actionExpr, request.CronExpression);
                     else if (directLambda is Expression<Func<Task>> taskExpr)
-                        RecurringJob.AddOrUpdate(recurringId, taskExpr, request.CronExpression, queue: request.Queue);
+                        RecurringJob.AddOrUpdate(recurringId, request.Queue, taskExpr, request.CronExpression);
                     else
                         throw new InvalidOperationException("Direct lambda type not supported.");
                     break;
 
                 case "BuiltIn":
                     if (builtInLambda is Expression<Action> actionExpr2)
-                        RecurringJob.AddOrUpdate(recurringId, actionExpr2, request.CronExpression, queue: request.Queue);
+                        RecurringJob.AddOrUpdate(recurringId, request.Queue, actionExpr2, request.CronExpression);
                     else if (builtInLambda is Expression<Func<Task>> taskExpr2)
-                        RecurringJob.AddOrUpdate(recurringId, taskExpr2, request.CronExpression, queue: request.Queue);
+                        RecurringJob.AddOrUpdate(recurringId, request.Queue, taskExpr2, request.CronExpression);
                     else
                         throw new InvalidOperationException("BuiltIn lambda type not supported.");
                     break;
@@ -369,76 +347,7 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
             return recurringId;
         }
 
-        private static object[] ConvertParametersForDirectCall(
-            MethodInfo method,
-            string serializedParams,
-            bool includePerformContext,
-            bool includeCancellationToken)
-        {
-            var paramDict = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(serializedParams)
-                ?? new Dictionary<string, JsonElement>();
 
-            var methodParams = method.GetParameters();
-            var args = new List<object>();
-
-            foreach (var p in methodParams)
-            {
-                if (p.ParameterType == typeof(PerformContext) && includePerformContext)
-                {
-                    args.Add(null); // Hangfire lo reemplaza automáticamente
-                    continue;
-                }
-                if (p.ParameterType == typeof(IJobCancellationToken) && includeCancellationToken)
-                {
-                    args.Add(JobCancellationToken.Null);
-                    continue;
-                }
-
-                if (paramDict.TryGetValue(p.Name, out var element))
-                {
-                    args.Add(JobLauncherDispatcher.ConvertJsonElement(element, p.ParameterType));
-                }
-                else
-                {
-                    args.Add(p.DefaultValue ?? (p.ParameterType.IsValueType ? Activator.CreateInstance(p.ParameterType) : null));
-                }
-            }
-
-            return args.ToArray();
-        }
-
-        private static LambdaExpression CreateDirectExpression(MethodInfo method, object[] args)
-        {
-            var parameters = method.GetParameters();
-
-            var paramExpressions = parameters.Select((p, i) =>
-            {
-                if (i >= args.Length)
-                    throw new InvalidOperationException("Mismatch between method parameters and arguments.");
-                var arg = args[i];
-                return Expression.Constant(arg, p.ParameterType);
-            }).ToArray();
-
-            if (method.IsStatic)
-            {
-                var call = Expression.Call(method, paramExpressions);
-                if (method.ReturnType == typeof(void))
-                    return Expression.Lambda<Action>(call);
-                if (method.ReturnType == typeof(Task))
-                    return Expression.Lambda<Func<Task>>(call);
-                throw new NotSupportedException($"Return type {method.ReturnType} not supported.");
-            }
-            else
-            {
-                var instance = Expression.New(method.DeclaringType.GetConstructor(Type.EmptyTypes));
-                var call = Expression.Call(instance, method, paramExpressions);
-                if (method.ReturnType == typeof(void))
-                    return Expression.Lambda<Action>(call);
-                if (method.ReturnType == typeof(Task))
-                    return Expression.Lambda<Func<Task>>(call);
-                throw new NotSupportedException($"Return type {method.ReturnType} not supported.");
-            }
-        }
 
         private void SaveToHistory(DashboardContext context, LaunchRequest request, string serializedParams, string jobId, string engine)
         {
