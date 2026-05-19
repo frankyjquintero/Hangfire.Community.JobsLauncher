@@ -21,7 +21,6 @@
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
 		<IncludeContentInPack>true</IncludeContentInPack>
-		<RazorViewsCodeGenDirectory>$(MSBuildProjectDirectory)\</RazorViewsCodeGenDirectory>
 	</PropertyGroup>
 
   <ItemGroup>
