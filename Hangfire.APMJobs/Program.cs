@@ -21,11 +21,11 @@ builder.Services.AddHangfire(config =>
 {
     if (storageType == "SqlServer")
     {
-        config.UseSqlServerStorage(sqlConn).UseDynamicJobs().UseJobLauncher(new JobLauncherOptions() { EnableAuditLog = true }).UseJobsInsights();
+        config.UseSqlServerStorage(sqlConn).UseDynamicJobs().UseJobLauncher(new JobLauncherOptions() { EnableAuditLog = true });//.UseJobsInsights();
     }
     else
     {
-        config.UseMemoryStorage().UseDynamicJobs().UseJobLauncher(new JobLauncherOptions() { EnableAuditLog = true }).UseJobsInsights();
+        config.UseMemoryStorage().UseDynamicJobs().UseJobLauncher(new JobLauncherOptions() { EnableAuditLog = true });//.UseJobsInsights();
     }
 });
 builder.Services.AddHangfireServer();

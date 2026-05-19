@@ -3,27 +3,7 @@
 @using Hangfire.Dashboard.Pages
 @inherits Hangfire.Dashboard.RazorPage
 <div role="tabpanel" class="tab-pane fade" id="templatesTab">
-    <div class="row">
-        <div class="col-md-8">
-            <div class="panel panel-default">
-                <div class="panel-heading">Saved templates</div>
-                <div class="panel-body">
-                    <table class="table table-condensed" id="templatesTable">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Class</th>
-                                <th>Method</th>
-                                <th>Queue</th>
-                                <th>Mode</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+    <div class="row"> 
         <div class="col-md-4">
             <div class="panel panel-default">
                 <div class="panel-heading">Manage</div>
@@ -43,6 +23,30 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Saved templates</div>
+                <div class="panel-body">
+                    <table class="table table-condensed" id="templatesTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Class</th>
+                                <th>Method</th>
+                                <th>Queue</th>
+                                <th>Mode</th>
+                                <th>Engine</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
     </div>
 
     <!-- Modal de vista previa de plantilla -->
@@ -64,8 +68,6 @@
                         <dt>Cron Expression</dt>    <dd id="prevCron"></dd>
                         <dt>Recurring Engine</dt>   <dd id="prevEngine"></dd>
                         <dt>Mode</dt>               <dd id="prevMode"></dd>
-                        <dt>Perform Context</dt>    <dd id="prevPerformContext"></dd>
-                        <dt>Cancellation Token</dt> <dd id="prevCancellationToken"></dd>
                         <dt>Params (raw JSON)</dt>
                         <dd>
                             <pre id="prevParams" class="jobslauncher-params-preview"></pre>

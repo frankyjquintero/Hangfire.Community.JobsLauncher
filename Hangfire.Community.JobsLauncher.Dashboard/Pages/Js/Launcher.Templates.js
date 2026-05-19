@@ -56,8 +56,6 @@
         setText('prevParentId', template.parentJobId);
         setText('prevEngine', template.recurringEngine || template.engine || 'N/A');
         setText('prevMode', template.mode);
-        setText('prevPerformContext', template.includePerformContext ? 'Yes' : 'No');
-        setText('prevCancellationToken', template.includeCancellationToken ? 'Yes' : 'No');
 
         var rawParams = template.rawParametersJson || '{}';
         try {
@@ -219,7 +217,7 @@
                 var pnames = m.parameters.map(function (p) { return p.name; }).join(', ');
                 sel.innerHTML += '<option value="' + i + '">' + m.methodName + '(' + pnames + ')</option>';
             });
-            utils.$('methodSelectGroup').style.display = 'block';
+            utils.$('methodSelectGroup').classList.remove('jobslauncher-hidden');
             var idx = state.currentMethods.findIndex(function (m) { return m.methodName === template.methodName; });
             if (idx >= 0) {
                 sel.value = idx;

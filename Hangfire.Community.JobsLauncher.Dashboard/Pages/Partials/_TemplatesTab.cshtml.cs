@@ -43,52 +43,51 @@ WriteLiteral("\r\n");
 
 
 WriteLiteral("<div role=\"tabpanel\" class=\"tab-pane fade\" id=\"templatesTab\">\r\n    <div class=\"ro" +
-"w\">\r\n        <div class=\"col-md-8\">\r\n            <div class=\"panel panel-default" +
-"\">\r\n                <div class=\"panel-heading\">Saved templates</div>\r\n          " +
-"      <div class=\"panel-body\">\r\n                    <table class=\"table table-co" +
-"ndensed\" id=\"templatesTable\">\r\n                        <thead>\r\n                " +
-"            <tr>\r\n                                <th>Name</th>\r\n               " +
-"                 <th>Class</th>\r\n                                <th>Method</th>" +
-"\r\n                                <th>Queue</th>\r\n                              " +
-"  <th>Mode</th>\r\n                                <th></th>\r\n                    " +
-"        </tr>\r\n                        </thead>\r\n                        <tbody>" +
-"</tbody>\r\n                    </table>\r\n                </div>\r\n            </di" +
-"v>\r\n        </div>\r\n        <div class=\"col-md-4\">\r\n            <div class=\"pane" +
-"l panel-default\">\r\n                <div class=\"panel-heading\">Manage</div>\r\n    " +
-"            <div class=\"panel-body\">\r\n                    <p>\r\n                 " +
-"       <small>\r\n                            You can also create a template from " +
-"any job in the\r\n                            <strong>History</strong> tab using t" +
-"he\r\n                            <em>Save as template</em> button.\r\n             " +
-"           </small>\r\n                    </p>\r\n                    <div class=\"f" +
-"orm-group jobslauncher-mt-10\">\r\n                        <label>Import template</" +
-"label>\r\n                        <input type=\"file\" id=\"importFile\" accept=\".json" +
-"\">\r\n                        <button id=\"btnImport\" class=\"btn btn-default btn-bl" +
-"ock jobslauncher-mt-5\">Import</button>\r\n                    </div>\r\n            " +
-"    </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n    <!-- Modal de " +
-"vista previa de plantilla -->\r\n    <div class=\"modal fade jobslauncher-dark\" id=" +
-"\"templatePreviewModal\" tabindex=\"-1\" role=\"dialog\">\r\n        <div class=\"modal-d" +
-"ialog modal-lg\" role=\"document\">\r\n            <div class=\"modal-content\">\r\n     " +
-"           <div class=\"modal-header\">\r\n                    <button type=\"button\"" +
-" class=\"close\" data-dismiss=\"modal\">&times;</button>\r\n                    <h4 cl" +
-"ass=\"modal-title\">\r\n                        Template Preview: <span id=\"previewT" +
-"emplateName\"></span>\r\n                    </h4>\r\n                </div>\r\n       " +
-"         <div class=\"modal-body\">\r\n                    <dl class=\"dl-horizontal\"" +
-">\r\n                        <dt>Class</dt>              <dd id=\"prevClass\"></dd>\r" +
-"\n                        <dt>Method</dt>             <dd id=\"prevMethod\"></dd>\r\n" +
-"                        <dt>Queue</dt>              <dd id=\"prevQueue\"></dd>\r\n  " +
-"                      <dt>Execution Mode</dt>     <dd id=\"prevExecMode\"></dd>\r\n " +
-"                       <dt>Cron Expression</dt>    <dd id=\"prevCron\"></dd>\r\n    " +
-"                    <dt>Recurring Engine</dt>   <dd id=\"prevEngine\"></dd>\r\n     " +
-"                   <dt>Mode</dt>               <dd id=\"prevMode\"></dd>\r\n        " +
-"                <dt>Perform Context</dt>    <dd id=\"prevPerformContext\"></dd>\r\n " +
-"                       <dt>Cancellation Token</dt> <dd id=\"prevCancellationToken" +
-"\"></dd>\r\n                        <dt>Params (raw JSON)</dt>\r\n                   " +
-"     <dd>\r\n                            <pre id=\"prevParams\" class=\"jobslauncher-" +
-"params-preview\"></pre>\r\n                        </dd>\r\n                    </dl>" +
-"\r\n                </div>\r\n                <div class=\"modal-footer\">\r\n          " +
-"          <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Clo" +
-"se</button>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </d" +
-"iv>\r\n</div>\r\n");
+"w\"> \r\n        <div class=\"col-md-4\">\r\n            <div class=\"panel panel-defaul" +
+"t\">\r\n                <div class=\"panel-heading\">Manage</div>\r\n                <d" +
+"iv class=\"panel-body\">\r\n                    <p>\r\n                        <small>" +
+"\r\n                            You can also create a template from any job in the" +
+"\r\n                            <strong>History</strong> tab using the\r\n          " +
+"                  <em>Save as template</em> button.\r\n                        </s" +
+"mall>\r\n                    </p>\r\n                    <div class=\"form-group jobs" +
+"launcher-mt-10\">\r\n                        <label>Import template</label>\r\n      " +
+"                  <input type=\"file\" id=\"importFile\" accept=\".json\">\r\n          " +
+"              <button id=\"btnImport\" class=\"btn btn-default btn-block jobslaunch" +
+"er-mt-5\">Import</button>\r\n                    </div>\r\n                </div>\r\n  " +
+"          </div>\r\n        </div>\r\n    </div>\r\n    <div class=\"row\">\r\n        <di" +
+"v class=\"col-md-12\">\r\n            <div class=\"panel panel-default\">\r\n           " +
+"     <div class=\"panel-heading\">Saved templates</div>\r\n                <div clas" +
+"s=\"panel-body\">\r\n                    <table class=\"table table-condensed\" id=\"te" +
+"mplatesTable\">\r\n                        <thead>\r\n                            <tr" +
+">\r\n                                <th>Name</th>\r\n                              " +
+"  <th>Class</th>\r\n                                <th>Method</th>\r\n             " +
+"                   <th>Queue</th>\r\n                                <th>Mode</th>" +
+"\r\n                                <th>Engine</th>\r\n                             " +
+"   <th>Actions</th>\r\n                            </tr>\r\n                        " +
+"</thead>\r\n                        <tbody></tbody>\r\n                    </table>\r" +
+"\n                </div>\r\n            </div>\r\n        </div>\r\n        \r\n    </div" +
+">\r\n\r\n    <!-- Modal de vista previa de plantilla -->\r\n    <div class=\"modal fade" +
+" jobslauncher-dark\" id=\"templatePreviewModal\" tabindex=\"-1\" role=\"dialog\">\r\n    " +
+"    <div class=\"modal-dialog modal-lg\" role=\"document\">\r\n            <div class=" +
+"\"modal-content\">\r\n                <div class=\"modal-header\">\r\n                  " +
+"  <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\r\n   " +
+"                 <h4 class=\"modal-title\">\r\n                        Template Prev" +
+"iew: <span id=\"previewTemplateName\"></span>\r\n                    </h4>\r\n        " +
+"        </div>\r\n                <div class=\"modal-body\">\r\n                    <d" +
+"l class=\"dl-horizontal\">\r\n                        <dt>Class</dt>              <d" +
+"d id=\"prevClass\"></dd>\r\n                        <dt>Method</dt>             <dd " +
+"id=\"prevMethod\"></dd>\r\n                        <dt>Queue</dt>              <dd i" +
+"d=\"prevQueue\"></dd>\r\n                        <dt>Execution Mode</dt>     <dd id=" +
+"\"prevExecMode\"></dd>\r\n                        <dt>Cron Expression</dt>    <dd id" +
+"=\"prevCron\"></dd>\r\n                        <dt>Recurring Engine</dt>   <dd id=\"p" +
+"revEngine\"></dd>\r\n                        <dt>Mode</dt>               <dd id=\"pr" +
+"evMode\"></dd>\r\n                        <dt>Params (raw JSON)</dt>\r\n             " +
+"           <dd>\r\n                            <pre id=\"prevParams\" class=\"jobslau" +
+"ncher-params-preview\"></pre>\r\n                        </dd>\r\n                   " +
+" </dl>\r\n                </div>\r\n                <div class=\"modal-footer\">\r\n    " +
+"                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"moda" +
+"l\">Close</button>\r\n                </div>\r\n            </div>\r\n        </div>\r\n " +
+"   </div>\r\n</div>\r\n");
 
 
         }

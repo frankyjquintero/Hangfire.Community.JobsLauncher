@@ -62,8 +62,6 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Models
         public string ExecutionMode { get; set; }
         public string Engine { get; set; }            // "Direct", "BuiltIn", "DynamicJobs"
         public string ParametersJson { get; set; }
-        public bool IncludePerformContext { get; set; }
-        public bool IncludeCancellationToken { get; set; }
         public string User { get; set; }
     }
 
@@ -82,7 +80,5 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Models
         public string RecurringEngine { get; set; }
         public Dictionary<string, string> Parameters { get; set; }
         public string RawParametersJson { get; set; }
-        public bool IncludePerformContext { get; set; }
-        public bool IncludeCancellationToken { get; set; }
     }
 }

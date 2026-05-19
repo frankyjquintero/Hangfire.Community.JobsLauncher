@@ -325,8 +325,6 @@
             methodName: methodName,
             queue: utils.$('queue').value.trim() || 'default',
             executionMode: document.querySelector('input[name="execMode"]:checked').value,
-            includePerformContext: utils.$('chkPerformContext').checked,
-            includeCancellationToken: utils.$('chkCancellationToken').checked,
             parameters: null,
             rawParametersJson: null
         };
@@ -397,8 +395,6 @@
     function fillCommonFields(template) {
         utils.$('queue').value = template.queue || 'default';
         ns.ui.checkCriticalQueue(utils.$('queue').value);
-        utils.$('chkPerformContext').checked = !!template.includePerformContext;
-        utils.$('chkCancellationToken').checked = !!template.includeCancellationToken;
     }
 
     function fillExecModeFields(template) {

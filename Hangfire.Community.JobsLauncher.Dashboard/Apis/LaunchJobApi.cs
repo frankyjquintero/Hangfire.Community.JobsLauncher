@@ -362,8 +362,6 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
                 ExecutionMode = request.ExecutionMode,
                 Engine = engine,
                 ParametersJson = serializedParams,
-                IncludePerformContext = request.IncludePerformContext,
-                IncludeCancellationToken = request.IncludeCancellationToken,
                 User = "Anonymous"
             };
 
