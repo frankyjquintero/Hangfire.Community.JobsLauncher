@@ -25,7 +25,8 @@ namespace Hangfire.Community.JobsLauncher.Dashboard.Apis
             var response = new
             {
                 dynamicJobsAvailable,
-                auditLogEnabled = _options.EnableAuditLog
+                auditLogEnabled = _options.EnableAuditLog,
+                criticalQueues = _options.CriticalQueues?.ToArray() ?? new string[0]
             };
 
             await WriteJson(context, response);

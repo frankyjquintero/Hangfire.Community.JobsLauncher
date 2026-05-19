@@ -1,0 +1,83 @@
+﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True Namespace: Hangfire.Community.JobLauncher.Dashboard.Pages *@
+@using Hangfire.Dashboard
+@using Hangfire.Dashboard.Pages
+@inherits Hangfire.Dashboard.RazorPage
+<div role="tabpanel" class="tab-pane fade" id="templatesTab">
+    <div class="row"> 
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">Manage</div>
+                <div class="panel-body">
+                    <p>
+                        <small>
+                            You can also create a template from any job in the
+                            <strong>History</strong> tab using the
+                            <em>Save as template</em> button.
+                        </small>
+                    </p>
+                    <div class="form-group jobslauncher-mt-10">
+                        <label>Import template</label>
+                        <input type="file" id="importFile" accept=".json">
+                        <button id="btnImport" class="btn btn-default btn-block jobslauncher-mt-5">Import</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Saved templates</div>
+                <div class="panel-body">
+                    <table class="table table-condensed" id="templatesTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Class</th>
+                                <th>Method</th>
+                                <th>Queue</th>
+                                <th>Mode</th>
+                                <th>Engine</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Modal de vista previa de plantilla -->
+    <div class="modal fade jobslauncher-dark" id="templatePreviewModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">
+                        Template Preview: <span id="previewTemplateName"></span>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <dl class="dl-horizontal">
+                        <dt>Class</dt>              <dd id="prevClass"></dd>
+                        <dt>Method</dt>             <dd id="prevMethod"></dd>
+                        <dt>Queue</dt>              <dd id="prevQueue"></dd>
+                        <dt>Execution Mode</dt>     <dd id="prevExecMode"></dd>
+                        <dt>Cron Expression</dt>    <dd id="prevCron"></dd>
+                        <dt>Recurring Engine</dt>   <dd id="prevEngine"></dd>
+                        <dt>Mode</dt>               <dd id="prevMode"></dd>
+                        <dt>Params (raw JSON)</dt>
+                        <dd>
+                            <pre id="prevParams" class="jobslauncher-params-preview"></pre>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

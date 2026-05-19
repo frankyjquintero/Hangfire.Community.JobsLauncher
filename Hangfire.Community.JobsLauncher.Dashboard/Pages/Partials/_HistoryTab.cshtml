@@ -1,0 +1,53 @@
+﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True Namespace: Hangfire.Community.JobLauncher.Dashboard.Pages *@
+@using Hangfire.Dashboard
+@using Hangfire.Dashboard.Pages
+@inherits Hangfire.Dashboard.RazorPage
+<div role="tabpanel" class="tab-pane fade" id="historyTab">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-sm-6"><strong>Recent launches</strong></div>
+                <div class="col-sm-6 text-right">
+                    <button class="btn btn-sm btn-danger" id="btnClearHistory">Clear history</button>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+
+            <table class="table table-condensed" id="historyTable">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>JobId</th>
+                        <th>Class</th>
+                        <th>Method</th>
+                        <th>Queue</th>
+                        <th>Mode</th>
+                        <th>Engine</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <div class="row jobslauncher-history-pagination">
+                <div class="col-sm-6">
+                    <span id="historyPageInfo"></span>
+                </div>
+                <div class="col-sm-6 text-right">
+                    <button class="btn btn-xs btn-default" id="btnPrevPage" disabled>Prev</button>
+                    <button class="btn btn-xs btn-default" id="btnNextPage" disabled>Next</button>
+                </div>
+            </div>
+
+            <div class="alert alert-info jobslauncher-history-alert">
+                <strong>About the buttons:</strong>
+                <ul class="jobslauncher-no-margin-bottom">
+                    <li><strong>Relaunch:</strong> Loads this job's parameters into the Launch tab so you can review or modify them before launching.</li>
+                    <li><strong>Clone &amp; Launch:</strong> Immediately creates and enqueues an identical job without editing.</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>

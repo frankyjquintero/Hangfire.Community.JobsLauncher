@@ -1,0 +1,30 @@
+﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True Namespace: Hangfire.Community.JobLauncher.Dashboard.Pages *@
+@using Hangfire.Dashboard
+@using Hangfire.Dashboard.Pages
+@inherits Hangfire.Dashboard.RazorPage
+<div class="modal fade jobslauncher-dark" id="criticalConfirmModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">Confirm Launch</h4>
+            </div>
+
+            <div class="modal-body">
+                <p>
+                    The queue <strong id="criticalQueueName"></strong> is marked as critical.
+                    Are you sure you want to launch this job?
+                </p>
+                <div>
+                    <pre id="criticalJobSummary"></pre>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmCriticalLaunch">Confirm &amp; Launch</button>
+            </div>
+
+        </div>
+    </div>
+</div>
