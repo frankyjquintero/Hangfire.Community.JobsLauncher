@@ -35,32 +35,34 @@ A Hangfire Dashboard extension that fills the gap between scheduled automation a
 ## 📸 Screenshots
 
 ### Launch Tab (Assisted & Manual)
-![Launch - Fire & Forget](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture1.png)
-![Launch - Schedule (minutes)](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture4-shmin.png)
-![Launch - Schedule (date)](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture2.png)
-![Launch - Schedule DateTime](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture4-shdate.png)
-![Launch - Recurring](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture4-recurrent.png)
-![Launch - Continuation](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture4-continue.png)
-![Launch - Manual mode](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture3.png)
 
-### Recurring Jobs
+<img width="1919" height="887" alt="image" src="https://github.com/user-attachments/assets/144a8dc8-f9c8-4ef9-89b5-10fb3e170b46" />
 
-![Recurring - Built‑in / LauncherCommon](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture-recurrent-build-launchercommon.png)
-![Recurring - History & Recurrent Types](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture-recurrent-history-recurrent-types.png)
+<img width="1916" height="870" alt="image" src="https://github.com/user-attachments/assets/687a2a8c-95c2-4694-adbd-2bf73713503e" />
+<img width="1884" height="954" alt="image" src="https://github.com/user-attachments/assets/04eff762-df6d-4f1e-a6e7-4a72b1457cdf" />
 
-### Cron Generator
+<img width="1887" height="933" alt="image" src="https://github.com/user-attachments/assets/1224016f-2500-47b2-87a1-4c38346071a1" />
+<img width="1824" height="946" alt="image" src="https://github.com/user-attachments/assets/6a30df13-4290-4e31-8f9a-d479afd898ea" />
+<img width="1890" height="947" alt="image" src="https://github.com/user-attachments/assets/d7d24092-ce80-40e8-8cc8-5516e3859f76" />
+<img width="1881" height="946" alt="image" src="https://github.com/user-attachments/assets/66f44bd0-cf09-4328-893d-c783bfb57d20" />
+<img width="948" height="537" alt="image" src="https://github.com/user-attachments/assets/79e50b1f-ba9d-42eb-9edd-3f5b144b0a3a" />
 
-![Cron Generator](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture7crongenerator.png)
+<img width="1045" height="755" alt="image" src="https://github.com/user-attachments/assets/d0b70445-14b2-480b-97f1-c0984dafe55e" />
+
+<img width="1878" height="944" alt="image" src="https://github.com/user-attachments/assets/41868bf2-86e6-425e-9b15-68e85796ed6d" />
+
+<img width="1886" height="944" alt="image" src="https://github.com/user-attachments/assets/42eac170-fc06-49f8-af23-9ec74d84fe9b" />
+
 
 ### History & Templates
 
-![History](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture6history.png)
-![Templates](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture5template.png)
-![Templates - detail](https://raw.githubusercontent.com/frankyjquintero/Hangfire.Community.JobsLauncher/refs/heads/main/images/capture5template2.png)
+<img width="1894" height="938" alt="image" src="https://github.com/user-attachments/assets/3683620d-6349-4197-b1dc-caaf6200a5c3" />
+
+<img width="1872" height="929" alt="image" src="https://github.com/user-attachments/assets/75bf6ad2-7645-4f73-9df7-6c0ab0bab3ab" />
 
 ## 📦 Requirements
 
-- Hangfire 1.7 or later
+- Hangfire 1.8.0 or later
 - .NET Standard 2.0 (compatible with .NET Core 2.1+ and .NET Framework 4.6.1+)
 - **Common library** `Hangfire.Community.JobsLauncher.Common` (required only on workers if manual mode is going to be used)
 - Bootstrap 3 and jQuery (already included in the Hangfire dashboard)
