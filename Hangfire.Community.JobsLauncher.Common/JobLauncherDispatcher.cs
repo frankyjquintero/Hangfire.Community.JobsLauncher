@@ -1,4 +1,5 @@
-﻿using Hangfire.Server;
+﻿using Hangfire.Community.JobsLauncher.Common;
+using Hangfire.Server;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace Hangfire.Community.JobLauncher.Common
 {
     public static class JobLauncherDispatcher
     {
+        [LauncherJobDisplayNameAttribute]
         public static void ExecuteJob(
             string className,
             string methodName,
