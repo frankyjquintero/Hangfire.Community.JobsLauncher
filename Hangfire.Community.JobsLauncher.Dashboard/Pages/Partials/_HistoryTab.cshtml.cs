@@ -45,25 +45,30 @@ WriteLiteral("\r\n");
 WriteLiteral("<div role=\"tabpanel\" class=\"tab-pane fade\" id=\"historyTab\">\r\n    <div class=\"pane" +
 "l panel-default\">\r\n        <div class=\"panel-heading\">\r\n            <div class=\"" +
 "row\">\r\n                <div class=\"col-sm-6\"><strong>Recent launches</strong></d" +
-"iv>\r\n                <div class=\"col-sm-6 text-right\"><button class=\"btn btn-sm " +
-"btn-danger\" id=\"btnClearHistory\">Clear history</button></div>\r\n            </div" +
-">\r\n        </div>\r\n        <div class=\"panel-body\">\r\n            <table class=\"t" +
-"able table-condensed\" id=\"historyTable\">\r\n                <thead><tr><th>Timesta" +
-"mp</th><th>JobId</th><th>Class</th><th>Method</th><th>Queue</th><th>Mode</th><th" +
-">Engine</th><th></th></tr></thead>\r\n                <tbody></tbody>\r\n           " +
-" </table>\r\n            <div class=\"row jobslauncher-history-pagination\">\r\n      " +
-"          <div class=\"col-sm-6\">\r\n                    <span id=\"historyPageInfo\"" +
-"></span>\r\n                </div>\r\n                <div class=\"col-sm-6 text-righ" +
-"t\">\r\n                    <button class=\"btn btn-xs btn-default\" id=\"btnPrevPage\"" +
-" disabled>Prev</button>\r\n                    <button class=\"btn btn-xs btn-defau" +
-"lt\" id=\"btnNextPage\" disabled>Next</button>\r\n                </div>\r\n           " +
-" </div>\r\n            <div class=\"alert alert-info jobslauncher-history-alert\">\r\n" +
-"                <strong>About the buttons:</strong>\r\n                <ul class=\"" +
-"jobslauncher-no-margin-bottom\">\r\n                    <li><strong>Relaunch:</stro" +
-"ng> Loads this job\'s parameters into the Launch tab so you can review or modify " +
-"them before launching.</li>\r\n                    <li><strong>Clone & Launch:</st" +
+"iv>\r\n                <div class=\"col-sm-6 text-right\">\r\n                    <but" +
+"ton class=\"btn btn-sm btn-danger\" id=\"btnClearHistory\">Clear history</button>\r\n " +
+"               </div>\r\n            </div>\r\n        </div>\r\n        <div class=\"p" +
+"anel-body\">\r\n\r\n            <table class=\"table table-condensed\" id=\"historyTable" +
+"\">\r\n                <thead>\r\n                    <tr>\r\n                        <" +
+"th>Timestamp</th>\r\n                        <th>JobId</th>\r\n                     " +
+"   <th>Class</th>\r\n                        <th>Method</th>\r\n                    " +
+"    <th>Queue</th>\r\n                        <th>Mode</th>\r\n                     " +
+"   <th>Engine</th>\r\n                        <th></th>\r\n                    </tr>" +
+"\r\n                </thead>\r\n                <tbody></tbody>\r\n            </table" +
+">\r\n\r\n            <div class=\"row jobslauncher-history-pagination\">\r\n            " +
+"    <div class=\"col-sm-6\">\r\n                    <span id=\"historyPageInfo\"></spa" +
+"n>\r\n                </div>\r\n                <div class=\"col-sm-6 text-right\">\r\n " +
+"                   <button class=\"btn btn-xs btn-default\" id=\"btnPrevPage\" disab" +
+"led>Prev</button>\r\n                    <button class=\"btn btn-xs btn-default\" id" +
+"=\"btnNextPage\" disabled>Next</button>\r\n                </div>\r\n            </div" +
+">\r\n\r\n            <div class=\"alert alert-info jobslauncher-history-alert\">\r\n    " +
+"            <strong>About the buttons:</strong>\r\n                <ul class=\"jobs" +
+"launcher-no-margin-bottom\">\r\n                    <li><strong>Relaunch:</strong> " +
+"Loads this job\'s parameters into the Launch tab so you can review or modify them" +
+" before launching.</li>\r\n                    <li><strong>Clone &amp; Launch:</st" +
 "rong> Immediately creates and enqueues an identical job without editing.</li>\r\n " +
-"               </ul>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>");
+"               </ul>\r\n            </div>\r\n\r\n        </div>\r\n    </div>\r\n</div>\r\n" +
+"");
 
 
         }

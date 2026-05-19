@@ -15,7 +15,18 @@
         },
 
         getMethods: function (className) {
-            return utils.fetchJson(state.apiBaseUrl + '/api/methods?className=' + encodeURIComponent(className));
+            return utils.fetchJson(state.apiBaseUrl + '/api/methods?className=' + encodeURIComponent(className))
+                .then(function (resp) {
+                    if (Array.isArray(resp)) return { success: true, methods: resp };
+                    if (resp && resp.methods) return resp;
+                    if (resp && resp.data && Array.isArray(resp.data)) return { success: true, methods: resp.data };
+                    if (resp && !resp.success && resp.methods) return { success: true, methods: resp.methods };
+                    return { success: false, error: 'Unexpected response format' };
+                })
+                .catch(function (err) {
+                    console.error('getMethods failed:', err);
+                    return { success: false, error: err.message };
+                });
         },
 
         validateCron: function (expression) {
@@ -40,7 +51,10 @@
         },
 
         getTemplates: function () {
-            return utils.fetchJson(state.apiBaseUrl + '/api/templates');
+            return utils.fetchJson(state.apiBaseUrl + '/api/templates')
+                .then(function (resp) {
+                    return Array.isArray(resp) ? resp : (resp.templates || resp.data || []);
+                });
         },
 
         saveTemplate: function (template) {
@@ -57,7 +71,7 @@
         },
 
         exportTemplateUrl: function (name) {
-            return state.apiBaseUrl + '/api/export-import?templateName=' + encodeURIComponent(name);
+            return state.apiBaseUrl + '/api/export-import?action=export&templateName=' + encodeURIComponent(name);
         },
 
         getAuditLog: function (params) {

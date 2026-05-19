@@ -45,33 +45,34 @@ WriteLiteral("\r\n");
 WriteLiteral("<div role=\"tabpanel\" class=\"tab-pane fade\" id=\"auditLogPane\">\r\n    <div class=\"pa" +
 "nel panel-default\">\r\n        <div class=\"panel-heading\">\r\n            <strong>Au" +
 "dit Log (read-only)</strong>\r\n        </div>\r\n        <div class=\"panel-body\">\r\n" +
-"            <div class=\"row jobslauncher-audit-filters-row\">\r\n                <d" +
-"iv class=\"col-sm-3\">\r\n                    <input type=\"text\" id=\"auditUserFilter" +
-"\" class=\"form-control input-sm\" placeholder=\"User\">\r\n                </div>\r\n   " +
-"             <div class=\"col-sm-2\">\r\n                    <input type=\"datetime-l" +
-"ocal\" id=\"auditFromFilter\" class=\"form-control input-sm\" placeholder=\"From\">\r\n  " +
-"              </div>\r\n                <div class=\"col-sm-2\">\r\n                  " +
-"  <input type=\"datetime-local\" id=\"auditToFilter\" class=\"form-control input-sm\" " +
-"placeholder=\"To\">\r\n                </div>\r\n                <div class=\"col-sm-2\"" +
-">\r\n                    <input type=\"number\" id=\"auditCountFilter\" class=\"form-co" +
-"ntrol input-sm\" value=\"200\" min=\"1\" max=\"1000\" placeholder=\"Count\">\r\n           " +
-"     </div>\r\n                <div class=\"col-sm-3\">\r\n                    <button" +
-" class=\"btn btn-sm btn-default\" id=\"btnApplyAuditFilters\">Apply Filters</button>" +
-"\r\n                    <button class=\"btn btn-sm btn-default\" id=\"btnClearAuditFi" +
-"lters\">Clear</button>\r\n                </div>\r\n            </div>\r\n            <" +
-"table class=\"table table-condensed\" id=\"auditLogTable\">\r\n                <thead>" +
-"\r\n                    <tr>\r\n                        <th>Timestamp</th>\r\n        " +
-"                <th>JobId</th>\r\n                        <th>Class</th>\r\n        " +
-"                <th>Method</th>\r\n                        <th>Queue</th>\r\n       " +
-"                 <th>Mode</th>\r\n                        <th>Engine</th>\r\n       " +
-"                 <th>User</th>\r\n                    </tr>\r\n                </the" +
-"ad>\r\n                <tbody></tbody>\r\n            </table>\r\n            <div cla" +
-"ss=\"row jobslauncher-audit-pagination\">\r\n                <div class=\"col-sm-6\"><" +
-"span id=\"auditPageInfo\"></span></div>\r\n                <div class=\"col-sm-6 text" +
-"-right\">\r\n                    <button class=\"btn btn-xs btn-default\" id=\"btnAudi" +
-"tPrevPage\" disabled>Prev</button>\r\n                    <button class=\"btn btn-xs" +
-" btn-default\" id=\"btnAuditNextPage\" disabled>Next</button>\r\n                </di" +
-"v>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>");
+"\r\n            <div class=\"row jobslauncher-audit-filters-row\">\r\n                " +
+"<div class=\"col-sm-3\">\r\n                    <input type=\"text\" id=\"auditUserFilt" +
+"er\" class=\"form-control input-sm\" placeholder=\"User\">\r\n                </div>\r\n " +
+"               <div class=\"col-sm-2\">\r\n                    <input type=\"datetime" +
+"-local\" id=\"auditFromFilter\" class=\"form-control input-sm\" placeholder=\"From\">\r\n" +
+"                </div>\r\n                <div class=\"col-sm-2\">\r\n                " +
+"    <input type=\"datetime-local\" id=\"auditToFilter\" class=\"form-control input-sm" +
+"\" placeholder=\"To\">\r\n                </div>\r\n                <div class=\"col-sm-" +
+"2\">\r\n                    <input type=\"number\" id=\"auditCountFilter\" class=\"form-" +
+"control input-sm\" value=\"200\" min=\"1\" max=\"1000\" placeholder=\"Count\">\r\n         " +
+"       </div>\r\n                <div class=\"col-sm-3\">\r\n                    <butt" +
+"on class=\"btn btn-sm btn-default\" id=\"btnApplyAuditFilters\">Apply Filters</butto" +
+"n>\r\n                    <button class=\"btn btn-sm btn-default\" id=\"btnClearAudit" +
+"Filters\">Clear</button>\r\n                </div>\r\n            </div>\r\n\r\n         " +
+"   <table class=\"table table-condensed\" id=\"auditLogTable\">\r\n                <th" +
+"ead>\r\n                    <tr>\r\n                        <th>Timestamp</th>\r\n    " +
+"                    <th>JobId</th>\r\n                        <th>Class</th>\r\n    " +
+"                    <th>Method</th>\r\n                        <th>Queue</th>\r\n   " +
+"                     <th>Mode</th>\r\n                        <th>Engine</th>\r\n   " +
+"                     <th>User</th>\r\n                    </tr>\r\n                <" +
+"/thead>\r\n                <tbody></tbody>\r\n            </table>\r\n\r\n            <d" +
+"iv class=\"row jobslauncher-audit-pagination\">\r\n                <div class=\"col-s" +
+"m-6\">\r\n                    <span id=\"auditPageInfo\"></span>\r\n                </d" +
+"iv>\r\n                <div class=\"col-sm-6 text-right\">\r\n                    <but" +
+"ton class=\"btn btn-xs btn-default\" id=\"btnAuditPrevPage\" disabled>Prev</button>\r" +
+"\n                    <button class=\"btn btn-xs btn-default\" id=\"btnAuditNextPage" +
+"\" disabled>Next</button>\r\n                </div>\r\n            </div>\r\n\r\n        " +
+"</div>\r\n    </div>\r\n</div>\r\n");
 
 
         }

@@ -48,12 +48,13 @@ namespace Hangfire.Community.JobsLauncher.Dashboard
             DashboardRoutes.AddJavaScript(asm, $"{AssetPrefix}.Js.Launcher.Utils.js");
             DashboardRoutes.AddJavaScript(asm, $"{AssetPrefix}.Js.Launcher.Api.js");
             DashboardRoutes.AddJavaScript(asm, $"{AssetPrefix}.Js.Launcher.Params.js");
-            DashboardRoutes.AddJavaScript(asm, $"{AssetPrefix}.Js.Launcher.UI.js");
             DashboardRoutes.AddJavaScript(asm, $"{AssetPrefix}.Js.Launcher.Cron.js");
             DashboardRoutes.AddJavaScript(asm, $"{AssetPrefix}.Js.Launcher.History.js");
             DashboardRoutes.AddJavaScript(asm, $"{AssetPrefix}.Js.Launcher.Templates.js");
             DashboardRoutes.AddJavaScript(asm, $"{AssetPrefix}.Js.Launcher.Audit.js");
             DashboardRoutes.AddJavaScript(asm, $"{AssetPrefix}.Js.Launcher.Init.js");
+
+            DashboardRoutes.AddStylesheet(asm, $"{AssetPrefix}.Css.Launcher.css");
 
             // APIs
             DashboardRoutes.Routes.Add("/joblauncher/api/capabilities", new CapabilitiesApi(opts));

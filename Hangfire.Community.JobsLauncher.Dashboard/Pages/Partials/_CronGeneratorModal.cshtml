@@ -2,25 +2,42 @@
 @using Hangfire.Dashboard
 @using Hangfire.Dashboard.Pages
 @inherits Hangfire.Dashboard.RazorPage
-<div class="modal fade" id="cronGeneratorModal" tabindex="-1" role="dialog">
+<div class="modal fade jobslauncher-dark" id="cronGeneratorModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
+
             <div class="modal-header jobslauncher-cron-modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title"><i class="glyphicon glyphicon-time"></i> Cron Expression Generator</h4>
+                <h4 class="modal-title">
+                    <i class="glyphicon glyphicon-time"></i> Cron Expression Generator
+                </h4>
             </div>
+
             <div class="modal-body jobslauncher-cron-modal-body">
                 <div class="row">
                     <div class="col-md-7">
+
                         <ul class="nav nav-tabs jobslauncher-cron-tabs" role="tablist">
-                            <li role="presentation" class="active"><a href="#tabMinutes" role="tab" data-toggle="tab">Minutes</a></li>
-                            <li role="presentation"><a href="#tabHours" role="tab" data-toggle="tab">Hours</a></li>
-                            <li role="presentation"><a href="#tabDayMonth" role="tab" data-toggle="tab">Day of Month</a></li>
-                            <li role="presentation"><a href="#tabMonth" role="tab" data-toggle="tab">Month</a></li>
-                            <li role="presentation"><a href="#tabDayWeek" role="tab" data-toggle="tab">Day of Week</a></li>
+                            <li role="presentation" class="active">
+                                <a href="#tabMinutes" role="tab" data-toggle="tab">Minutes</a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#tabHours" role="tab" data-toggle="tab">Hours</a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#tabDayMonth" role="tab" data-toggle="tab">Day of Month</a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#tabMonth" role="tab" data-toggle="tab">Month</a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#tabDayWeek" role="tab" data-toggle="tab">Day of Week</a>
+                            </li>
                         </ul>
+
                         <div class="tab-content jobslauncher-cron-tab-content">
-                            <!-- Pestaña Minutos -->
+
+                            <!-- Pestana Minutos -->
                             <div role="tabpanel" class="tab-pane active" id="tabMinutes">
                                 <div class="form-group">
                                     <label>Every N minutes</label>
@@ -42,7 +59,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Pestaña Horas -->
+
+                            <!-- Pestana Horas -->
                             <div role="tabpanel" class="tab-pane" id="tabHours">
                                 <div class="form-group">
                                     <label>Every N hours</label>
@@ -64,7 +82,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Pestaña Día del mes -->
+
+                            <!-- Pestana Dia del mes -->
                             <div role="tabpanel" class="tab-pane" id="tabDayMonth">
                                 <div class="form-group">
                                     <label>Every day</label>
@@ -122,7 +141,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Pestaña Mes -->
+
+                            <!-- Pestana Mes -->
                             <div role="tabpanel" class="tab-pane" id="tabMonth">
                                 <div class="form-group">
                                     <label>Every month</label>
@@ -150,7 +170,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Pestaña Día de la semana -->
+
+                            <!-- Pestana Dia de la semana -->
                             <div role="tabpanel" class="tab-pane" id="tabDayWeek">
                                 <div class="form-group">
                                     <label>Every day of week</label>
@@ -184,8 +205,10 @@
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
+
                     <div class="col-md-5">
                         <div class="panel panel-default">
                             <div class="panel-heading"><strong>Preview</strong></div>
@@ -205,10 +228,12 @@
                     </div>
                 </div>
             </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-primary" id="btnGenerateCron">Generate</button>
             </div>
+
         </div>
     </div>
 </div>

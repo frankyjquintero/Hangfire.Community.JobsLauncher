@@ -2,33 +2,44 @@
 @using Hangfire.Dashboard
 @using Hangfire.Dashboard.Pages
 @inherits Hangfire.Dashboard.RazorPage
-<div role="tabpanel" class="tab-pane fade in active" id="launchTab">
+<div role="tabpanel" class="tab-pane fade in active jobslauncher-dark" id="launchTab">
     <div class="row">
         <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading">Job Configuration</div>
                 <div class="panel-body">
+
                     <div class="form-group">
                         <label>Mode</label>
                         <div>
-                            <label class="radio-inline"><input type="radio" name="launchMode" value="assisted" checked> Assisted (assembly)</label>
-                            <label class="radio-inline"><input type="radio" name="launchMode" value="manual"> Manual (JSON)</label>
+                            <label class="radio-inline">
+                                <input type="radio" name="launchMode" value="assisted" checked> Assisted (assembly)
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="launchMode" value="manual"> Manual (JSON)
+                            </label>
                         </div>
                     </div>
+
                     <div id="assistedFields">
                         <div class="form-group">
                             <label>Class Name</label>
                             <div class="input-group">
                                 <input type="text" id="classNameAssisted" class="form-control" placeholder="Namespace.ClassName">
-                                <span class="input-group-btn"><button class="btn btn-default" id="btnLoadMethods" type="button">Load Methods</button></span>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" id="btnLoadMethods" type="button">Load Methods</button>
+                                </span>
                             </div>
                         </div>
                         <div class="form-group jobslauncher-hidden" id="methodSelectGroup">
                             <label>Method</label>
-                            <select id="methodSelect" class="form-control"><option value="">-- Select method --</option></select>
+                            <select id="methodSelect" class="form-control">
+                                <option value="">-- Select method --</option>
+                            </select>
                         </div>
                         <div id="paramsContainer"></div>
                     </div>
+
                     <div id="manualFields" class="jobslauncher-hidden">
                         <div class="form-group">
                             <label>Class Name</label>
@@ -50,8 +61,11 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="form-group">
-                        <a role="button" data-toggle="collapse" href="#advancedOptions" aria-expanded="false">Advanced options ▾</a>
+                        <a role="button" data-toggle="collapse" href="#advancedOptions" aria-expanded="false">
+                            Advanced options
+                        </a>
                         <div class="collapse jobslauncher-mt-5" id="advancedOptions">
                             <div class="checkbox">
                                 <label><input type="checkbox" id="chkPerformContext"> Include PerformContext</label>
@@ -61,28 +75,32 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="form-group">
                         <label>Execution Mode</label>
                         <div id="executionModeGroup">
-                            <label class="radio-inline"><input type="radio" name="execMode" value="FireAndForget" checked> Fire & Forget</label>
+                            <label class="radio-inline"><input type="radio" name="execMode" value="FireAndForget" checked> Fire &amp; Forget</label>
                             <label class="radio-inline"><input type="radio" name="execMode" value="Schedule"> Schedule (minutes)</label>
                             <label class="radio-inline"><input type="radio" name="execMode" value="ScheduleDateTime"> Schedule (date)</label>
                             <label class="radio-inline"><input type="radio" name="execMode" value="Recurring"> Recurring</label>
                             <label class="radio-inline"><input type="radio" name="execMode" value="Continuation"> Continuation</label>
                         </div>
                     </div>
+
                     <div id="scheduleFields" class="jobslauncher-hidden">
                         <div class="form-group">
                             <label>Delay (minutes)</label>
                             <input type="number" id="delayMinutes" class="form-control" min="1" value="30">
                         </div>
                     </div>
+
                     <div id="scheduleDateTimeFields" class="jobslauncher-hidden">
                         <div class="form-group">
                             <label>Scheduled Date (UTC)</label>
                             <input type="datetime-local" id="scheduledDateTime" class="form-control">
                         </div>
                     </div>
+
                     <div id="recurringFields" class="jobslauncher-hidden">
                         <div class="form-group">
                             <label>Cron Expression</label>
@@ -98,21 +116,28 @@
                         <div class="form-group" id="recurringEngineGroup">
                             <label>Recurring Engine</label>
                             <select id="recurringEngine" class="form-control"></select>
-                            <span id="dynamicJobsWarning" class="text-warning jobslauncher-hidden">DynamicJobs no está instalado en el dashboard o workers.</span>
+                            <span id="dynamicJobsWarning" class="text-warning jobslauncher-hidden">
+                                DynamicJobs no esta instalado en el dashboard o workers.
+                            </span>
                         </div>
                     </div>
+
                     <div id="continuationFields" class="jobslauncher-hidden">
                         <div class="form-group">
                             <label>Parent Job Id</label>
                             <input type="text" id="parentJobId" class="form-control" placeholder="job-id">
                         </div>
                     </div>
+
                     <div class="form-group">
                         <label>Queue</label>
                         <input type="text" id="queue" class="form-control" list="queueList" value="default">
                         <datalist id="queueList"></datalist>
-                        <span id="criticalQueueWarning" class="text-warning jobslauncher-hidden">⚠ Esta cola requiere confirmación.</span>
+                        <span id="criticalQueueWarning" class="text-warning jobslauncher-hidden">
+                            Esta cola requiere confirmacion.
+                        </span>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -128,7 +153,9 @@
             </div>
             <div class="panel panel-default jobslauncher-hidden" id="previewPanel">
                 <div class="panel-heading">Preview</div>
-                <div class="panel-body"><pre id="previewContent"></pre></div>
+                <div class="panel-body">
+                    <pre id="previewContent"></pre>
+                </div>
             </div>
         </div>
     </div>

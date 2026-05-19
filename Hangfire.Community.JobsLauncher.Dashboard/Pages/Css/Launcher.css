@@ -1,9 +1,50 @@
-/* ============================================
-   JobLauncher Dashboard - Estilos personalizados
+/* ============================================================
+   JobLauncher Dashboard - Estilos personalizados + Dark Mode
    Prefijo: jobslauncher-
-   ============================================ */
+   Todas las sobreescrituras de Bootstrap estan bajo
+   la clase contenedora .jobslauncher-dark
+   ============================================================ */
 
-/* --- Utilidades de display --- */
+/* Variables de color dark mode */
+.jobslauncher-dark {
+    --jl-bg: #0f0f1a;
+    --jl-surface: #1a1b2e;
+    --jl-surface-2: #252540;
+    --jl-surface-3: #2d2e4a;
+    --jl-border: #35365a;
+    --jl-border-light: #3f4068;
+    --jl-text: #c8cde8;
+    --jl-text-muted: #7a7f9a;
+    --jl-text-dim: #555875;
+    --jl-primary: #6c8aff;
+    --jl-primary-hover: #8aa0ff;
+    --jl-success: #3dba6a;
+    --jl-success-hover: #4fd47e;
+    --jl-warning: #d4961e;
+    --jl-warning-hover: #e8aa30;
+    --jl-danger: #e05252;
+    --jl-info: #40a9d4;
+    --jl-info-hover: #55bde8;
+    --jl-input-bg: #1e1f35;
+    --jl-input-focus: #252640;
+    --jl-pre-bg: #13131f;
+    --jl-shadow: 0 2px 12px rgba(0,0,0,0.5);
+    --jl-shadow-lg: 0 4px 24px rgba(0,0,0,0.65);
+    --jl-radius: 6px;
+    --jl-font-mono: 'Consolas', 'Courier New', monospace;
+}
+
+/* Base del contenedor dark */
+.jobslauncher-dark {
+    background-color: var(--jl-bg);
+    color: var(--jl-text);
+}
+
+
+/* ============================================================
+   Utilidades de display
+   ============================================================ */
+
 .jobslauncher-hidden {
     display: none !important;
 }
@@ -12,7 +53,11 @@
     display: block !important;
 }
 
-/* --- Márgenes --- */
+
+/* ============================================================
+   Margenes y padding
+   ============================================================ */
+
 .jobslauncher-mt-5 {
     margin-top: 5px !important;
 }
@@ -37,7 +82,6 @@
     margin: 0 !important;
 }
 
-/* --- Padding --- */
 .jobslauncher-tab-content {
     padding-top: 15px;
 }
@@ -46,19 +90,517 @@
     padding: 20px;
 }
 
-/* --- Componentes específicos --- */
-.jobslauncher-cron-preview {
-    margin-top: 5px;
-    display: none;
+
+/* ============================================================
+   Paneles Bootstrap
+   ============================================================ */
+
+.jobslauncher-dark .panel {
+    background-color: var(--jl-surface);
+    border: 1px solid var(--jl-border);
+    border-radius: var(--jl-radius);
+    box-shadow: var(--jl-shadow);
 }
 
-/* Resultado de lanzamiento */
+.jobslauncher-dark .panel-default {
+    border-color: var(--jl-border);
+}
+
+    .jobslauncher-dark .panel-default > .panel-heading {
+        background-color: var(--jl-surface-2);
+        border-bottom: 1px solid var(--jl-border);
+        color: var(--jl-text);
+        font-weight: 600;
+        font-size: 13px;
+        letter-spacing: 0.3px;
+        padding: 10px 16px;
+        border-radius: calc(var(--jl-radius) - 1px) calc(var(--jl-radius) - 1px) 0 0;
+    }
+
+.jobslauncher-dark .panel-body {
+    padding: 18px;
+    background-color: var(--jl-surface);
+}
+
+
+/* ============================================================
+   Formularios
+   ============================================================ */
+
+.jobslauncher-dark label {
+    color: var(--jl-text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.jobslauncher-dark .form-control {
+    background-color: var(--jl-input-bg);
+    border: 1px solid var(--jl-border);
+    border-radius: var(--jl-radius);
+    color: var(--jl-text);
+    box-shadow: none;
+    transition: border-color 0.18s, background-color 0.18s, box-shadow 0.18s;
+}
+
+    .jobslauncher-dark .form-control:focus {
+        background-color: var(--jl-input-focus);
+        border-color: var(--jl-primary);
+        color: var(--jl-text);
+        box-shadow: 0 0 0 2px rgba(108, 138, 255, 0.18);
+        outline: none;
+    }
+
+    .jobslauncher-dark .form-control::placeholder {
+        color: var(--jl-text-dim);
+    }
+
+    .jobslauncher-dark .form-control[disabled],
+    .jobslauncher-dark .form-control[readonly] {
+        background-color: var(--jl-surface-3);
+        color: var(--jl-text-dim);
+        border-color: var(--jl-border);
+        cursor: not-allowed;
+    }
+
+.jobslauncher-dark select.form-control option {
+    background-color: var(--jl-surface-2);
+    color: var(--jl-text);
+}
+
+.jobslauncher-dark textarea.form-control {
+    resize: vertical;
+    font-family: var(--jl-font-mono);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.jobslauncher-dark .form-group {
+    margin-bottom: 16px;
+}
+
+
+/* ============================================================
+   Input groups
+   ============================================================ */
+
+.jobslauncher-dark .input-group-btn > .btn {
+    border-color: var(--jl-border);
+    background-color: var(--jl-surface-3);
+    color: var(--jl-text);
+    transition: background-color 0.18s, border-color 0.18s;
+}
+
+    .jobslauncher-dark .input-group-btn > .btn:hover {
+        background-color: var(--jl-surface-2);
+        border-color: var(--jl-border-light);
+    }
+
+.jobslauncher-dark .input-group > .form-control:not(:last-child),
+.jobslauncher-dark .input-group > .form-control:not(:first-child) {
+    border-color: var(--jl-border);
+}
+
+
+/* ============================================================
+   Botones
+   ============================================================ */
+
+.jobslauncher-dark .btn {
+    border-radius: var(--jl-radius);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.2px;
+    transition: background-color 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.1s;
+}
+
+    .jobslauncher-dark .btn:active {
+        transform: translateY(1px);
+    }
+
+.jobslauncher-dark .btn-default {
+    background-color: var(--jl-surface-3);
+    border-color: var(--jl-border);
+    color: var(--jl-text);
+}
+
+    .jobslauncher-dark .btn-default:hover,
+    .jobslauncher-dark .btn-default:focus {
+        background-color: var(--jl-surface-2);
+        border-color: var(--jl-border-light);
+        color: var(--jl-text);
+    }
+
+.jobslauncher-dark .btn-primary {
+    background-color: var(--jl-primary);
+    border-color: var(--jl-primary);
+    color: #fff;
+}
+
+    .jobslauncher-dark .btn-primary:hover,
+    .jobslauncher-dark .btn-primary:focus {
+        background-color: var(--jl-primary-hover);
+        border-color: var(--jl-primary-hover);
+        color: #fff;
+        box-shadow: 0 0 0 3px rgba(108,138,255,0.25);
+    }
+
+.jobslauncher-dark .btn-success {
+    background-color: var(--jl-success);
+    border-color: var(--jl-success);
+    color: #fff;
+}
+
+    .jobslauncher-dark .btn-success:hover,
+    .jobslauncher-dark .btn-success:focus {
+        background-color: var(--jl-success-hover);
+        border-color: var(--jl-success-hover);
+        color: #fff;
+        box-shadow: 0 0 0 3px rgba(61,186,106,0.25);
+    }
+
+.jobslauncher-dark .btn-warning {
+    background-color: transparent;
+    border-color: var(--jl-warning);
+    color: var(--jl-warning);
+}
+
+    .jobslauncher-dark .btn-warning:hover,
+    .jobslauncher-dark .btn-warning:focus {
+        background-color: var(--jl-warning);
+        border-color: var(--jl-warning);
+        color: #fff;
+        box-shadow: 0 0 0 3px rgba(212,150,30,0.25);
+    }
+
+.jobslauncher-dark .btn-info {
+    background-color: var(--jl-info);
+    border-color: var(--jl-info);
+    color: #fff;
+}
+
+    .jobslauncher-dark .btn-info:hover,
+    .jobslauncher-dark .btn-info:focus {
+        background-color: var(--jl-info-hover);
+        border-color: var(--jl-info-hover);
+        color: #fff;
+        box-shadow: 0 0 0 3px rgba(64,169,212,0.25);
+    }
+
+.jobslauncher-dark .btn-block + .btn-block {
+    margin-top: 8px;
+}
+
+.jobslauncher-dark .btn-xs {
+    font-size: 11px;
+    padding: 2px 8px;
+}
+
+.jobslauncher-dark .btn-sm {
+    font-size: 12px;
+}
+
+
+/* ============================================================
+   Radios y checkboxes
+   ============================================================ */
+
+.jobslauncher-dark .radio-inline,
+.jobslauncher-dark .checkbox label {
+    color: var(--jl-text);
+    font-size: 13px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
+    cursor: pointer;
+}
+
+    .jobslauncher-dark .radio-inline + .radio-inline {
+        margin-left: 12px;
+    }
+
+.jobslauncher-dark input[type="radio"],
+.jobslauncher-dark input[type="checkbox"] {
+    accent-color: var(--jl-primary);
+    margin-right: 5px;
+}
+
+
+/* ============================================================
+   Texto de ayuda y mensajes inline
+   ============================================================ */
+
+.jobslauncher-dark .help-block {
+    color: var(--jl-text-muted);
+    font-size: 12px;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.jobslauncher-dark .text-danger {
+    color: var(--jl-danger) !important;
+}
+
+.jobslauncher-dark .text-warning {
+    color: var(--jl-warning) !important;
+}
+
+.jobslauncher-dark .text-info {
+    color: var(--jl-info) !important;
+}
+
+.jobslauncher-dark .text-success {
+    color: var(--jl-success) !important;
+}
+
+.jobslauncher-dark .text-muted {
+    color: var(--jl-text-muted) !important;
+}
+
+
+/* ============================================================
+   Datalist nativo
+   ============================================================ */
+
+.jobslauncher-dark datalist {
+    background-color: var(--jl-surface-2);
+    color: var(--jl-text);
+}
+
+
+/* ============================================================
+   Alert de resultado de lanzamiento
+   ============================================================ */
+
 .jobslauncher-launch-result {
     margin-top: 10px;
     display: none;
 }
 
-/* Paginación de History */
+.jobslauncher-dark .alert {
+    border-radius: var(--jl-radius);
+    border-width: 1px;
+    font-size: 13px;
+}
+
+.jobslauncher-dark .alert-success {
+    background-color: rgba(61, 186, 106, 0.1);
+    border-color: var(--jl-success);
+    color: var(--jl-success);
+}
+
+.jobslauncher-dark .alert-danger {
+    background-color: rgba(224, 82, 82, 0.1);
+    border-color: var(--jl-danger);
+    color: var(--jl-danger);
+}
+
+.jobslauncher-dark .alert-warning {
+    background-color: rgba(212, 150, 30, 0.1);
+    border-color: var(--jl-warning);
+    color: var(--jl-warning);
+}
+
+.jobslauncher-dark .alert-info {
+    background-color: rgba(64, 169, 212, 0.1);
+    border-color: var(--jl-info);
+    color: var(--jl-info);
+}
+
+
+/* ============================================================
+   Bloque pre (preview de job)
+   ============================================================ */
+
+.jobslauncher-dark pre {
+    background-color: var(--jl-pre-bg);
+    border: 1px solid var(--jl-border);
+    border-radius: var(--jl-radius);
+    color: #a8d8a8;
+    font-family: var(--jl-font-mono);
+    font-size: 12px;
+    line-height: 1.6;
+    padding: 14px;
+    margin: 0;
+    overflow-x: auto;
+}
+
+
+/* ============================================================
+   Collapse / advanced options link
+   ============================================================ */
+
+.jobslauncher-dark a[data-toggle="collapse"] {
+    color: var(--jl-primary);
+    font-size: 13px;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 4px;
+    transition: color 0.18s;
+}
+
+    .jobslauncher-dark a[data-toggle="collapse"]:hover {
+        color: var(--jl-primary-hover);
+        text-decoration: none;
+    }
+
+
+/* ============================================================
+   Cron preview (debajo del input de cron expression)
+   ============================================================ */
+
+.jobslauncher-cron-preview {
+    margin-top: 5px;
+    display: none;
+    font-size: 12px;
+    font-style: italic;
+}
+
+
+/* ============================================================
+   Modal del generador de Cron
+   ============================================================ */
+
+.jobslauncher-dark .modal-content {
+    background-color: var(--jl-surface);
+    border: 1px solid var(--jl-border);
+    border-radius: calc(var(--jl-radius) + 2px);
+    box-shadow: var(--jl-shadow-lg);
+    color: var(--jl-text);
+}
+
+.jobslauncher-cron-modal-header,
+.jobslauncher-dark .modal-header {
+    background-color: var(--jl-surface-2);
+    border-bottom: 1px solid var(--jl-border);
+    border-radius: calc(var(--jl-radius) + 1px) calc(var(--jl-radius) + 1px) 0 0;
+    padding: 14px 20px;
+}
+
+    .jobslauncher-dark .modal-header .modal-title {
+        color: var(--jl-text);
+        font-weight: 700;
+        font-size: 15px;
+    }
+
+    .jobslauncher-dark .modal-header .close {
+        color: var(--jl-text-muted);
+        opacity: 0.7;
+        text-shadow: none;
+        font-size: 20px;
+        transition: color 0.18s, opacity 0.18s;
+    }
+
+        .jobslauncher-dark .modal-header .close:hover {
+            color: var(--jl-text);
+            opacity: 1;
+        }
+
+.jobslauncher-dark .modal-footer {
+    background-color: var(--jl-surface-2);
+    border-top: 1px solid var(--jl-border);
+    border-radius: 0 0 calc(var(--jl-radius) + 1px) calc(var(--jl-radius) + 1px);
+    padding: 12px 20px;
+}
+
+.jobslauncher-dark .modal-backdrop {
+    background-color: #000;
+}
+
+    .jobslauncher-dark .modal-backdrop.in {
+        opacity: 0.7;
+    }
+
+
+/* ============================================================
+   Tabs del generador de Cron
+   ============================================================ */
+
+.jobslauncher-cron-tabs,
+.jobslauncher-dark .nav-tabs {
+    border-bottom: 1px solid var(--jl-border);
+    margin-bottom: 15px;
+}
+
+    .jobslauncher-dark .nav-tabs > li > a {
+        color: var(--jl-text-muted);
+        background-color: transparent;
+        border: 1px solid transparent;
+        border-radius: var(--jl-radius) var(--jl-radius) 0 0;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        padding: 7px 14px;
+        transition: color 0.18s, background-color 0.18s;
+    }
+
+        .jobslauncher-dark .nav-tabs > li > a:hover {
+            color: var(--jl-text);
+            background-color: var(--jl-surface-3);
+            border-color: var(--jl-border) var(--jl-border) transparent;
+        }
+
+    .jobslauncher-dark .nav-tabs > li.active > a,
+    .jobslauncher-dark .nav-tabs > li.active > a:hover,
+    .jobslauncher-dark .nav-tabs > li.active > a:focus {
+        background-color: var(--jl-surface);
+        border-color: var(--jl-border) var(--jl-border) transparent;
+        color: var(--jl-primary);
+    }
+
+.jobslauncher-cron-tab-content {
+    min-height: 250px;
+}
+
+
+/* ============================================================
+   Preview y descripcion del cron
+   ============================================================ */
+
+.jobslauncher-font-mono {
+    font-family: var(--jl-font-mono) !important;
+}
+
+.jobslauncher-cron-description {
+    font-style: italic;
+    color: var(--jl-text-muted);
+    font-size: 13px;
+    margin: 0;
+}
+
+.jobslauncher-cron-executions-preview {
+    margin-top: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+    font-size: 12px;
+    font-family: var(--jl-font-mono);
+    color: var(--jl-text-muted);
+    line-height: 1.8;
+}
+
+    .jobslauncher-cron-executions-preview::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .jobslauncher-cron-executions-preview::-webkit-scrollbar-track {
+        background: var(--jl-surface-2);
+    }
+
+    .jobslauncher-cron-executions-preview::-webkit-scrollbar-thumb {
+        background: var(--jl-border-light);
+        border-radius: 2px;
+    }
+
+
+/* ============================================================
+   Paginacion y filtros (History y Audit)
+   ============================================================ */
+
 .jobslauncher-history-pagination {
     margin-top: 5px;
 }
@@ -67,57 +609,469 @@
     margin-top: 15px;
 }
 
-/* Preview de parámetros en Templates */
-.jobslauncher-params-preview {
-    max-height: 300px;
-    overflow-y: auto;
-    background: #f5f5f5;
-    padding: 10px;
-}
-
-/* Fila de filtros de Auditoría */
 .jobslauncher-audit-filters-row {
     margin-bottom: 10px;
 }
 
-/* Paginación de Auditoría */
 .jobslauncher-audit-pagination {
     margin-top: 5px;
 }
 
-/* Modal del generador de Cron */
-.jobslauncher-cron-modal-header {
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
+.jobslauncher-dark .pagination > li > a,
+.jobslauncher-dark .pagination > li > span {
+    background-color: var(--jl-surface-2);
+    border-color: var(--jl-border);
+    color: var(--jl-text);
+    transition: background-color 0.18s;
 }
 
-.jobslauncher-cron-tabs {
-    margin-bottom: 15px;
+    .jobslauncher-dark .pagination > li > a:hover,
+    .jobslauncher-dark .pagination > li > span:hover {
+        background-color: var(--jl-surface-3);
+        border-color: var(--jl-border-light);
+        color: var(--jl-text);
+    }
+
+.jobslauncher-dark .pagination > .active > a,
+.jobslauncher-dark .pagination > .active > span {
+    background-color: var(--jl-primary);
+    border-color: var(--jl-primary);
+    color: #fff;
 }
 
-.jobslauncher-cron-tab-content {
-    min-height: 250px;
+.jobslauncher-dark .pagination > .disabled > a,
+.jobslauncher-dark .pagination > .disabled > span {
+    background-color: var(--jl-surface);
+    border-color: var(--jl-border);
+    color: var(--jl-text-dim);
 }
 
-.jobslauncher-font-mono {
-    font-family: monospace;
-}
 
-.jobslauncher-cron-description {
-    font-style: italic;
-    color: #555;
-}
+/* ============================================================
+   Preview de parametros en Templates
+   ============================================================ */
 
-.jobslauncher-cron-executions-preview {
-    margin-top: 10px;
-    max-height: 150px;
+.jobslauncher-params-preview {
+    max-height: 300px;
     overflow-y: auto;
+    background-color: var(--jl-pre-bg);
+    border: 1px solid var(--jl-border);
+    border-radius: var(--jl-radius);
+    padding: 10px;
+    font-family: var(--jl-font-mono);
+    font-size: 12px;
+    color: #a8d8a8;
+}
+
+    .jobslauncher-params-preview::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .jobslauncher-params-preview::-webkit-scrollbar-track {
+        background: var(--jl-surface-2);
+    }
+
+    .jobslauncher-params-preview::-webkit-scrollbar-thumb {
+        background: var(--jl-border-light);
+        border-radius: 2px;
+    }
+
+
+/* ============================================================
+   Tablas (para History y Audit si aplica)
+   ============================================================ */
+
+.jobslauncher-dark .table {
+    color: var(--jl-text);
+}
+
+    .jobslauncher-dark .table > thead > tr > th {
+        background-color: var(--jl-surface-2);
+        border-bottom: 2px solid var(--jl-border);
+        color: var(--jl-text-muted);
+        font-size: 11px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        font-weight: 700;
+    }
+
+    .jobslauncher-dark .table > tbody > tr > td {
+        border-top: 1px solid var(--jl-border);
+        vertical-align: middle;
+        font-size: 13px;
+    }
+
+    .jobslauncher-dark .table > tbody > tr:hover > td {
+        background-color: var(--jl-surface-2);
+    }
+
+.jobslauncher-dark .table-bordered {
+    border-color: var(--jl-border);
+}
+
+    .jobslauncher-dark .table-bordered > thead > tr > th,
+    .jobslauncher-dark .table-bordered > tbody > tr > td {
+        border-color: var(--jl-border);
+    }
+
+
+/* ============================================================
+   Separador visual entre secciones del panel
+   ============================================================ */
+
+.jobslauncher-dark hr {
+    border-color: var(--jl-border);
+    margin: 14px 0;
+}
+
+
+/* ============================================================
+   Badges y labels Bootstrap
+   ============================================================ */
+
+.jobslauncher-dark .label-default {
+    background-color: var(--jl-surface-3);
+    color: var(--jl-text);
+}
+
+.jobslauncher-dark .label-success {
+    background-color: var(--jl-success);
+}
+
+.jobslauncher-dark .label-warning {
+    background-color: var(--jl-warning);
+}
+
+.jobslauncher-dark .label-danger {
+    background-color: var(--jl-danger);
+}
+
+.jobslauncher-dark .label-info {
+    background-color: var(--jl-info);
+}
+
+.jobslauncher-dark .label-primary {
+    background-color: var(--jl-primary);
+}
+
+
+/* ============================================================
+   Scrollbar global dentro del contenedor dark
+   ============================================================ */
+
+.jobslauncher-dark ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.jobslauncher-dark ::-webkit-scrollbar-track {
+    background: var(--jl-surface);
+}
+
+.jobslauncher-dark ::-webkit-scrollbar-thumb {
+    background: var(--jl-border-light);
+    border-radius: 3px;
+}
+
+    .jobslauncher-dark ::-webkit-scrollbar-thumb:hover {
+        background: var(--jl-text-dim);
+    }
+
+
+/* ============================================================
+   JobLauncher Dashboard - Estilos adicionales
+   Complementa jobslauncher-dark.css
+   Cubre: TemplatesTab, AuditLogTab, CriticalConfirmModal,
+   pagina principal y elementos no incluidos antes
+   ============================================================ */
+
+
+/* ============================================================
+   Boton danger (faltaba en el CSS base)
+   ============================================================ */
+
+.jobslauncher-dark .btn-danger {
+    background-color: var(--jl-danger);
+    border-color: var(--jl-danger);
+    color: #fff;
+}
+
+    .jobslauncher-dark .btn-danger:hover,
+    .jobslauncher-dark .btn-danger:focus {
+        background-color: #f06060;
+        border-color: #f06060;
+        color: #fff;
+        box-shadow: 0 0 0 3px rgba(224, 82, 82, 0.25);
+    }
+
+
+/* ============================================================
+   Input small y btn-xs dentro del tab de audit
+   ============================================================ */
+
+.jobslauncher-dark .input-sm {
+    font-size: 12px;
+    height: 30px;
+    padding: 4px 8px;
+    background-color: var(--jl-input-bg);
+    border: 1px solid var(--jl-border);
+    border-radius: var(--jl-radius);
+    color: var(--jl-text);
+    box-shadow: none;
+    transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+    .jobslauncher-dark .input-sm:focus {
+        background-color: var(--jl-input-focus);
+        border-color: var(--jl-primary);
+        color: var(--jl-text);
+        box-shadow: 0 0 0 2px rgba(108, 138, 255, 0.18);
+        outline: none;
+    }
+
+    .jobslauncher-dark .input-sm::placeholder {
+        color: var(--jl-text-dim);
+    }
+
+
+/* ============================================================
+   Input tipo file
+   ============================================================ */
+
+.jobslauncher-dark input[type="file"] {
+    color: var(--jl-text-muted);
+    font-size: 13px;
+    display: block;
+    width: 100%;
+    margin-bottom: 4px;
+}
+
+    .jobslauncher-dark input[type="file"]::file-selector-button {
+        background-color: var(--jl-surface-3);
+        border: 1px solid var(--jl-border);
+        border-radius: var(--jl-radius);
+        color: var(--jl-text);
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 3px 10px;
+        margin-right: 8px;
+        transition: background-color 0.18s, border-color 0.18s;
+    }
+
+        .jobslauncher-dark input[type="file"]::file-selector-button:hover {
+            background-color: var(--jl-surface-2);
+            border-color: var(--jl-border-light);
+        }
+
+
+/* ============================================================
+   Tabla condensada (templates y audit log)
+   ============================================================ */
+
+.jobslauncher-dark .table-condensed > thead > tr > th {
+    padding: 6px 8px;
+}
+
+.jobslauncher-dark .table-condensed > tbody > tr > td {
+    padding: 5px 8px;
     font-size: 12px;
 }
 
-/* Ajustes para checkboxes en el generador de Cron */
-.jobslauncher-no-margin .col-xs-3,
-.jobslauncher-no-margin .col-xs-4,
-.jobslauncher-no-margin .col-xs-6 {
-    /* Las columnas dentro de filas sin margen se comportan normalmente */
+.jobslauncher-dark .table-condensed .btn-xs {
+    font-size: 11px;
+    padding: 2px 7px;
+    line-height: 1.4;
+    white-space: nowrap;
 }
+
+
+/* ============================================================
+   Informacion de paginacion del Audit Log
+   ============================================================ */
+
+#auditPageInfo {
+    color: var(--jl-text-muted);
+    font-size: 12px;
+    line-height: 28px;
+    display: inline-block;
+}
+
+
+/* ============================================================
+   dl-horizontal del modal de preview de plantilla
+   ============================================================ */
+
+.jobslauncher-dark dl.dl-horizontal dt {
+    color: var(--jl-text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.jobslauncher-dark dl.dl-horizontal dd {
+    color: var(--jl-text);
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+    .jobslauncher-dark dl.dl-horizontal dd pre {
+        margin-top: 4px;
+    }
+
+
+/* ============================================================
+   Texto resaltado (strong) dentro de modales dark
+   ============================================================ */
+
+.jobslauncher-dark strong {
+    color: var(--jl-text);
+    font-weight: 700;
+}
+
+
+/* ============================================================
+   Parrafo de ayuda en el panel Manage de Templates
+   ============================================================ */
+
+.jobslauncher-dark .panel-body > p > small {
+    color: var(--jl-text-muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+    .jobslauncher-dark .panel-body > p > small em {
+        color: var(--jl-info);
+        font-style: normal;
+    }
+
+    .jobslauncher-dark .panel-body > p > small strong {
+        color: var(--jl-text);
+    }
+
+
+/* ============================================================
+   Fila de filtros del Audit Log
+   ============================================================ */
+
+.jobslauncher-audit-filters-row .btn-sm {
+    height: 30px;
+    line-height: 1;
+    vertical-align: top;
+}
+
+
+/* ============================================================
+   Fila de paginacion del Audit Log
+   ============================================================ */
+
+.jobslauncher-audit-pagination {
+    margin-top: 8px;
+    align-items: center;
+}
+
+    .jobslauncher-audit-pagination .text-right {
+        display: flex;
+        justify-content: flex-end;
+        gap: 4px;
+    }
+
+
+/* ============================================================
+   Modal de confirm critico - resumen del job
+   ============================================================ */
+
+.jobslauncher-dark #criticalConfirmModal .modal-body p {
+    color: var(--jl-text);
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.jobslauncher-dark #criticalJobSummary {
+    font-size: 11px;
+    line-height: 1.7;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+
+/* ============================================================
+   Nav tabs principal de la pagina (nivel raiz)
+   ============================================================ */
+
+.jobslauncher-page-wrapper {
+    padding-top: 10px;
+}
+
+    .jobslauncher-page-wrapper > .nav-tabs {
+        border-bottom: 1px solid var(--jl-border);
+        margin-bottom: 0;
+        background-color: var(--jl-surface-2);
+        padding: 0 4px;
+        border-radius: var(--jl-radius) var(--jl-radius) 0 0;
+    }
+
+        .jobslauncher-page-wrapper > .nav-tabs > li > a {
+            color: var(--jl-text-muted);
+            background-color: transparent;
+            border: 1px solid transparent;
+            border-radius: var(--jl-radius) var(--jl-radius) 0 0;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            padding: 9px 18px;
+            margin-right: 2px;
+            transition: color 0.18s, background-color 0.18s;
+        }
+
+            .jobslauncher-page-wrapper > .nav-tabs > li > a:hover {
+                color: var(--jl-text);
+                background-color: var(--jl-surface-3);
+                border-color: var(--jl-border) var(--jl-border) transparent;
+            }
+
+        .jobslauncher-page-wrapper > .nav-tabs > li.active > a,
+        .jobslauncher-page-wrapper > .nav-tabs > li.active > a:hover,
+        .jobslauncher-page-wrapper > .nav-tabs > li.active > a:focus {
+            background-color: var(--jl-surface);
+            border-color: var(--jl-border) var(--jl-border) var(--jl-surface);
+            color: var(--jl-primary);
+        }
+
+    .jobslauncher-page-wrapper > .tab-content {
+        background-color: var(--jl-surface);
+        border: 1px solid var(--jl-border);
+        border-top: none;
+        border-radius: 0 0 var(--jl-radius) var(--jl-radius);
+        padding: 20px;
+    }
+
+/* ============================================================
+   JobLauncher Dashboard - Estilos adicionales para HistoryTab
+   ============================================================ */
+
+/* Informacion de paginacion del History (mismo patron que auditPageInfo) */
+#historyPageInfo {
+    color: var(--jl-text-muted);
+    font-size: 12px;
+    line-height: 28px;
+    display: inline-block;
+}
+
+/* Lista dentro del alert informativo del History */
+.jobslauncher-dark .alert ul {
+    margin-top: 6px;
+    padding-left: 20px;
+}
+
+    .jobslauncher-dark .alert ul li {
+        color: inherit;
+        font-size: 13px;
+        margin-bottom: 3px;
+        line-height: 1.5;
+    }

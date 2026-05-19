@@ -82,74 +82,86 @@ WriteLiteral(@"'
     })();
 </script>
 
-<ul class=""nav nav-tabs"" role=""tablist"">
-    <li role=""presentation"" class=""active""><a href=""#launchTab"" aria-controls=""launchTab"" role=""tab"" data-toggle=""tab"">Launch</a></li>
-    <li role=""presentation""><a href=""#historyTab"" aria-controls=""historyTab"" role=""tab"" data-toggle=""tab"">History</a></li>
-    <li role=""presentation""><a href=""#templatesTab"" aria-controls=""templatesTab"" role=""tab"" data-toggle=""tab"">Templates</a></li>
-    <li role=""presentation"" id=""auditLogTab"" class=""jobslauncher-hidden""><a href=""#auditLogPane"" aria-controls=""auditLogPane"" role=""tab"" data-toggle=""tab"">Audit Log</a></li>
-</ul>
+<div class=""jobslauncher-dark jobslauncher-page-wrapper"">
 
-<div class=""tab-content jobslauncher-tab-content"">
-    ");
+    <ul class=""nav nav-tabs"" role=""tablist"">
+        <li role=""presentation"" class=""active"">
+            <a href=""#launchTab"" aria-controls=""launchTab"" role=""tab"" data-toggle=""tab"">Launch</a>
+        </li>
+        <li role=""presentation"">
+            <a href=""#historyTab"" aria-controls=""historyTab"" role=""tab"" data-toggle=""tab"">History</a>
+        </li>
+        <li role=""presentation"">
+            <a href=""#templatesTab"" aria-controls=""templatesTab"" role=""tab"" data-toggle=""tab"">Templates</a>
+        </li>
+        <li role=""presentation"" id=""auditLogTab"" class=""jobslauncher-hidden"">
+            <a href=""#auditLogPane"" aria-controls=""auditLogPane"" role=""tab"" data-toggle=""tab"">Audit Log</a>
+        </li>
+    </ul>
 
-
-            
-            #line 28 "..\..\Pages\JobLauncherPage.cshtml"
-Write(Html.RenderPartial(new _LaunchTab()));
-
-            
-            #line default
-            #line hidden
-WriteLiteral("\r\n    ");
-
-
-            
-            #line 29 "..\..\Pages\JobLauncherPage.cshtml"
-Write(Html.RenderPartial(new _HistoryTab()));
-
-            
-            #line default
-            #line hidden
-WriteLiteral("\r\n    ");
+    <div class=""tab-content jobslauncher-tab-content"">
+        ");
 
 
             
-            #line 30 "..\..\Pages\JobLauncherPage.cshtml"
-Write(Html.RenderPartial(new _TemplatesTab()));
+            #line 38 "..\..\Pages\JobLauncherPage.cshtml"
+   Write(Html.RenderPartial(new _LaunchTab()));
 
             
             #line default
             #line hidden
-WriteLiteral("\r\n    ");
+WriteLiteral("\r\n        ");
 
 
             
-            #line 31 "..\..\Pages\JobLauncherPage.cshtml"
-Write(Html.RenderPartial(new _AuditLogTab()));
+            #line 39 "..\..\Pages\JobLauncherPage.cshtml"
+   Write(Html.RenderPartial(new _HistoryTab()));
 
             
             #line default
             #line hidden
-WriteLiteral("\r\n</div>\r\n\r\n");
+WriteLiteral("\r\n        ");
 
 
             
-            #line 34 "..\..\Pages\JobLauncherPage.cshtml"
+            #line 40 "..\..\Pages\JobLauncherPage.cshtml"
+   Write(Html.RenderPartial(new _TemplatesTab()));
+
+            
+            #line default
+            #line hidden
+WriteLiteral("\r\n        ");
+
+
+            
+            #line 41 "..\..\Pages\JobLauncherPage.cshtml"
+   Write(Html.RenderPartial(new _AuditLogTab()));
+
+            
+            #line default
+            #line hidden
+WriteLiteral("\r\n    </div>\r\n\r\n    ");
+
+
+            
+            #line 44 "..\..\Pages\JobLauncherPage.cshtml"
 Write(Html.RenderPartial(new _CronGeneratorModal()));
 
             
             #line default
             #line hidden
-WriteLiteral("\r\n");
+WriteLiteral("\r\n    ");
 
 
             
-            #line 35 "..\..\Pages\JobLauncherPage.cshtml"
+            #line 45 "..\..\Pages\JobLauncherPage.cshtml"
 Write(Html.RenderPartial(new _CriticalConfirmModal()));
 
             
             #line default
             #line hidden
+WriteLiteral("\r\n\r\n</div>\r\n");
+
 
         }
     }

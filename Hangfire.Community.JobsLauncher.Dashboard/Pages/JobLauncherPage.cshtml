@@ -17,19 +17,31 @@
     })();
 </script>
 
-<ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#launchTab" aria-controls="launchTab" role="tab" data-toggle="tab">Launch</a></li>
-    <li role="presentation"><a href="#historyTab" aria-controls="historyTab" role="tab" data-toggle="tab">History</a></li>
-    <li role="presentation"><a href="#templatesTab" aria-controls="templatesTab" role="tab" data-toggle="tab">Templates</a></li>
-    <li role="presentation" id="auditLogTab" class="jobslauncher-hidden"><a href="#auditLogPane" aria-controls="auditLogPane" role="tab" data-toggle="tab">Audit Log</a></li>
-</ul>
+<div class="jobslauncher-dark jobslauncher-page-wrapper">
 
-<div class="tab-content jobslauncher-tab-content">
-    @Html.RenderPartial(new _LaunchTab())
-    @Html.RenderPartial(new _HistoryTab())
-    @Html.RenderPartial(new _TemplatesTab())
-    @Html.RenderPartial(new _AuditLogTab())
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active">
+            <a href="#launchTab" aria-controls="launchTab" role="tab" data-toggle="tab">Launch</a>
+        </li>
+        <li role="presentation">
+            <a href="#historyTab" aria-controls="historyTab" role="tab" data-toggle="tab">History</a>
+        </li>
+        <li role="presentation">
+            <a href="#templatesTab" aria-controls="templatesTab" role="tab" data-toggle="tab">Templates</a>
+        </li>
+        <li role="presentation" id="auditLogTab" class="jobslauncher-hidden">
+            <a href="#auditLogPane" aria-controls="auditLogPane" role="tab" data-toggle="tab">Audit Log</a>
+        </li>
+    </ul>
+
+    <div class="tab-content jobslauncher-tab-content">
+        @Html.RenderPartial(new _LaunchTab())
+        @Html.RenderPartial(new _HistoryTab())
+        @Html.RenderPartial(new _TemplatesTab())
+        @Html.RenderPartial(new _AuditLogTab())
+    </div>
+
+    @Html.RenderPartial(new _CronGeneratorModal())
+    @Html.RenderPartial(new _CriticalConfirmModal())
+
 </div>
-
-@Html.RenderPartial(new _CronGeneratorModal())
-@Html.RenderPartial(new _CriticalConfirmModal())

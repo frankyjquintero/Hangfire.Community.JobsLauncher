@@ -42,103 +42,109 @@ WriteLiteral("\r\n");
 
 
 
-WriteLiteral("<div role=\"tabpanel\" class=\"tab-pane fade in active\" id=\"launchTab\">\r\n    <div cl" +
-"ass=\"row\">\r\n        <div class=\"col-md-6\">\r\n            <div class=\"panel panel-" +
-"default\">\r\n                <div class=\"panel-heading\">Job Configuration</div>\r\n " +
-"               <div class=\"panel-body\">\r\n                    <div class=\"form-gr" +
-"oup\">\r\n                        <label>Mode</label>\r\n                        <div" +
-">\r\n                            <label class=\"radio-inline\"><input type=\"radio\" n" +
-"ame=\"launchMode\" value=\"assisted\" checked> Assisted (assembly)</label>\r\n        " +
-"                    <label class=\"radio-inline\"><input type=\"radio\" name=\"launch" +
-"Mode\" value=\"manual\"> Manual (JSON)</label>\r\n                        </div>\r\n   " +
-"                 </div>\r\n                    <div id=\"assistedFields\">\r\n        " +
-"                <div class=\"form-group\">\r\n                            <label>Cla" +
-"ss Name</label>\r\n                            <div class=\"input-group\">\r\n        " +
-"                        <input type=\"text\" id=\"classNameAssisted\" class=\"form-co" +
-"ntrol\" placeholder=\"Namespace.ClassName\">\r\n                                <span" +
-" class=\"input-group-btn\"><button class=\"btn btn-default\" id=\"btnLoadMethods\" typ" +
-"e=\"button\">Load Methods</button></span>\r\n                            </div>\r\n   " +
-"                     </div>\r\n                        <div class=\"form-group jobs" +
-"launcher-hidden\" id=\"methodSelectGroup\">\r\n                            <label>Met" +
-"hod</label>\r\n                            <select id=\"methodSelect\" class=\"form-c" +
-"ontrol\"><option value=\"\">-- Select method --</option></select>\r\n                " +
-"        </div>\r\n                        <div id=\"paramsContainer\"></div>\r\n      " +
-"              </div>\r\n                    <div id=\"manualFields\" class=\"jobslaun" +
-"cher-hidden\">\r\n                        <div class=\"form-group\">\r\n               " +
-"             <label>Class Name</label>\r\n                            <input type=" +
-"\"text\" id=\"classNameManual\" class=\"form-control\" placeholder=\"Namespace.ClassNam" +
-"e\">\r\n                        </div>\r\n                        <div class=\"form-gr" +
-"oup\">\r\n                            <label>Method Name</label>\r\n                 " +
-"           <input type=\"text\" id=\"methodNameManual\" class=\"form-control\" placeho" +
-"lder=\"MethodName\">\r\n                        </div>\r\n                        <div" +
-" class=\"form-group\">\r\n                            <label>Parameters (JSON)</labe" +
-"l>\r\n                            <textarea id=\"jsonParams\" class=\"form-control\" r" +
-"ows=\"6\"\r\n                                      placeholder=\'{\"to\":\"email@example" +
-".com\",\"subject\":\"Test\"}\'></textarea>\r\n                            <div class=\"he" +
-"lp-block\">\r\n                                <button type=\"button\" class=\"btn btn" +
-"-xs btn-default\" id=\"validateJsonBtn\">Validate</button>\r\n                       " +
-"         <button type=\"button\" class=\"btn btn-xs btn-default\" id=\"formatJsonBtn\"" +
-">Format</button>\r\n                                <button type=\"button\" class=\"b" +
-"tn btn-xs btn-info\" id=\"suggestJsonBtn\">Suggest JSON</button>\r\n                 " +
-"               <span id=\"jsonValidationMsg\" class=\"text-danger jobslauncher-hidd" +
-"en\">Invalid JSON</span>\r\n                            </div>\r\n                   " +
-"     </div>\r\n                    </div>\r\n                    <div class=\"form-gr" +
-"oup\">\r\n                        <a role=\"button\" data-toggle=\"collapse\" href=\"#ad" +
-"vancedOptions\" aria-expanded=\"false\">Advanced options ▾</a>\r\n                   " +
-"     <div class=\"collapse jobslauncher-mt-5\" id=\"advancedOptions\">\r\n            " +
-"                <div class=\"checkbox\">\r\n                                <label><" +
-"input type=\"checkbox\" id=\"chkPerformContext\"> Include PerformContext</label>\r\n  " +
-"                          </div>\r\n                            <div class=\"checkb" +
-"ox\">\r\n                                <label><input type=\"checkbox\" id=\"chkCance" +
-"llationToken\"> Include CancellationToken</label>\r\n                            </" +
-"div>\r\n                        </div>\r\n                    </div>\r\n              " +
-"      <div class=\"form-group\">\r\n                        <label>Execution Mode</l" +
-"abel>\r\n                        <div id=\"executionModeGroup\">\r\n                  " +
-"          <label class=\"radio-inline\"><input type=\"radio\" name=\"execMode\" value=" +
-"\"FireAndForget\" checked> Fire & Forget</label>\r\n                            <lab" +
-"el class=\"radio-inline\"><input type=\"radio\" name=\"execMode\" value=\"Schedule\"> Sc" +
-"hedule (minutes)</label>\r\n                            <label class=\"radio-inline" +
-"\"><input type=\"radio\" name=\"execMode\" value=\"ScheduleDateTime\"> Schedule (date)<" +
+WriteLiteral("<div role=\"tabpanel\" class=\"tab-pane fade in active jobslauncher-dark\" id=\"launch" +
+"Tab\">\r\n    <div class=\"row\">\r\n        <div class=\"col-md-6\">\r\n            <div c" +
+"lass=\"panel panel-default\">\r\n                <div class=\"panel-heading\">Job Conf" +
+"iguration</div>\r\n                <div class=\"panel-body\">\r\n\r\n                   " +
+" <div class=\"form-group\">\r\n                        <label>Mode</label>\r\n        " +
+"                <div>\r\n                            <label class=\"radio-inline\">\r" +
+"\n                                <input type=\"radio\" name=\"launchMode\" value=\"as" +
+"sisted\" checked> Assisted (assembly)\r\n                            </label>\r\n    " +
+"                        <label class=\"radio-inline\">\r\n                          " +
+"      <input type=\"radio\" name=\"launchMode\" value=\"manual\"> Manual (JSON)\r\n     " +
+"                       </label>\r\n                        </div>\r\n               " +
+"     </div>\r\n\r\n                    <div id=\"assistedFields\">\r\n                  " +
+"      <div class=\"form-group\">\r\n                            <label>Class Name</l" +
+"abel>\r\n                            <div class=\"input-group\">\r\n                  " +
+"              <input type=\"text\" id=\"classNameAssisted\" class=\"form-control\" pla" +
+"ceholder=\"Namespace.ClassName\">\r\n                                <span class=\"in" +
+"put-group-btn\">\r\n                                    <button class=\"btn btn-defa" +
+"ult\" id=\"btnLoadMethods\" type=\"button\">Load Methods</button>\r\n                  " +
+"              </span>\r\n                            </div>\r\n                     " +
+"   </div>\r\n                        <div class=\"form-group jobslauncher-hidden\" i" +
+"d=\"methodSelectGroup\">\r\n                            <label>Method</label>\r\n     " +
+"                       <select id=\"methodSelect\" class=\"form-control\">\r\n        " +
+"                        <option value=\"\">-- Select method --</option>\r\n         " +
+"                   </select>\r\n                        </div>\r\n                  " +
+"      <div id=\"paramsContainer\"></div>\r\n                    </div>\r\n\r\n          " +
+"          <div id=\"manualFields\" class=\"jobslauncher-hidden\">\r\n                 " +
+"       <div class=\"form-group\">\r\n                            <label>Class Name</" +
+"label>\r\n                            <input type=\"text\" id=\"classNameManual\" clas" +
+"s=\"form-control\" placeholder=\"Namespace.ClassName\">\r\n                        </d" +
+"iv>\r\n                        <div class=\"form-group\">\r\n                         " +
+"   <label>Method Name</label>\r\n                            <input type=\"text\" id" +
+"=\"methodNameManual\" class=\"form-control\" placeholder=\"MethodName\">\r\n            " +
+"            </div>\r\n                        <div class=\"form-group\">\r\n          " +
+"                  <label>Parameters (JSON)</label>\r\n                            " +
+"<textarea id=\"jsonParams\" class=\"form-control\" rows=\"6\"\r\n                       " +
+"               placeholder=\'{\"to\":\"email@example.com\",\"subject\":\"Test\"}\'></texta" +
+"rea>\r\n                            <div class=\"help-block\">\r\n                    " +
+"            <button type=\"button\" class=\"btn btn-xs btn-default\" id=\"validateJso" +
+"nBtn\">Validate</button>\r\n                                <button type=\"button\" c" +
+"lass=\"btn btn-xs btn-default\" id=\"formatJsonBtn\">Format</button>\r\n              " +
+"                  <button type=\"button\" class=\"btn btn-xs btn-info\" id=\"suggestJ" +
+"sonBtn\">Suggest JSON</button>\r\n                                <span id=\"jsonVal" +
+"idationMsg\" class=\"text-danger jobslauncher-hidden\">Invalid JSON</span>\r\n       " +
+"                     </div>\r\n                        </div>\r\n                   " +
+" </div>\r\n\r\n                    <div class=\"form-group\">\r\n                       " +
+" <a role=\"button\" data-toggle=\"collapse\" href=\"#advancedOptions\" aria-expanded=\"" +
+"false\">\r\n                            Advanced options\r\n                        <" +
+"/a>\r\n                        <div class=\"collapse jobslauncher-mt-5\" id=\"advance" +
+"dOptions\">\r\n                            <div class=\"checkbox\">\r\n                " +
+"                <label><input type=\"checkbox\" id=\"chkPerformContext\"> Include Pe" +
+"rformContext</label>\r\n                            </div>\r\n                      " +
+"      <div class=\"checkbox\">\r\n                                <label><input type" +
+"=\"checkbox\" id=\"chkCancellationToken\"> Include CancellationToken</label>\r\n      " +
+"                      </div>\r\n                        </div>\r\n                  " +
+"  </div>\r\n\r\n                    <div class=\"form-group\">\r\n                      " +
+"  <label>Execution Mode</label>\r\n                        <div id=\"executionModeG" +
+"roup\">\r\n                            <label class=\"radio-inline\"><input type=\"rad" +
+"io\" name=\"execMode\" value=\"FireAndForget\" checked> Fire &amp; Forget</label>\r\n  " +
+"                          <label class=\"radio-inline\"><input type=\"radio\" name=\"" +
+"execMode\" value=\"Schedule\"> Schedule (minutes)</label>\r\n                        " +
+"    <label class=\"radio-inline\"><input type=\"radio\" name=\"execMode\" value=\"Sched" +
+"uleDateTime\"> Schedule (date)</label>\r\n                            <label class=" +
+"\"radio-inline\"><input type=\"radio\" name=\"execMode\" value=\"Recurring\"> Recurring<" +
 "/label>\r\n                            <label class=\"radio-inline\"><input type=\"ra" +
-"dio\" name=\"execMode\" value=\"Recurring\"> Recurring</label>\r\n                     " +
-"       <label class=\"radio-inline\"><input type=\"radio\" name=\"execMode\" value=\"Co" +
-"ntinuation\"> Continuation</label>\r\n                        </div>\r\n             " +
-"       </div>\r\n                    <div id=\"scheduleFields\" class=\"jobslauncher-" +
-"hidden\">\r\n                        <div class=\"form-group\">\r\n                    " +
-"        <label>Delay (minutes)</label>\r\n                            <input type=" +
-"\"number\" id=\"delayMinutes\" class=\"form-control\" min=\"1\" value=\"30\">\r\n           " +
-"             </div>\r\n                    </div>\r\n                    <div id=\"sc" +
-"heduleDateTimeFields\" class=\"jobslauncher-hidden\">\r\n                        <div" +
-" class=\"form-group\">\r\n                            <label>Scheduled Date (UTC)</l" +
-"abel>\r\n                            <input type=\"datetime-local\" id=\"scheduledDat" +
-"eTime\" class=\"form-control\">\r\n                        </div>\r\n                  " +
-"  </div>\r\n                    <div id=\"recurringFields\" class=\"jobslauncher-hidd" +
+"dio\" name=\"execMode\" value=\"Continuation\"> Continuation</label>\r\n               " +
+"         </div>\r\n                    </div>\r\n\r\n                    <div id=\"sche" +
+"duleFields\" class=\"jobslauncher-hidden\">\r\n                        <div class=\"fo" +
+"rm-group\">\r\n                            <label>Delay (minutes)</label>\r\n        " +
+"                    <input type=\"number\" id=\"delayMinutes\" class=\"form-control\" " +
+"min=\"1\" value=\"30\">\r\n                        </div>\r\n                    </div>\r" +
+"\n\r\n                    <div id=\"scheduleDateTimeFields\" class=\"jobslauncher-hidd" +
 "en\">\r\n                        <div class=\"form-group\">\r\n                        " +
-"    <label>Cron Expression</label>\r\n                            <div class=\"inpu" +
-"t-group\">\r\n                                <input type=\"text\" id=\"cronExpression" +
-"\" class=\"form-control\" placeholder=\"* * * * *\">\r\n                               " +
-" <span class=\"input-group-btn\">\r\n                                    <button cla" +
-"ss=\"btn btn-default\" id=\"btnValidateCron\" type=\"button\">Validate</button>\r\n     " +
-"                               <button type=\"button\" class=\"btn btn-default\" id=" +
-"\"btnOpenCronGenerator\">Generate</button>\r\n                                </span" +
-">\r\n                            </div>\r\n                            <div id=\"cron" +
-"Preview\" class=\"jobslauncher-cron-preview text-info\"></div>\r\n                   " +
-"     </div>\r\n                        <div class=\"form-group\" id=\"recurringEngine" +
-"Group\">\r\n                            <label>Recurring Engine</label>\r\n          " +
-"                  <select id=\"recurringEngine\" class=\"form-control\"></select>\r\n " +
-"                           <span id=\"dynamicJobsWarning\" class=\"text-warning job" +
-"slauncher-hidden\">DynamicJobs no está instalado en el dashboard o workers.</span" +
-">\r\n                        </div>\r\n                    </div>\r\n                 " +
-"   <div id=\"continuationFields\" class=\"jobslauncher-hidden\">\r\n                  " +
-"      <div class=\"form-group\">\r\n                            <label>Parent Job Id" +
-"</label>\r\n                            <input type=\"text\" id=\"parentJobId\" class=" +
-"\"form-control\" placeholder=\"job-id\">\r\n                        </div>\r\n          " +
-"          </div>\r\n                    <div class=\"form-group\">\r\n                " +
-"        <label>Queue</label>\r\n                        <input type=\"text\" id=\"que" +
-"ue\" class=\"form-control\" list=\"queueList\" value=\"default\">\r\n                    " +
-"    <datalist id=\"queueList\"></datalist>\r\n                        <span id=\"crit" +
-"icalQueueWarning\" class=\"text-warning jobslauncher-hidden\">⚠ Esta cola requiere " +
-"confirmación.</span>\r\n                    </div>\r\n                </div>\r\n      " +
+"    <label>Scheduled Date (UTC)</label>\r\n                            <input type" +
+"=\"datetime-local\" id=\"scheduledDateTime\" class=\"form-control\">\r\n                " +
+"        </div>\r\n                    </div>\r\n\r\n                    <div id=\"recur" +
+"ringFields\" class=\"jobslauncher-hidden\">\r\n                        <div class=\"fo" +
+"rm-group\">\r\n                            <label>Cron Expression</label>\r\n        " +
+"                    <div class=\"input-group\">\r\n                                <" +
+"input type=\"text\" id=\"cronExpression\" class=\"form-control\" placeholder=\"* * * * " +
+"*\">\r\n                                <span class=\"input-group-btn\">\r\n           " +
+"                         <button class=\"btn btn-default\" id=\"btnValidateCron\" ty" +
+"pe=\"button\">Validate</button>\r\n                                    <button type=" +
+"\"button\" class=\"btn btn-default\" id=\"btnOpenCronGenerator\">Generate</button>\r\n  " +
+"                              </span>\r\n                            </div>\r\n     " +
+"                       <div id=\"cronPreview\" class=\"jobslauncher-cron-preview te" +
+"xt-info\"></div>\r\n                        </div>\r\n                        <div cl" +
+"ass=\"form-group\" id=\"recurringEngineGroup\">\r\n                            <label>" +
+"Recurring Engine</label>\r\n                            <select id=\"recurringEngin" +
+"e\" class=\"form-control\"></select>\r\n                            <span id=\"dynamic" +
+"JobsWarning\" class=\"text-warning jobslauncher-hidden\">\r\n                        " +
+"        DynamicJobs no esta instalado en el dashboard o workers.\r\n              " +
+"              </span>\r\n                        </div>\r\n                    </div" +
+">\r\n\r\n                    <div id=\"continuationFields\" class=\"jobslauncher-hidden" +
+"\">\r\n                        <div class=\"form-group\">\r\n                          " +
+"  <label>Parent Job Id</label>\r\n                            <input type=\"text\" i" +
+"d=\"parentJobId\" class=\"form-control\" placeholder=\"job-id\">\r\n                    " +
+"    </div>\r\n                    </div>\r\n\r\n                    <div class=\"form-g" +
+"roup\">\r\n                        <label>Queue</label>\r\n                        <i" +
+"nput type=\"text\" id=\"queue\" class=\"form-control\" list=\"queueList\" value=\"default" +
+"\">\r\n                        <datalist id=\"queueList\"></datalist>\r\n              " +
+"          <span id=\"criticalQueueWarning\" class=\"text-warning jobslauncher-hidde" +
+"n\">\r\n                            Esta cola requiere confirmacion.\r\n             " +
+"           </span>\r\n                    </div>\r\n\r\n                </div>\r\n      " +
 "      </div>\r\n        </div>\r\n        <div class=\"col-md-6\">\r\n            <div c" +
 "lass=\"panel panel-default\">\r\n                <div class=\"panel-heading\">Actions<" +
 "/div>\r\n                <div class=\"panel-body\">\r\n                    <button typ" +
@@ -150,8 +156,8 @@ WriteLiteral("<div role=\"tabpanel\" class=\"tab-pane fade in active\" id=\"laun
 "-launch-result\"></div>\r\n                </div>\r\n            </div>\r\n            " +
 "<div class=\"panel panel-default jobslauncher-hidden\" id=\"previewPanel\">\r\n       " +
 "         <div class=\"panel-heading\">Preview</div>\r\n                <div class=\"p" +
-"anel-body\"><pre id=\"previewContent\"></pre></div>\r\n            </div>\r\n        </" +
-"div>\r\n    </div>\r\n</div>");
+"anel-body\">\r\n                    <pre id=\"previewContent\"></pre>\r\n              " +
+"  </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n");
 
 
         }

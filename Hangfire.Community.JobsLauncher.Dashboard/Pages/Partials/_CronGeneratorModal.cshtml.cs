@@ -42,215 +42,220 @@ WriteLiteral("\r\n");
 
 
 
-WriteLiteral("<div class=\"modal fade\" id=\"cronGeneratorModal\" tabindex=\"-1\" role=\"dialog\">\r\n   " +
-" <div class=\"modal-dialog modal-lg\" role=\"document\">\r\n        <div class=\"modal-" +
-"content\">\r\n            <div class=\"modal-header jobslauncher-cron-modal-header\">" +
-"\r\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&time" +
-"s;</button>\r\n                <h4 class=\"modal-title\"><i class=\"glyphicon glyphic" +
-"on-time\"></i> Cron Expression Generator</h4>\r\n            </div>\r\n            <d" +
-"iv class=\"modal-body jobslauncher-cron-modal-body\">\r\n                <div class=" +
-"\"row\">\r\n                    <div class=\"col-md-7\">\r\n                        <ul " +
-"class=\"nav nav-tabs jobslauncher-cron-tabs\" role=\"tablist\">\r\n                   " +
-"         <li role=\"presentation\" class=\"active\"><a href=\"#tabMinutes\" role=\"tab\"" +
-" data-toggle=\"tab\">Minutes</a></li>\r\n                            <li role=\"prese" +
-"ntation\"><a href=\"#tabHours\" role=\"tab\" data-toggle=\"tab\">Hours</a></li>\r\n      " +
-"                      <li role=\"presentation\"><a href=\"#tabDayMonth\" role=\"tab\" " +
-"data-toggle=\"tab\">Day of Month</a></li>\r\n                            <li role=\"p" +
-"resentation\"><a href=\"#tabMonth\" role=\"tab\" data-toggle=\"tab\">Month</a></li>\r\n  " +
-"                          <li role=\"presentation\"><a href=\"#tabDayWeek\" role=\"ta" +
-"b\" data-toggle=\"tab\">Day of Week</a></li>\r\n                        </ul>\r\n      " +
-"                  <div class=\"tab-content jobslauncher-cron-tab-content\">\r\n     " +
-"                       <!-- Pestaña Minutos -->\r\n                            <di" +
-"v role=\"tabpanel\" class=\"tab-pane active\" id=\"tabMinutes\">\r\n                    " +
-"            <div class=\"form-group\">\r\n                                    <label" +
-">Every N minutes</label>\r\n                                    <input type=\"numbe" +
-"r\" id=\"minEveryN\" class=\"form-control\" min=\"1\" value=\"1\" placeholder=\"N\">\r\n     " +
-"                           </div>\r\n                                <div class=\"f" +
-"orm-group\">\r\n                                    <label>Specific minutes (comma " +
-"separated)</label>\r\n                                    <input type=\"text\" id=\"m" +
-"inSpecific\" class=\"form-control\" placeholder=\"0,15,30,45\">\r\n                    " +
-"            </div>\r\n                                <div class=\"form-group\">\r\n  " +
-"                                  <label>Range (from - to)</label>\r\n            " +
-"                        <div class=\"row\">\r\n                                     " +
-"   <div class=\"col-xs-6\">\r\n                                            <input ty" +
-"pe=\"number\" id=\"minRangeFrom\" class=\"form-control\" min=\"0\" max=\"59\" value=\"0\" pl" +
-"aceholder=\"From\">\r\n                                        </div>\r\n             " +
-"                           <div class=\"col-xs-6\">\r\n                             " +
-"               <input type=\"number\" id=\"minRangeTo\" class=\"form-control\" min=\"0\"" +
-" max=\"59\" value=\"59\" placeholder=\"To\">\r\n                                        " +
-"</div>\r\n                                    </div>\r\n                            " +
-"    </div>\r\n                            </div>\r\n                            <!--" +
-" Pestaña Horas -->\r\n                            <div role=\"tabpanel\" class=\"tab-" +
-"pane\" id=\"tabHours\">\r\n                                <div class=\"form-group\">\r\n" +
-"                                    <label>Every N hours</label>\r\n              " +
-"                      <input type=\"number\" id=\"hourEveryN\" class=\"form-control\" " +
-"min=\"1\" value=\"1\" placeholder=\"N\">\r\n                                </div>\r\n    " +
-"                            <div class=\"form-group\">\r\n                          " +
-"          <label>Specific hours (comma separated)</label>\r\n                     " +
-"               <input type=\"text\" id=\"hourSpecific\" class=\"form-control\" placeho" +
-"lder=\"8,12,18\">\r\n                                </div>\r\n                       " +
-"         <div class=\"form-group\">\r\n                                    <label>Ra" +
-"nge (from - to)</label>\r\n                                    <div class=\"row\">\r\n" +
-"                                        <div class=\"col-xs-6\">\r\n                " +
-"                            <input type=\"number\" id=\"hourRangeFrom\" class=\"form-" +
-"control\" min=\"0\" max=\"23\" value=\"9\" placeholder=\"From\">\r\n                       " +
-"                 </div>\r\n                                        <div class=\"col" +
-"-xs-6\">\r\n                                            <input type=\"number\" id=\"ho" +
-"urRangeTo\" class=\"form-control\" min=\"0\" max=\"23\" value=\"17\" placeholder=\"To\">\r\n " +
-"                                       </div>\r\n                                 " +
-"   </div>\r\n                                </div>\r\n                            <" +
-"/div>\r\n                            <!-- Pestaña Día del mes -->\r\n               " +
-"             <div role=\"tabpanel\" class=\"tab-pane\" id=\"tabDayMonth\">\r\n          " +
-"                      <div class=\"form-group\">\r\n                                " +
-"    <label>Every day</label>\r\n                                    <input type=\"t" +
-"ext\" class=\"form-control\" value=\"*\" disabled>\r\n                                <" +
-"/div>\r\n                                <div class=\"form-group\">\r\n               " +
-"                     <label>Specific days (comma separated, e.g., 1,15)</label>\r" +
-"\n                                    <input type=\"text\" id=\"dayMonthSpecific\" cl" +
-"ass=\"form-control\" placeholder=\"1,15\">\r\n                                </div>\r\n" +
-"                                <div class=\"form-group\">\r\n                      " +
-"              <label>Every N days starting at day</label>\r\n                     " +
-"               <div class=\"row\">\r\n                                        <div c" +
-"lass=\"col-xs-6\">\r\n                                            <input type=\"numbe" +
-"r\" id=\"dayMonthEveryN\" class=\"form-control\" min=\"1\" value=\"1\" placeholder=\"N\">\r\n" +
-"                                        </div>\r\n                                " +
-"        <div class=\"col-xs-6\">\r\n                                            <inp" +
-"ut type=\"number\" id=\"dayMonthStart\" class=\"form-control\" min=\"1\" max=\"31\" value=" +
-"\"1\" placeholder=\"Start day\">\r\n                                        </div>\r\n  " +
-"                                  </div>\r\n                                </div>" +
-"\r\n                                <div class=\"form-group\">\r\n                    " +
-"                <label>Specific day of month (choose one or many)</label>\r\n     " +
-"                               <div class=\"row jobslauncher-no-margin\">\r\n       " +
-"                                 <div class=\"col-xs-3\"><label><input type=\"check" +
-"box\" class=\"day-month-check\" value=\"1\"> 01</label></div>\r\n                      " +
-"                  <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day" +
-"-month-check\" value=\"2\"> 02</label></div>\r\n                                     " +
-"   <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" v" +
-"alue=\"3\"> 03</label></div>\r\n                                        <div class=\"" +
-"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"4\"> 04</l" +
-"abel></div>\r\n                                        <div class=\"col-xs-3\"><labe" +
-"l><input type=\"checkbox\" class=\"day-month-check\" value=\"5\"> 05</label></div>\r\n  " +
-"                                      <div class=\"col-xs-3\"><label><input type=\"" +
-"checkbox\" class=\"day-month-check\" value=\"6\"> 06</label></div>\r\n                 " +
-"                       <div class=\"col-xs-3\"><label><input type=\"checkbox\" class" +
-"=\"day-month-check\" value=\"7\"> 07</label></div>\r\n                                " +
-"        <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-che" +
-"ck\" value=\"8\"> 08</label></div>\r\n                                        <div cl" +
-"ass=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"9\"> " +
-"09</label></div>\r\n                                        <div class=\"col-xs-3\">" +
-"<label><input type=\"checkbox\" class=\"day-month-check\" value=\"10\"> 10</label></di" +
-"v>\r\n                                        <div class=\"col-xs-3\"><label><input " +
-"type=\"checkbox\" class=\"day-month-check\" value=\"11\"> 11</label></div>\r\n          " +
+WriteLiteral("<div class=\"modal fade jobslauncher-dark\" id=\"cronGeneratorModal\" tabindex=\"-1\" r" +
+"ole=\"dialog\">\r\n    <div class=\"modal-dialog modal-lg\" role=\"document\">\r\n        " +
+"<div class=\"modal-content\">\r\n\r\n            <div class=\"modal-header jobslauncher" +
+"-cron-modal-header\">\r\n                <button type=\"button\" class=\"close\" data-d" +
+"ismiss=\"modal\">&times;</button>\r\n                <h4 class=\"modal-title\">\r\n     " +
+"               <i class=\"glyphicon glyphicon-time\"></i> Cron Expression Generato" +
+"r\r\n                </h4>\r\n            </div>\r\n\r\n            <div class=\"modal-bo" +
+"dy jobslauncher-cron-modal-body\">\r\n                <div class=\"row\">\r\n          " +
+"          <div class=\"col-md-7\">\r\n\r\n                        <ul class=\"nav nav-t" +
+"abs jobslauncher-cron-tabs\" role=\"tablist\">\r\n                            <li rol" +
+"e=\"presentation\" class=\"active\">\r\n                                <a href=\"#tabM" +
+"inutes\" role=\"tab\" data-toggle=\"tab\">Minutes</a>\r\n                            </" +
+"li>\r\n                            <li role=\"presentation\">\r\n                     " +
+"           <a href=\"#tabHours\" role=\"tab\" data-toggle=\"tab\">Hours</a>\r\n         " +
+"                   </li>\r\n                            <li role=\"presentation\">\r\n" +
+"                                <a href=\"#tabDayMonth\" role=\"tab\" data-toggle=\"t" +
+"ab\">Day of Month</a>\r\n                            </li>\r\n                       " +
+"     <li role=\"presentation\">\r\n                                <a href=\"#tabMont" +
+"h\" role=\"tab\" data-toggle=\"tab\">Month</a>\r\n                            </li>\r\n  " +
+"                          <li role=\"presentation\">\r\n                            " +
+"    <a href=\"#tabDayWeek\" role=\"tab\" data-toggle=\"tab\">Day of Week</a>\r\n        " +
+"                    </li>\r\n                        </ul>\r\n\r\n                    " +
+"    <div class=\"tab-content jobslauncher-cron-tab-content\">\r\n\r\n                 " +
+"           <!-- Pestana Minutos -->\r\n                            <div role=\"tabp" +
+"anel\" class=\"tab-pane active\" id=\"tabMinutes\">\r\n                                " +
+"<div class=\"form-group\">\r\n                                    <label>Every N min" +
+"utes</label>\r\n                                    <input type=\"number\" id=\"minEv" +
+"eryN\" class=\"form-control\" min=\"1\" value=\"1\" placeholder=\"N\">\r\n                 " +
+"               </div>\r\n                                <div class=\"form-group\">\r" +
+"\n                                    <label>Specific minutes (comma separated)</" +
+"label>\r\n                                    <input type=\"text\" id=\"minSpecific\" " +
+"class=\"form-control\" placeholder=\"0,15,30,45\">\r\n                                " +
+"</div>\r\n                                <div class=\"form-group\">\r\n              " +
+"                      <label>Range (from - to)</label>\r\n                        " +
+"            <div class=\"row\">\r\n                                        <div clas" +
+"s=\"col-xs-6\">\r\n                                            <input type=\"number\" " +
+"id=\"minRangeFrom\" class=\"form-control\" min=\"0\" max=\"59\" value=\"0\" placeholder=\"F" +
+"rom\">\r\n                                        </div>\r\n                         " +
+"               <div class=\"col-xs-6\">\r\n                                         " +
+"   <input type=\"number\" id=\"minRangeTo\" class=\"form-control\" min=\"0\" max=\"59\" va" +
+"lue=\"59\" placeholder=\"To\">\r\n                                        </div>\r\n    " +
+"                                </div>\r\n                                </div>\r\n" +
+"                            </div>\r\n\r\n                            <!-- Pestana H" +
+"oras -->\r\n                            <div role=\"tabpanel\" class=\"tab-pane\" id=\"" +
+"tabHours\">\r\n                                <div class=\"form-group\">\r\n          " +
+"                          <label>Every N hours</label>\r\n                        " +
+"            <input type=\"number\" id=\"hourEveryN\" class=\"form-control\" min=\"1\" va" +
+"lue=\"1\" placeholder=\"N\">\r\n                                </div>\r\n              " +
+"                  <div class=\"form-group\">\r\n                                    " +
+"<label>Specific hours (comma separated)</label>\r\n                               " +
+"     <input type=\"text\" id=\"hourSpecific\" class=\"form-control\" placeholder=\"8,12" +
+",18\">\r\n                                </div>\r\n                                <" +
+"div class=\"form-group\">\r\n                                    <label>Range (from " +
+"- to)</label>\r\n                                    <div class=\"row\">\r\n          " +
+"                              <div class=\"col-xs-6\">\r\n                          " +
+"                  <input type=\"number\" id=\"hourRangeFrom\" class=\"form-control\" m" +
+"in=\"0\" max=\"23\" value=\"9\" placeholder=\"From\">\r\n                                 " +
+"       </div>\r\n                                        <div class=\"col-xs-6\">\r\n " +
+"                                           <input type=\"number\" id=\"hourRangeTo\"" +
+" class=\"form-control\" min=\"0\" max=\"23\" value=\"17\" placeholder=\"To\">\r\n           " +
+"                             </div>\r\n                                    </div>\r" +
+"\n                                </div>\r\n                            </div>\r\n\r\n " +
+"                           <!-- Pestana Dia del mes -->\r\n                       " +
+"     <div role=\"tabpanel\" class=\"tab-pane\" id=\"tabDayMonth\">\r\n                  " +
+"              <div class=\"form-group\">\r\n                                    <lab" +
+"el>Every day</label>\r\n                                    <input type=\"text\" cla" +
+"ss=\"form-control\" value=\"*\" disabled>\r\n                                </div>\r\n " +
+"                               <div class=\"form-group\">\r\n                       " +
+"             <label>Specific days (comma separated, e.g., 1,15)</label>\r\n       " +
+"                             <input type=\"text\" id=\"dayMonthSpecific\" class=\"for" +
+"m-control\" placeholder=\"1,15\">\r\n                                </div>\r\n        " +
+"                        <div class=\"form-group\">\r\n                              " +
+"      <label>Every N days starting at day</label>\r\n                             " +
+"       <div class=\"row\">\r\n                                        <div class=\"co" +
+"l-xs-6\">\r\n                                            <input type=\"number\" id=\"d" +
+"ayMonthEveryN\" class=\"form-control\" min=\"1\" value=\"1\" placeholder=\"N\">\r\n        " +
+"                                </div>\r\n                                        " +
+"<div class=\"col-xs-6\">\r\n                                            <input type=" +
+"\"number\" id=\"dayMonthStart\" class=\"form-control\" min=\"1\" max=\"31\" value=\"1\" plac" +
+"eholder=\"Start day\">\r\n                                        </div>\r\n          " +
+"                          </div>\r\n                                </div>\r\n      " +
+"                          <div class=\"form-group\">\r\n                            " +
+"        <label>Specific day of month (choose one or many)</label>\r\n             " +
+"                       <div class=\"row jobslauncher-no-margin\">\r\n               " +
+"                         <div class=\"col-xs-3\"><label><input type=\"checkbox\" cla" +
+"ss=\"day-month-check\" value=\"1\"> 01</label></div>\r\n                              " +
+"          <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-c" +
+"heck\" value=\"2\"> 02</label></div>\r\n                                        <div " +
+"class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"3\"" +
+"> 03</label></div>\r\n                                        <div class=\"col-xs-3" +
+"\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"4\"> 04</label></d" +
+"iv>\r\n                                        <div class=\"col-xs-3\"><label><input" +
+" type=\"checkbox\" class=\"day-month-check\" value=\"5\"> 05</label></div>\r\n          " +
 "                              <div class=\"col-xs-3\"><label><input type=\"checkbox" +
-"\" class=\"day-month-check\" value=\"12\"> 12</label></div>\r\n                        " +
-"                <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-m" +
-"onth-check\" value=\"13\"> 13</label></div>\r\n                                      " +
-"  <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" va" +
-"lue=\"14\"> 14</label></div>\r\n                                        <div class=\"" +
-"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"15\"> 15</" +
-"label></div>\r\n                                        <div class=\"col-xs-3\"><lab" +
-"el><input type=\"checkbox\" class=\"day-month-check\" value=\"16\"> 16</label></div>\r\n" +
-"                                        <div class=\"col-xs-3\"><label><input type" +
-"=\"checkbox\" class=\"day-month-check\" value=\"17\"> 17</label></div>\r\n              " +
-"                          <div class=\"col-xs-3\"><label><input type=\"checkbox\" cl" +
-"ass=\"day-month-check\" value=\"18\"> 18</label></div>\r\n                            " +
-"            <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month" +
-"-check\" value=\"19\"> 19</label></div>\r\n                                        <d" +
-"iv class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=" +
-"\"20\"> 20</label></div>\r\n                                        <div class=\"col-" +
-"xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"21\"> 21</labe" +
+"\" class=\"day-month-check\" value=\"6\"> 06</label></div>\r\n                         " +
+"               <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-mo" +
+"nth-check\" value=\"7\"> 07</label></div>\r\n                                        " +
+"<div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" valu" +
+"e=\"8\"> 08</label></div>\r\n                                        <div class=\"col" +
+"-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"9\"> 09</labe" +
 "l></div>\r\n                                        <div class=\"col-xs-3\"><label><" +
-"input type=\"checkbox\" class=\"day-month-check\" value=\"22\"> 22</label></div>\r\n    " +
+"input type=\"checkbox\" class=\"day-month-check\" value=\"10\"> 10</label></div>\r\n    " +
 "                                    <div class=\"col-xs-3\"><label><input type=\"ch" +
-"eckbox\" class=\"day-month-check\" value=\"23\"> 23</label></div>\r\n                  " +
+"eckbox\" class=\"day-month-check\" value=\"11\"> 11</label></div>\r\n                  " +
 "                      <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=" +
-"\"day-month-check\" value=\"24\"> 24</label></div>\r\n                                " +
+"\"day-month-check\" value=\"12\"> 12</label></div>\r\n                                " +
 "        <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-che" +
-"ck\" value=\"25\"> 25</label></div>\r\n                                        <div c" +
-"lass=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"26\"" +
-"> 26</label></div>\r\n                                        <div class=\"col-xs-3" +
-"\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"27\"> 27</label></" +
+"ck\" value=\"13\"> 13</label></div>\r\n                                        <div c" +
+"lass=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"14\"" +
+"> 14</label></div>\r\n                                        <div class=\"col-xs-3" +
+"\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"15\"> 15</label></" +
 "div>\r\n                                        <div class=\"col-xs-3\"><label><inpu" +
-"t type=\"checkbox\" class=\"day-month-check\" value=\"28\"> 28</label></div>\r\n        " +
+"t type=\"checkbox\" class=\"day-month-check\" value=\"16\"> 16</label></div>\r\n        " +
 "                                <div class=\"col-xs-3\"><label><input type=\"checkb" +
-"ox\" class=\"day-month-check\" value=\"29\"> 29</label></div>\r\n                      " +
+"ox\" class=\"day-month-check\" value=\"17\"> 17</label></div>\r\n                      " +
 "                  <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day" +
-"-month-check\" value=\"30\"> 30</label></div>\r\n                                    " +
+"-month-check\" value=\"18\"> 18</label></div>\r\n                                    " +
 "    <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" " +
-"value=\"31\"> 31</label></div>\r\n                                    </div>\r\n      " +
-"                          </div>\r\n                            </div>\r\n          " +
-"                  <!-- Pestaña Mes -->\r\n                            <div role=\"t" +
-"abpanel\" class=\"tab-pane\" id=\"tabMonth\">\r\n                                <div c" +
-"lass=\"form-group\">\r\n                                    <label>Every month</labe" +
-"l>\r\n                                    <input type=\"text\" class=\"form-control\" " +
-"value=\"*\" disabled>\r\n                                </div>\r\n                   " +
-"             <div class=\"form-group\">\r\n                                    <labe" +
-"l>Specific months (comma separated, 1-12)</label>\r\n                             " +
-"       <input type=\"text\" id=\"monthSpecific\" class=\"form-control\" placeholder=\"1" +
-",6,12\">\r\n                                </div>\r\n                               " +
-" <div class=\"form-group\">\r\n                                    <label>Specific m" +
-"onths (choose)</label>\r\n                                    <div class=\"row jobs" +
-"launcher-no-margin\">\r\n                                        <div class=\"col-xs" +
-"-4\"><label><input type=\"checkbox\" class=\"month-check\" value=\"1\"> January</label>" +
-"</div>\r\n                                        <div class=\"col-xs-4\"><label><in" +
-"put type=\"checkbox\" class=\"month-check\" value=\"2\"> February</label></div>\r\n     " +
-"                                   <div class=\"col-xs-4\"><label><input type=\"che" +
-"ckbox\" class=\"month-check\" value=\"3\"> March</label></div>\r\n                     " +
-"                   <div class=\"col-xs-4\"><label><input type=\"checkbox\" class=\"mo" +
-"nth-check\" value=\"4\"> April</label></div>\r\n                                     " +
-"   <div class=\"col-xs-4\"><label><input type=\"checkbox\" class=\"month-check\" value" +
-"=\"5\"> May</label></div>\r\n                                        <div class=\"col" +
-"-xs-4\"><label><input type=\"checkbox\" class=\"month-check\" value=\"6\"> June</label>" +
-"</div>\r\n                                        <div class=\"col-xs-4\"><label><in" +
-"put type=\"checkbox\" class=\"month-check\" value=\"7\"> July</label></div>\r\n         " +
-"                               <div class=\"col-xs-4\"><label><input type=\"checkbo" +
-"x\" class=\"month-check\" value=\"8\"> August</label></div>\r\n                        " +
-"                <div class=\"col-xs-4\"><label><input type=\"checkbox\" class=\"month" +
-"-check\" value=\"9\"> September</label></div>\r\n                                    " +
-"    <div class=\"col-xs-4\"><label><input type=\"checkbox\" class=\"month-check\" valu" +
-"e=\"10\"> October</label></div>\r\n                                        <div clas" +
-"s=\"col-xs-4\"><label><input type=\"checkbox\" class=\"month-check\" value=\"11\"> Novem" +
-"ber</label></div>\r\n                                        <div class=\"col-xs-4\"" +
-"><label><input type=\"checkbox\" class=\"month-check\" value=\"12\"> December</label><" +
-"/div>\r\n                                    </div>\r\n                             " +
-"   </div>\r\n                            </div>\r\n                            <!-- " +
-"Pestaña Día de la semana -->\r\n                            <div role=\"tabpanel\" c" +
-"lass=\"tab-pane\" id=\"tabDayWeek\">\r\n                                <div class=\"fo" +
-"rm-group\">\r\n                                    <label>Every day of week</label>" +
-"\r\n                                    <input type=\"text\" class=\"form-control\" va" +
-"lue=\"*\" disabled>\r\n                                </div>\r\n                     " +
-"           <div class=\"form-group\">\r\n                                    <label>" +
-"Specific days of week (choose)</label>\r\n                                    <div" +
-" class=\"row jobslauncher-no-margin\">\r\n                                        <d" +
-"iv class=\"col-xs-6\"><label><input type=\"checkbox\" class=\"weekday-check\" value=\"1" +
-"\"> Monday</label></div>\r\n                                        <div class=\"col" +
-"-xs-6\"><label><input type=\"checkbox\" class=\"weekday-check\" value=\"2\"> Tuesday</l" +
-"abel></div>\r\n                                        <div class=\"col-xs-6\"><labe" +
-"l><input type=\"checkbox\" class=\"weekday-check\" value=\"3\"> Wednesday</label></div" +
-">\r\n                                        <div class=\"col-xs-6\"><label><input t" +
-"ype=\"checkbox\" class=\"weekday-check\" value=\"4\"> Thursday</label></div>\r\n        " +
-"                                <div class=\"col-xs-6\"><label><input type=\"checkb" +
-"ox\" class=\"weekday-check\" value=\"5\"> Friday</label></div>\r\n                     " +
-"                   <div class=\"col-xs-6\"><label><input type=\"checkbox\" class=\"we" +
-"ekday-check\" value=\"6\"> Saturday</label></div>\r\n                                " +
-"        <div class=\"col-xs-6\"><label><input type=\"checkbox\" class=\"weekday-check" +
-"\" value=\"0\"> Sunday</label></div>\r\n                                    </div>\r\n " +
-"                               </div>\r\n                                <div clas" +
-"s=\"form-group\">\r\n                                    <label>Specific days (comma" +
-" separated, 0-7)</label>\r\n                                    <input type=\"text\"" +
-" id=\"weekdaySpecific\" class=\"form-control\" placeholder=\"1,3,5\">\r\n               " +
-"                 </div>\r\n                                <div class=\"form-group\"" +
-">\r\n                                    <label>Every N days starting on day</labe" +
-"l>\r\n                                    <div class=\"row\">\r\n                     " +
-"                   <div class=\"col-xs-6\">\r\n                                     " +
-"       <input type=\"number\" id=\"weekdayEveryN\" class=\"form-control\" min=\"1\" valu" +
-"e=\"1\" placeholder=\"N\">\r\n                                        </div>\r\n        " +
-"                                <div class=\"col-xs-6\">\r\n                        " +
-"                    <input type=\"number\" id=\"weekdayStart\" class=\"form-control\" " +
-"min=\"0\" max=\"7\" value=\"1\" placeholder=\"Start day\">\r\n                            " +
-"            </div>\r\n                                    </div>\r\n                " +
-"                </div>\r\n                            </div>\r\n                    " +
-"    </div>\r\n                    </div>\r\n                    <div class=\"col-md-5" +
+"value=\"19\"> 19</label></div>\r\n                                        <div class" +
+"=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"20\"> 20" +
+"</label></div>\r\n                                        <div class=\"col-xs-3\"><l" +
+"abel><input type=\"checkbox\" class=\"day-month-check\" value=\"21\"> 21</label></div>" +
+"\r\n                                        <div class=\"col-xs-3\"><label><input ty" +
+"pe=\"checkbox\" class=\"day-month-check\" value=\"22\"> 22</label></div>\r\n            " +
+"                            <div class=\"col-xs-3\"><label><input type=\"checkbox\" " +
+"class=\"day-month-check\" value=\"23\"> 23</label></div>\r\n                          " +
+"              <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-mon" +
+"th-check\" value=\"24\"> 24</label></div>\r\n                                        " +
+"<div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" valu" +
+"e=\"25\"> 25</label></div>\r\n                                        <div class=\"co" +
+"l-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"26\"> 26</la" +
+"bel></div>\r\n                                        <div class=\"col-xs-3\"><label" +
+"><input type=\"checkbox\" class=\"day-month-check\" value=\"27\"> 27</label></div>\r\n  " +
+"                                      <div class=\"col-xs-3\"><label><input type=\"" +
+"checkbox\" class=\"day-month-check\" value=\"28\"> 28</label></div>\r\n                " +
+"                        <div class=\"col-xs-3\"><label><input type=\"checkbox\" clas" +
+"s=\"day-month-check\" value=\"29\"> 29</label></div>\r\n                              " +
+"          <div class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-c" +
+"heck\" value=\"30\"> 30</label></div>\r\n                                        <div" +
+" class=\"col-xs-3\"><label><input type=\"checkbox\" class=\"day-month-check\" value=\"3" +
+"1\"> 31</label></div>\r\n                                    </div>\r\n              " +
+"                  </div>\r\n                            </div>\r\n\r\n                " +
+"            <!-- Pestana Mes -->\r\n                            <div role=\"tabpane" +
+"l\" class=\"tab-pane\" id=\"tabMonth\">\r\n                                <div class=\"" +
+"form-group\">\r\n                                    <label>Every month</label>\r\n  " +
+"                                  <input type=\"text\" class=\"form-control\" value=" +
+"\"*\" disabled>\r\n                                </div>\r\n                         " +
+"       <div class=\"form-group\">\r\n                                    <label>Spec" +
+"ific months (comma separated, 1-12)</label>\r\n                                   " +
+" <input type=\"text\" id=\"monthSpecific\" class=\"form-control\" placeholder=\"1,6,12\"" +
+">\r\n                                </div>\r\n                                <div " +
+"class=\"form-group\">\r\n                                    <label>Specific months " +
+"(choose)</label>\r\n                                    <div class=\"row jobslaunch" +
+"er-no-margin\">\r\n                                        <div class=\"col-xs-4\"><l" +
+"abel><input type=\"checkbox\" class=\"month-check\" value=\"1\"> January</label></div>" +
+"\r\n                                        <div class=\"col-xs-4\"><label><input ty" +
+"pe=\"checkbox\" class=\"month-check\" value=\"2\"> February</label></div>\r\n           " +
+"                             <div class=\"col-xs-4\"><label><input type=\"checkbox\"" +
+" class=\"month-check\" value=\"3\"> March</label></div>\r\n                           " +
+"             <div class=\"col-xs-4\"><label><input type=\"checkbox\" class=\"month-ch" +
+"eck\" value=\"4\"> April</label></div>\r\n                                        <di" +
+"v class=\"col-xs-4\"><label><input type=\"checkbox\" class=\"month-check\" value=\"5\"> " +
+"May</label></div>\r\n                                        <div class=\"col-xs-4\"" +
+"><label><input type=\"checkbox\" class=\"month-check\" value=\"6\"> June</label></div>" +
+"\r\n                                        <div class=\"col-xs-4\"><label><input ty" +
+"pe=\"checkbox\" class=\"month-check\" value=\"7\"> July</label></div>\r\n               " +
+"                         <div class=\"col-xs-4\"><label><input type=\"checkbox\" cla" +
+"ss=\"month-check\" value=\"8\"> August</label></div>\r\n                              " +
+"          <div class=\"col-xs-4\"><label><input type=\"checkbox\" class=\"month-check" +
+"\" value=\"9\"> September</label></div>\r\n                                        <d" +
+"iv class=\"col-xs-4\"><label><input type=\"checkbox\" class=\"month-check\" value=\"10\"" +
+"> October</label></div>\r\n                                        <div class=\"col" +
+"-xs-4\"><label><input type=\"checkbox\" class=\"month-check\" value=\"11\"> November</l" +
+"abel></div>\r\n                                        <div class=\"col-xs-4\"><labe" +
+"l><input type=\"checkbox\" class=\"month-check\" value=\"12\"> December</label></div>\r" +
+"\n                                    </div>\r\n                                </d" +
+"iv>\r\n                            </div>\r\n\r\n                            <!-- Pest" +
+"ana Dia de la semana -->\r\n                            <div role=\"tabpanel\" class" +
+"=\"tab-pane\" id=\"tabDayWeek\">\r\n                                <div class=\"form-g" +
+"roup\">\r\n                                    <label>Every day of week</label>\r\n  " +
+"                                  <input type=\"text\" class=\"form-control\" value=" +
+"\"*\" disabled>\r\n                                </div>\r\n                         " +
+"       <div class=\"form-group\">\r\n                                    <label>Spec" +
+"ific days of week (choose)</label>\r\n                                    <div cla" +
+"ss=\"row jobslauncher-no-margin\">\r\n                                        <div c" +
+"lass=\"col-xs-6\"><label><input type=\"checkbox\" class=\"weekday-check\" value=\"1\"> M" +
+"onday</label></div>\r\n                                        <div class=\"col-xs-" +
+"6\"><label><input type=\"checkbox\" class=\"weekday-check\" value=\"2\"> Tuesday</label" +
+"></div>\r\n                                        <div class=\"col-xs-6\"><label><i" +
+"nput type=\"checkbox\" class=\"weekday-check\" value=\"3\"> Wednesday</label></div>\r\n " +
+"                                       <div class=\"col-xs-6\"><label><input type=" +
+"\"checkbox\" class=\"weekday-check\" value=\"4\"> Thursday</label></div>\r\n            " +
+"                            <div class=\"col-xs-6\"><label><input type=\"checkbox\" " +
+"class=\"weekday-check\" value=\"5\"> Friday</label></div>\r\n                         " +
+"               <div class=\"col-xs-6\"><label><input type=\"checkbox\" class=\"weekda" +
+"y-check\" value=\"6\"> Saturday</label></div>\r\n                                    " +
+"    <div class=\"col-xs-6\"><label><input type=\"checkbox\" class=\"weekday-check\" va" +
+"lue=\"0\"> Sunday</label></div>\r\n                                    </div>\r\n     " +
+"                           </div>\r\n                                <div class=\"f" +
+"orm-group\">\r\n                                    <label>Specific days (comma sep" +
+"arated, 0-7)</label>\r\n                                    <input type=\"text\" id=" +
+"\"weekdaySpecific\" class=\"form-control\" placeholder=\"1,3,5\">\r\n                   " +
+"             </div>\r\n                                <div class=\"form-group\">\r\n " +
+"                                   <label>Every N days starting on day</label>\r\n" +
+"                                    <div class=\"row\">\r\n                         " +
+"               <div class=\"col-xs-6\">\r\n                                         " +
+"   <input type=\"number\" id=\"weekdayEveryN\" class=\"form-control\" min=\"1\" value=\"1" +
+"\" placeholder=\"N\">\r\n                                        </div>\r\n            " +
+"                            <div class=\"col-xs-6\">\r\n                            " +
+"                <input type=\"number\" id=\"weekdayStart\" class=\"form-control\" min=" +
+"\"0\" max=\"7\" value=\"1\" placeholder=\"Start day\">\r\n                                " +
+"        </div>\r\n                                    </div>\r\n                    " +
+"            </div>\r\n                            </div>\r\n\r\n                      " +
+"  </div>\r\n                    </div>\r\n\r\n                    <div class=\"col-md-5" +
 "\">\r\n                        <div class=\"panel panel-default\">\r\n                 " +
 "           <div class=\"panel-heading\"><strong>Preview</strong></div>\r\n          " +
 "                  <div class=\"panel-body\">\r\n                                <div" +
@@ -265,11 +270,11 @@ WriteLiteral("<div class=\"modal fade\" id=\"cronGeneratorModal\" tabindex=\"-1\
 ">Show next executions</button>\r\n                                <div id=\"cronExe" +
 "cutionsPreview\" class=\"jobslauncher-cron-executions-preview\">&nbsp;</div>\r\n     " +
 "                       </div>\r\n                        </div>\r\n                 " +
-"   </div>\r\n                </div>\r\n            </div>\r\n            <div class=\"m" +
-"odal-footer\">\r\n                <button type=\"button\" class=\"btn btn-default\" dat" +
-"a-dismiss=\"modal\">Cancel</button>\r\n                <button type=\"button\" class=\"" +
-"btn btn-primary\" id=\"btnGenerateCron\">Generate</button>\r\n            </div>\r\n   " +
-"     </div>\r\n    </div>\r\n</div>");
+"   </div>\r\n                </div>\r\n            </div>\r\n\r\n            <div class=" +
+"\"modal-footer\">\r\n                <button type=\"button\" class=\"btn btn-default\" d" +
+"ata-dismiss=\"modal\">Cancel</button>\r\n                <button type=\"button\" class" +
+"=\"btn btn-primary\" id=\"btnGenerateCron\">Generate</button>\r\n            </div>\r\n\r" +
+"\n        </div>\r\n    </div>\r\n</div>\r\n");
 
 
         }

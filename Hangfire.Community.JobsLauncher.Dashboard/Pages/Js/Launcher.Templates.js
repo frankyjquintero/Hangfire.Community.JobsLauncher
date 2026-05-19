@@ -12,7 +12,10 @@
         api.getTemplates().then(function (resp) {
             var tbody = utils.$('templatesTable').querySelector('tbody');
             tbody.innerHTML = '';
-            resp.templates.forEach(function (t) {
+
+            // La API devuelve un array de plantillas directamente
+            var templates = Array.isArray(resp) ? resp : [];
+            templates.forEach(function (t) {
                 var row = '<tr>' +
                     '<td>' + t.name + '</td>' +
                     '<td>' + t.className + '</td>' +
@@ -23,13 +26,17 @@
                     '<td>' +
                     '<button class="btn btn-xs btn-info btn-load" data-tpl="' + encodeURIComponent(JSON.stringify(t)) + '">Load</button> ' +
                     '<button class="btn btn-xs btn-default btn-preview" data-tpl="' + encodeURIComponent(JSON.stringify(t)) + '">Preview</button> ' +
+                    '<button class="btn btn-xs btn-success btn-clone-launch" data-name="' + encodeURIComponent(t.name) + '">Clone & Launch</button> ' +
                     '<button class="btn btn-xs btn-danger btn-delete" data-name="' + encodeURIComponent(t.name) + '">Delete</button> ' +
                     '<button class="btn btn-xs btn-default btn-export" data-name="' + encodeURIComponent(t.name) + '">Export</button>' +
                     '</td>' +
                     '</tr>';
                 tbody.innerHTML += row;
             });
+
             bindTemplateButtons();
+        }).catch(function (err) {
+            console.error('Failed to load templates:', err);
         });
     }
 
@@ -80,7 +87,29 @@
         document.querySelectorAll('.btn-export').forEach(function (btn) {
             btn.onclick = function () {
                 var name = decodeURIComponent(this.getAttribute('data-name'));
-                w.location = api.exportTemplateUrl(name);
+                var downloadUrl = state.apiBaseUrl + '/api/export-import?action=export&templateName=' + encodeURIComponent(name);
+                fetch(downloadUrl)
+                    .then(function (response) { return response.blob(); })
+                    .then(function (blob) {
+                        var url = URL.createObjectURL(blob);
+                        var a = document.createElement('a');
+                        a.href = url;
+                        a.download = name + '.json';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    })
+                    .catch(function (err) { alert('Error downloading template: ' + err.message); });
+            };
+        });
+        document.querySelectorAll('.btn-clone-launch').forEach(function (btn) {
+            btn.onclick = function () {
+                var tpl = JSON.parse(decodeURIComponent(this.getAttribute('data-tpl')));
+                if (confirm('Clone and launch?')) {
+                    var req = ns.params.buildRequestFromTemplate(tpl); // necesitas exponer buildRequestFromTemplate en params o definirla aquí
+                    ns.ui.launchJob(req);
+                }
             };
         });
     }

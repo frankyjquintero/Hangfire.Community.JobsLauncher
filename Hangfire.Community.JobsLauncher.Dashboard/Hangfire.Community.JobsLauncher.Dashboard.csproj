@@ -54,7 +54,6 @@
 		<EmbeddedResource Include="Pages\Js\Launcher.Utils.js" />
 		<EmbeddedResource Include="Pages\Js\Launcher.Api.js" />
 		<EmbeddedResource Include="Pages\Js\Launcher.Params.js" />
-		<EmbeddedResource Include="Pages\Js\Launcher.UI.js" />
 		<EmbeddedResource Include="Pages\Js\Launcher.Cron.js" />
 		<EmbeddedResource Include="Pages\Js\Launcher.History.js" />
 		<EmbeddedResource Include="Pages\Js\Launcher.Templates.js" />

@@ -8,6 +8,7 @@
             <strong>Audit Log (read-only)</strong>
         </div>
         <div class="panel-body">
+
             <div class="row jobslauncher-audit-filters-row">
                 <div class="col-sm-3">
                     <input type="text" id="auditUserFilter" class="form-control input-sm" placeholder="User">
@@ -26,6 +27,7 @@
                     <button class="btn btn-sm btn-default" id="btnClearAuditFilters">Clear</button>
                 </div>
             </div>
+
             <table class="table table-condensed" id="auditLogTable">
                 <thead>
                     <tr>
@@ -41,13 +43,17 @@
                 </thead>
                 <tbody></tbody>
             </table>
+
             <div class="row jobslauncher-audit-pagination">
-                <div class="col-sm-6"><span id="auditPageInfo"></span></div>
+                <div class="col-sm-6">
+                    <span id="auditPageInfo"></span>
+                </div>
                 <div class="col-sm-6 text-right">
                     <button class="btn btn-xs btn-default" id="btnAuditPrevPage" disabled>Prev</button>
                     <button class="btn btn-xs btn-default" id="btnAuditNextPage" disabled>Next</button>
                 </div>
             </div>
+
         </div>
     </div>
 </div>

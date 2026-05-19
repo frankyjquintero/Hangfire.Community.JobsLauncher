@@ -26,12 +26,43 @@
                     '<td>' +
                     '<button class="btn btn-xs btn-default btn-relaunch" data-job="' + encodeURIComponent(JSON.stringify(e)) + '">Relaunch</button> ' +
                     '<button class="btn btn-xs btn-success btn-clone" data-job="' + encodeURIComponent(JSON.stringify(e)) + '">Clone & Launch</button>' +
+                    '<button class="btn btn-xs btn-primary btn-save-template" data-job="' + encodeURIComponent(JSON.stringify(e)) + '">Save as Template</button>' +
                     '</td>' +
                     '</tr>';
                 tbody.innerHTML += row;
             });
             updateHistoryPaginationControls();
             bindHistoryButtons();
+        });
+    }
+
+    function saveEntryAsTemplate(entry) {
+        var name = prompt('Template name:', entry.className + '.' + entry.methodName);
+        if (!name) return;
+        var template = {
+            name: name,
+            mode: entry.mode,
+            className: entry.className,
+            methodName: entry.methodName,
+            queue: entry.queue,
+            executionMode: entry.executionMode,
+            cronExpression: entry.cronExpression,
+            delayMinutes: entry.delayMinutes,
+            scheduledDateTime: entry.scheduledDateTime,
+            parentJobId: entry.parentJobId,
+            recurringEngine: entry.recurringEngine || entry.engine || 'BuiltIn',
+            includePerformContext: entry.includePerformContext,
+            includeCancellationToken: entry.includeCancellationToken,
+            rawParametersJson: entry.parametersJson,
+            parameters: null
+        };
+        api.saveTemplate(template).then(function (res) {
+            if (res.success) {
+                alert('Template "' + name + '" saved.');
+                ns.templates.load();
+            } else {
+                alert('Error: ' + (res.error || res.message));
+            }
         });
     }
 
@@ -65,6 +96,12 @@
             btn.onclick = function () {
                 var entry = JSON.parse(decodeURIComponent(this.getAttribute('data-job')));
                 cloneAndLaunch(entry);
+            };
+        });
+        document.querySelectorAll('.btn-save-template').forEach(function (btn) {
+            btn.onclick = function () {
+                var entry = JSON.parse(decodeURIComponent(this.getAttribute('data-job')));
+                saveEntryAsTemplate(entry);
             };
         });
     }
@@ -119,6 +156,7 @@
     ns.history = {
         load: loadHistory,
         clear: clearHistory,
+        saveEntryAsTemplate: saveEntryAsTemplate,
         bindButtons: bindHistoryButtons
     };
 })(window);

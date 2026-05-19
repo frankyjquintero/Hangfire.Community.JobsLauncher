@@ -225,24 +225,36 @@
     }
 
     function loadMethods() {
-        var className = utils.$('classNameAssisted').value.trim();
+        var classNameEl = utils.$('classNameAssisted');
+        if (!classNameEl) return;
+        var className = classNameEl.value.trim();
         if (!className) { alert('Class name required'); return; }
+
         api.getMethods(className).then(function (resp) {
             if (!resp.success) {
                 alert(resp.error + ' Switched to manual mode.');
-                document.querySelector('input[name="launchMode"][value="manual"]').checked = true;
-                ns.ui.toggleMode();
+                var manualRadio = document.querySelector('input[name="launchMode"][value="manual"]');
+                if (manualRadio) manualRadio.checked = true;
+                if (ns.ui && ns.ui.toggleMode) {
+                    ns.ui.toggleMode();
+                } else {
+                    document.getElementById('assistedFields').classList.add('jobslauncher-hidden');
+                    document.getElementById('manualFields').classList.remove('jobslauncher-hidden');
+                }
                 return;
             }
-            state.currentMethods = resp.methods;
+            state.currentMethods = resp.methods || [];
             var sel = utils.$('methodSelect');
+            if (!sel) return;
             sel.innerHTML = '<option value="">-- Select method --</option>';
             state.currentMethods.forEach(function (m, i) {
                 var params = m.parameters.map(function (p) { return p.name; }).join(', ');
                 sel.innerHTML += '<option value="' + i + '">' + m.methodName + '(' + params + ')</option>';
             });
-            utils.$('methodSelectGroup').style.display = 'block';
-            utils.$('paramsContainer').innerHTML = '';
+            var methodGroup = utils.$('methodSelectGroup');
+            if (methodGroup) methodGroup.classList.remove('jobslauncher-hidden');
+            var container = utils.$('paramsContainer');
+            if (container) container.innerHTML = '';
         });
     }
 
@@ -423,6 +435,136 @@
         });
     }
 
+    function buildRequestFromTemplate(template) {
+        return {
+            mode: template.mode,
+            className: template.className,
+            methodName: template.methodName,
+            queue: template.queue,
+            executionMode: template.executionMode,
+            cronExpression: template.cronExpression,
+            delayMinutes: template.delayMinutes,
+            scheduledDateTime: template.scheduledDateTime,
+            parentJobId: template.parentJobId,
+            recurringEngine: template.recurringEngine || template.engine || 'BuiltIn',
+            includePerformContext: template.includePerformContext,
+            includeCancellationToken: template.includeCancellationToken,
+            rawParametersJson: template.rawParametersJson,
+            buildRequestFromTemplate: buildRequestFromTemplate,
+            parameters: null
+        };
+    }
+
+    /* ── Funciones de UI (toggle, colas, submit) ── */
+    function buildRecurringEngineOptions() {
+        var mode = document.querySelector('input[name="launchMode"]:checked').value;
+        var sel = utils.$('recurringEngine');
+        sel.innerHTML = '';
+        function addOption(value, text, enabled) {
+            var opt = document.createElement('option');
+            opt.value = value;
+            opt.textContent = text;
+            if (!enabled) opt.disabled = true;
+            sel.appendChild(opt);
+        }
+        if (mode === 'assisted') {
+            addOption('Direct', 'Direct', true);
+            addOption('BuiltIn', 'Built-in (lightweight)', true);
+            addOption('DynamicJobs', 'DynamicJobs (advanced)', state.dynamicJobsAvailable);
+        } else {
+            addOption('BuiltIn', 'Built-in (lightweight)', true);
+            addOption('DynamicJobs', 'DynamicJobs (advanced)', state.dynamicJobsAvailable);
+        }
+        if (!state.dynamicJobsAvailable && sel.value === 'DynamicJobs') {
+            utils.$('dynamicJobsWarning').classList.remove('jobslauncher-hidden');
+        } else {
+            utils.$('dynamicJobsWarning').classList.add('jobslauncher-hidden');
+        }
+    }
+
+    function toggleMode() {
+        var mode = document.querySelector('input[name="launchMode"]:checked').value;
+        if (mode === 'assisted') {
+            utils.$('assistedFields').classList.remove('jobslauncher-hidden');
+            utils.$('manualFields').classList.add('jobslauncher-hidden');
+        } else {
+            utils.$('assistedFields').classList.add('jobslauncher-hidden');
+            utils.$('manualFields').classList.remove('jobslauncher-hidden');
+        }
+        buildRecurringEngineOptions();
+        toggleExecMode();
+    }
+
+    function toggleExecMode() {
+        var mode = document.querySelector('input[name="execMode"]:checked').value;
+        document.getElementById('scheduleFields').classList.toggle('jobslauncher-hidden', mode !== 'Schedule');
+        document.getElementById('scheduleDateTimeFields').classList.toggle('jobslauncher-hidden', mode !== 'ScheduleDateTime');
+        document.getElementById('recurringFields').classList.toggle('jobslauncher-hidden', mode !== 'Recurring');
+        document.getElementById('continuationFields').classList.toggle('jobslauncher-hidden', mode !== 'Continuation');
+        if (mode === 'Recurring') buildRecurringEngineOptions();
+    }
+
+    function checkCriticalQueue(queue) {
+        var warning = utils.$('criticalQueueWarning');
+        if (state.criticalQueues.indexOf(queue) >= 0) {
+            warning.classList.remove('jobslauncher-hidden');
+            return true;
+        }
+        warning.classList.add('jobslauncher-hidden');
+        return false;
+    }
+
+    function loadQueues() {
+        api.getQueues().then(function (resp) {
+            var datalist = utils.$('queueList');
+            datalist.innerHTML = '';
+            (resp.queues || []).forEach(function (q) {
+                datalist.innerHTML += '<option value="' + q + '">';
+            });
+        });
+    }
+
+    var pendingLaunchRequest = null;
+
+    function launchJob(req) {
+        api.launchJob(req).then(function (result) {
+            var alertDiv = utils.$('launchResult');
+            alertDiv.classList.remove('jobslauncher-hidden');
+            if (result.success) {
+                alertDiv.className = 'alert alert-success';
+                alertDiv.innerHTML = 'Job launched successfully! <a href="' + result.link + '" target="_blank">' + result.jobId + '</a>';
+                loadQueues();
+                ns.history.load();
+            } else {
+                alertDiv.className = 'alert alert-danger';
+                alertDiv.textContent = 'Error: ' + (result.error || 'Unknown error');
+            }
+        }).catch(function (err) {
+            var alertDiv = utils.$('launchResult');
+            alertDiv.classList.remove('jobslauncher-hidden');
+            alertDiv.className = 'alert alert-danger';
+            alertDiv.textContent = 'Network error: ' + err.message;
+        });
+    }
+
+    function submitJob() {
+        var req = buildRequest();
+        if (!req.className || !req.methodName) { alert('ClassName and MethodName are required.'); return; }
+        if (checkCriticalQueue(req.queue)) {
+            pendingLaunchRequest = req;
+            utils.$('criticalQueueName').textContent = req.queue;
+            utils.$('criticalJobSummary').textContent = 'Class: ' + req.className + '\nMethod: ' + req.methodName + '\nMode: ' + req.executionMode;
+            if (typeof $ !== 'undefined') $('#criticalConfirmModal').modal('show');
+        } else {
+            launchJob(req);
+        }
+    }
+
+    function confirmedLaunch() {
+        if (typeof $ !== 'undefined') $('#criticalConfirmModal').modal('hide');
+        if (pendingLaunchRequest) launchJob(pendingLaunchRequest);
+    }
+
     /* ── Exponer ── */
     ns.params = {
         loadMethods: loadMethods,
@@ -436,6 +578,19 @@
         fillExecModeFields: fillExecModeFields,
         fillManualFields: fillManualFields,
         fillAssistedParams: fillAssistedParams,
+        buildRequestFromTemplate: buildRequestFromTemplate,
         attachAddHandlers: attachAddHandlers
+    };
+
+    // Reubicar funciones de UI bajo ns.ui (así Init.js sigue funcionando)
+    ns.ui = {
+        buildRecurringEngineOptions: buildRecurringEngineOptions,
+        toggleMode: toggleMode,
+        toggleExecMode: toggleExecMode,
+        checkCriticalQueue: checkCriticalQueue,
+        loadQueues: loadQueues,
+        submitJob: submitJob,
+        confirmedLaunch: confirmedLaunch,
+        launchJob: launchJob    // expuesta por si otros módulos la usan
     };
 })(window);
