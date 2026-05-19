@@ -12,17 +12,18 @@ jobs:
       with:
         dotnet-version: '10.0.x'
     - name: Extract version
-      # En Windows se usa diferente la sintaxis para env
       run: echo "VERSION=$($env:GITHUB_REF -replace 'refs/tags/v','')" >> $env:GITHUB_ENV
       shell: pwsh
     - name: Restore
       run: dotnet restore
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      # AutoCodeGeneration=false omite el task de RazorGenerator en CI.
+      # Los archivos .generated.cs deben estar commitados en el repo.
+      run: dotnet build --configuration Release --no-restore /p:AutoCodeGeneration=false
     - name: Pack Common
       run: dotnet pack ./Hangfire.Community.JobsLauncher.Common/Hangfire.Community.JobsLauncher.Common.csproj --configuration Release --no-build --output ./nupkg /p:PackageVersion=${{ env.VERSION }}
     - name: Pack Dashboard
-      run: dotnet pack ./Hangfire.Community.JobsLauncher.Dashboard/Hangfire.Community.JobsLauncher.Dashboard.csproj --configuration Release --no-build --output ./nupkg /p:PackageVersion=${{ env.VERSION }}
+      run: dotnet pack ./Hangfire.Community.JobsLauncher.Dashboard/Hangfire.Community.JobsLauncher.Dashboard.csproj --configuration Release --no-build --output ./nupkg /p:PackageVersion=${{ env.VERSION }} /p:AutoCodeGeneration=false
     - name: Validate packages
       run: |
         $files = Get-ChildItem ./nupkg/*.nupkg
