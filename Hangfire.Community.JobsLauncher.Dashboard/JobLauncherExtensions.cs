@@ -8,12 +8,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Hangfire.Common;
-using Hangfire.Dashboard;
 using Hangfire.Storage;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 
 namespace Hangfire.Community.JobsLauncher.Dashboard
 {

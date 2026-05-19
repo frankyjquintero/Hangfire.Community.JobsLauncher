@@ -13,8 +13,8 @@
 		<PackageTags>hangfire;jobs-launcher;dispatcher;common;manual;worker;runtime;dynamicjobs</PackageTags>
 		<Authors>FrankyJquintero</Authors>
 		<Product>Hangfire.Community.JobsLauncher.Common</Product>
-		<Version>1.0.0</Version>
-		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<Version>2.0.1</Version>
+		<AssemblyVersion>2.0.1</AssemblyVersion>
 		<LangVersion>7.3</LangVersion>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -25,7 +25,7 @@
 	</PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="HangFire.Core" Version="1.7.28" />
+	<PackageReference Include="HangFire.Core" Version="[1.8.0,)" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 
