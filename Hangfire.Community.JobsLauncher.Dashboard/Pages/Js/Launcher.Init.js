@@ -51,6 +51,12 @@
     }
 
     function init() {
+        // Verificar que estamos en la página de JobLauncher
+        if (!document.getElementById('launchTab')) {
+            // No estamos en la página JobLauncher, salir sin inicializar
+            return;
+        }
+
         state.apiBaseUrl = (ns.config && ns.config.apiBaseUrl) ? ns.config.apiBaseUrl : '';
 
         api.getCapabilities().then(function (caps) {

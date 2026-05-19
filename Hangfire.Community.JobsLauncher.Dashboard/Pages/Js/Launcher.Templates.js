@@ -41,26 +41,38 @@
     }
 
     function showTemplatePreview(template) {
-        utils.$('prevName').textContent = template.name || '';
-        utils.$('prevClass').textContent = template.className || '';
-        utils.$('prevMethod').textContent = template.methodName || '';
-        utils.$('prevQueue').textContent = template.queue || '';
-        utils.$('prevCron').textContent = template.cronExpression || '';
-        utils.$('prevDelay').textContent = template.delayMinutes || '';
-        utils.$('prevScheduled').textContent = template.scheduledDateTime || '';
-        utils.$('prevParentId').textContent = template.parentJobId || '';
-        utils.$('prevEngine').textContent = template.recurringEngine || (template.engine || 'N/A');
-        utils.$('prevMode').textContent = template.mode || 'N/A';
-        utils.$('prevPerformContext').textContent = template.includePerformContext ? 'Yes' : 'No';
-        utils.$('prevCancellationToken').textContent = template.includeCancellationToken ? 'Yes' : 'No';
+        var setText = function (id, value) {
+            var el = document.getElementById(id);
+            if (el) el.textContent = value || '';
+        };
+
+        setText('prevName', template.name);
+        setText('prevClass', template.className);
+        setText('prevMethod', template.methodName);
+        setText('prevQueue', template.queue);
+        setText('prevCron', template.cronExpression);
+        setText('prevDelay', template.delayMinutes);
+        setText('prevScheduled', template.scheduledDateTime);
+        setText('prevParentId', template.parentJobId);
+        setText('prevEngine', template.recurringEngine || template.engine || 'N/A');
+        setText('prevMode', template.mode);
+        setText('prevPerformContext', template.includePerformContext ? 'Yes' : 'No');
+        setText('prevCancellationToken', template.includeCancellationToken ? 'Yes' : 'No');
+
         var rawParams = template.rawParametersJson || '{}';
         try {
             var parsed = JSON.parse(rawParams);
-            utils.$('prevParams').textContent = JSON.stringify(parsed, null, 2);
+            var paramsEl = document.getElementById('prevParams');
+            if (paramsEl) paramsEl.textContent = JSON.stringify(parsed, null, 2);
         } catch (e) {
-            utils.$('prevParams').textContent = rawParams;
+            var paramsEl = document.getElementById('prevParams');
+            if (paramsEl) paramsEl.textContent = rawParams;
         }
-        if (typeof $ !== 'undefined') $('#templatePreviewModal').modal('show');
+
+        // Mostrar el modal si jQuery está disponible
+        if (typeof $ !== 'undefined' && $('#templatePreviewModal').length) {
+            $('#templatePreviewModal').modal('show');
+        }
     }
 
     function bindTemplateButtons() {

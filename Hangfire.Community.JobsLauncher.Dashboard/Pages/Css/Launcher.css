@@ -7,15 +7,15 @@
 
 /* Variables de color dark mode */
 .jobslauncher-dark {
-    --jl-bg: #0f0f1a;
-    --jl-surface: #1a1b2e;
-    --jl-surface-2: #252540;
-    --jl-surface-3: #2d2e4a;
-    --jl-border: #35365a;
-    --jl-border-light: #3f4068;
-    --jl-text: #c8cde8;
-    --jl-text-muted: #7a7f9a;
-    --jl-text-dim: #555875;
+    --jl-bg: #1a1c22;
+    --jl-surface: #22252d;
+    --jl-surface-2: #1e2128;
+    --jl-surface-3: #2a2d36;
+    --jl-border: #2f333d;
+    --jl-border-light: #3a3e4a;
+    --jl-text: #c4c8d4;
+    --jl-text-muted: #72788a;
+    --jl-text-dim: #454a58;
     --jl-primary: #6c8aff;
     --jl-primary-hover: #8aa0ff;
     --jl-success: #3dba6a;
@@ -25,11 +25,11 @@
     --jl-danger: #e05252;
     --jl-info: #40a9d4;
     --jl-info-hover: #55bde8;
-    --jl-input-bg: #1e1f35;
-    --jl-input-focus: #252640;
-    --jl-pre-bg: #13131f;
-    --jl-shadow: 0 2px 12px rgba(0,0,0,0.5);
-    --jl-shadow-lg: 0 4px 24px rgba(0,0,0,0.65);
+    --jl-input-bg: #1a1c22;
+    --jl-input-focus: #1e2128;
+    --jl-pre-bg: #161820;
+    --jl-shadow: 0 2px 12px rgba(0,0,0,0.45);
+    --jl-shadow-lg: 0 4px 24px rgba(0,0,0,0.6);
     --jl-radius: 6px;
     --jl-font-mono: 'Consolas', 'Courier New', monospace;
 }
@@ -106,16 +106,16 @@
     border-color: var(--jl-border);
 }
 
-    .jobslauncher-dark .panel-default > .panel-heading {
-        background-color: var(--jl-surface-2);
-        border-bottom: 1px solid var(--jl-border);
-        color: var(--jl-text);
-        font-weight: 600;
-        font-size: 13px;
-        letter-spacing: 0.3px;
-        padding: 10px 16px;
-        border-radius: calc(var(--jl-radius) - 1px) calc(var(--jl-radius) - 1px) 0 0;
-    }
+.jobslauncher-dark .panel-default > .panel-heading {
+    background-color: var(--jl-surface-2);
+    border-bottom: 1px solid var(--jl-border);
+    color: var(--jl-text);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    padding: 10px 16px;
+    border-radius: calc(var(--jl-radius) - 1px) calc(var(--jl-radius) - 1px) 0 0;
+}
 
 .jobslauncher-dark .panel-body {
     padding: 18px;
@@ -145,25 +145,25 @@
     transition: border-color 0.18s, background-color 0.18s, box-shadow 0.18s;
 }
 
-    .jobslauncher-dark .form-control:focus {
-        background-color: var(--jl-input-focus);
-        border-color: var(--jl-primary);
-        color: var(--jl-text);
-        box-shadow: 0 0 0 2px rgba(108, 138, 255, 0.18);
-        outline: none;
-    }
+.jobslauncher-dark .form-control:focus {
+    background-color: var(--jl-input-focus);
+    border-color: var(--jl-primary);
+    color: var(--jl-text);
+    box-shadow: 0 0 0 2px rgba(108, 138, 255, 0.18);
+    outline: none;
+}
 
-    .jobslauncher-dark .form-control::placeholder {
-        color: var(--jl-text-dim);
-    }
+.jobslauncher-dark .form-control::placeholder {
+    color: var(--jl-text-dim);
+}
 
-    .jobslauncher-dark .form-control[disabled],
-    .jobslauncher-dark .form-control[readonly] {
-        background-color: var(--jl-surface-3);
-        color: var(--jl-text-dim);
-        border-color: var(--jl-border);
-        cursor: not-allowed;
-    }
+.jobslauncher-dark .form-control[disabled],
+.jobslauncher-dark .form-control[readonly] {
+    background-color: var(--jl-surface-3);
+    color: var(--jl-text-dim);
+    border-color: var(--jl-border);
+    cursor: not-allowed;
+}
 
 .jobslauncher-dark select.form-control option {
     background-color: var(--jl-surface-2);
@@ -193,10 +193,10 @@
     transition: background-color 0.18s, border-color 0.18s;
 }
 
-    .jobslauncher-dark .input-group-btn > .btn:hover {
-        background-color: var(--jl-surface-2);
-        border-color: var(--jl-border-light);
-    }
+.jobslauncher-dark .input-group-btn > .btn:hover {
+    background-color: var(--jl-surface-2);
+    border-color: var(--jl-border-light);
+}
 
 .jobslauncher-dark .input-group > .form-control:not(:last-child),
 .jobslauncher-dark .input-group > .form-control:not(:first-child) {
@@ -216,9 +216,9 @@
     transition: background-color 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.1s;
 }
 
-    .jobslauncher-dark .btn:active {
-        transform: translateY(1px);
-    }
+.jobslauncher-dark .btn:active {
+    transform: translateY(1px);
+}
 
 .jobslauncher-dark .btn-default {
     background-color: var(--jl-surface-3);
@@ -226,12 +226,12 @@
     color: var(--jl-text);
 }
 
-    .jobslauncher-dark .btn-default:hover,
-    .jobslauncher-dark .btn-default:focus {
-        background-color: var(--jl-surface-2);
-        border-color: var(--jl-border-light);
-        color: var(--jl-text);
-    }
+.jobslauncher-dark .btn-default:hover,
+.jobslauncher-dark .btn-default:focus {
+    background-color: var(--jl-surface-2);
+    border-color: var(--jl-border-light);
+    color: var(--jl-text);
+}
 
 .jobslauncher-dark .btn-primary {
     background-color: var(--jl-primary);
@@ -239,13 +239,13 @@
     color: #fff;
 }
 
-    .jobslauncher-dark .btn-primary:hover,
-    .jobslauncher-dark .btn-primary:focus {
-        background-color: var(--jl-primary-hover);
-        border-color: var(--jl-primary-hover);
-        color: #fff;
-        box-shadow: 0 0 0 3px rgba(108,138,255,0.25);
-    }
+.jobslauncher-dark .btn-primary:hover,
+.jobslauncher-dark .btn-primary:focus {
+    background-color: var(--jl-primary-hover);
+    border-color: var(--jl-primary-hover);
+    color: #fff;
+    box-shadow: 0 0 0 3px rgba(108,138,255,0.25);
+}
 
 .jobslauncher-dark .btn-success {
     background-color: var(--jl-success);
@@ -253,13 +253,13 @@
     color: #fff;
 }
 
-    .jobslauncher-dark .btn-success:hover,
-    .jobslauncher-dark .btn-success:focus {
-        background-color: var(--jl-success-hover);
-        border-color: var(--jl-success-hover);
-        color: #fff;
-        box-shadow: 0 0 0 3px rgba(61,186,106,0.25);
-    }
+.jobslauncher-dark .btn-success:hover,
+.jobslauncher-dark .btn-success:focus {
+    background-color: var(--jl-success-hover);
+    border-color: var(--jl-success-hover);
+    color: #fff;
+    box-shadow: 0 0 0 3px rgba(61,186,106,0.25);
+}
 
 .jobslauncher-dark .btn-warning {
     background-color: transparent;
@@ -267,13 +267,13 @@
     color: var(--jl-warning);
 }
 
-    .jobslauncher-dark .btn-warning:hover,
-    .jobslauncher-dark .btn-warning:focus {
-        background-color: var(--jl-warning);
-        border-color: var(--jl-warning);
-        color: #fff;
-        box-shadow: 0 0 0 3px rgba(212,150,30,0.25);
-    }
+.jobslauncher-dark .btn-warning:hover,
+.jobslauncher-dark .btn-warning:focus {
+    background-color: var(--jl-warning);
+    border-color: var(--jl-warning);
+    color: #fff;
+    box-shadow: 0 0 0 3px rgba(212,150,30,0.25);
+}
 
 .jobslauncher-dark .btn-info {
     background-color: var(--jl-info);
@@ -281,13 +281,13 @@
     color: #fff;
 }
 
-    .jobslauncher-dark .btn-info:hover,
-    .jobslauncher-dark .btn-info:focus {
-        background-color: var(--jl-info-hover);
-        border-color: var(--jl-info-hover);
-        color: #fff;
-        box-shadow: 0 0 0 3px rgba(64,169,212,0.25);
-    }
+.jobslauncher-dark .btn-info:hover,
+.jobslauncher-dark .btn-info:focus {
+    background-color: var(--jl-info-hover);
+    border-color: var(--jl-info-hover);
+    color: #fff;
+    box-shadow: 0 0 0 3px rgba(64,169,212,0.25);
+}
 
 .jobslauncher-dark .btn-block + .btn-block {
     margin-top: 8px;
@@ -444,10 +444,10 @@
     transition: color 0.18s;
 }
 
-    .jobslauncher-dark a[data-toggle="collapse"]:hover {
-        color: var(--jl-primary-hover);
-        text-decoration: none;
-    }
+.jobslauncher-dark a[data-toggle="collapse"]:hover {
+    color: var(--jl-primary-hover);
+    text-decoration: none;
+}
 
 
 /* ============================================================
@@ -482,24 +482,24 @@
     padding: 14px 20px;
 }
 
-    .jobslauncher-dark .modal-header .modal-title {
-        color: var(--jl-text);
-        font-weight: 700;
-        font-size: 15px;
-    }
+.jobslauncher-dark .modal-header .modal-title {
+    color: var(--jl-text);
+    font-weight: 700;
+    font-size: 15px;
+}
 
-    .jobslauncher-dark .modal-header .close {
-        color: var(--jl-text-muted);
-        opacity: 0.7;
-        text-shadow: none;
-        font-size: 20px;
-        transition: color 0.18s, opacity 0.18s;
-    }
+.jobslauncher-dark .modal-header .close {
+    color: var(--jl-text-muted);
+    opacity: 0.7;
+    text-shadow: none;
+    font-size: 20px;
+    transition: color 0.18s, opacity 0.18s;
+}
 
-        .jobslauncher-dark .modal-header .close:hover {
-            color: var(--jl-text);
-            opacity: 1;
-        }
+.jobslauncher-dark .modal-header .close:hover {
+    color: var(--jl-text);
+    opacity: 1;
+}
 
 .jobslauncher-dark .modal-footer {
     background-color: var(--jl-surface-2);
@@ -527,31 +527,31 @@
     margin-bottom: 15px;
 }
 
-    .jobslauncher-dark .nav-tabs > li > a {
-        color: var(--jl-text-muted);
-        background-color: transparent;
-        border: 1px solid transparent;
-        border-radius: var(--jl-radius) var(--jl-radius) 0 0;
-        font-size: 12px;
-        font-weight: 600;
-        letter-spacing: 0.3px;
-        padding: 7px 14px;
-        transition: color 0.18s, background-color 0.18s;
-    }
+.jobslauncher-dark .nav-tabs > li > a {
+    color: var(--jl-text-muted);
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--jl-radius) var(--jl-radius) 0 0;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    padding: 7px 14px;
+    transition: color 0.18s, background-color 0.18s;
+}
 
-        .jobslauncher-dark .nav-tabs > li > a:hover {
-            color: var(--jl-text);
-            background-color: var(--jl-surface-3);
-            border-color: var(--jl-border) var(--jl-border) transparent;
-        }
+.jobslauncher-dark .nav-tabs > li > a:hover {
+    color: var(--jl-text);
+    background-color: var(--jl-surface-3);
+    border-color: var(--jl-border) var(--jl-border) transparent;
+}
 
-    .jobslauncher-dark .nav-tabs > li.active > a,
-    .jobslauncher-dark .nav-tabs > li.active > a:hover,
-    .jobslauncher-dark .nav-tabs > li.active > a:focus {
-        background-color: var(--jl-surface);
-        border-color: var(--jl-border) var(--jl-border) transparent;
-        color: var(--jl-primary);
-    }
+.jobslauncher-dark .nav-tabs > li.active > a,
+.jobslauncher-dark .nav-tabs > li.active > a:hover,
+.jobslauncher-dark .nav-tabs > li.active > a:focus {
+    background-color: var(--jl-surface);
+    border-color: var(--jl-border) var(--jl-border) transparent;
+    color: var(--jl-primary);
+}
 
 .jobslauncher-cron-tab-content {
     min-height: 250px;
@@ -625,12 +625,12 @@
     transition: background-color 0.18s;
 }
 
-    .jobslauncher-dark .pagination > li > a:hover,
-    .jobslauncher-dark .pagination > li > span:hover {
-        background-color: var(--jl-surface-3);
-        border-color: var(--jl-border-light);
-        color: var(--jl-text);
-    }
+.jobslauncher-dark .pagination > li > a:hover,
+.jobslauncher-dark .pagination > li > span:hover {
+    background-color: var(--jl-surface-3);
+    border-color: var(--jl-border-light);
+    color: var(--jl-text);
+}
 
 .jobslauncher-dark .pagination > .active > a,
 .jobslauncher-dark .pagination > .active > span {
@@ -663,18 +663,18 @@
     color: #a8d8a8;
 }
 
-    .jobslauncher-params-preview::-webkit-scrollbar {
-        width: 4px;
-    }
+.jobslauncher-params-preview::-webkit-scrollbar {
+    width: 4px;
+}
 
-    .jobslauncher-params-preview::-webkit-scrollbar-track {
-        background: var(--jl-surface-2);
-    }
+.jobslauncher-params-preview::-webkit-scrollbar-track {
+    background: var(--jl-surface-2);
+}
 
-    .jobslauncher-params-preview::-webkit-scrollbar-thumb {
-        background: var(--jl-border-light);
-        border-radius: 2px;
-    }
+.jobslauncher-params-preview::-webkit-scrollbar-thumb {
+    background: var(--jl-border-light);
+    border-radius: 2px;
+}
 
 
 /* ============================================================
@@ -685,34 +685,34 @@
     color: var(--jl-text);
 }
 
-    .jobslauncher-dark .table > thead > tr > th {
-        background-color: var(--jl-surface-2);
-        border-bottom: 2px solid var(--jl-border);
-        color: var(--jl-text-muted);
-        font-size: 11px;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        font-weight: 700;
-    }
+.jobslauncher-dark .table > thead > tr > th {
+    background-color: var(--jl-surface-2);
+    border-bottom: 2px solid var(--jl-border);
+    color: var(--jl-text-muted);
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
 
-    .jobslauncher-dark .table > tbody > tr > td {
-        border-top: 1px solid var(--jl-border);
-        vertical-align: middle;
-        font-size: 13px;
-    }
+.jobslauncher-dark .table > tbody > tr > td {
+    border-top: 1px solid var(--jl-border);
+    vertical-align: middle;
+    font-size: 13px;
+}
 
-    .jobslauncher-dark .table > tbody > tr:hover > td {
-        background-color: var(--jl-surface-2);
-    }
+.jobslauncher-dark .table > tbody > tr:hover > td {
+    background-color: var(--jl-surface-2);
+}
 
 .jobslauncher-dark .table-bordered {
     border-color: var(--jl-border);
 }
 
-    .jobslauncher-dark .table-bordered > thead > tr > th,
-    .jobslauncher-dark .table-bordered > tbody > tr > td {
-        border-color: var(--jl-border);
-    }
+.jobslauncher-dark .table-bordered > thead > tr > th,
+.jobslauncher-dark .table-bordered > tbody > tr > td {
+    border-color: var(--jl-border);
+}
 
 
 /* ============================================================
@@ -773,9 +773,9 @@
     border-radius: 3px;
 }
 
-    .jobslauncher-dark ::-webkit-scrollbar-thumb:hover {
-        background: var(--jl-text-dim);
-    }
+.jobslauncher-dark ::-webkit-scrollbar-thumb:hover {
+    background: var(--jl-text-dim);
+}
 
 
 /* ============================================================
@@ -796,13 +796,13 @@
     color: #fff;
 }
 
-    .jobslauncher-dark .btn-danger:hover,
-    .jobslauncher-dark .btn-danger:focus {
-        background-color: #f06060;
-        border-color: #f06060;
-        color: #fff;
-        box-shadow: 0 0 0 3px rgba(224, 82, 82, 0.25);
-    }
+.jobslauncher-dark .btn-danger:hover,
+.jobslauncher-dark .btn-danger:focus {
+    background-color: #f06060;
+    border-color: #f06060;
+    color: #fff;
+    box-shadow: 0 0 0 3px rgba(224, 82, 82, 0.25);
+}
 
 
 /* ============================================================
@@ -821,17 +821,17 @@
     transition: border-color 0.18s, box-shadow 0.18s;
 }
 
-    .jobslauncher-dark .input-sm:focus {
-        background-color: var(--jl-input-focus);
-        border-color: var(--jl-primary);
-        color: var(--jl-text);
-        box-shadow: 0 0 0 2px rgba(108, 138, 255, 0.18);
-        outline: none;
-    }
+.jobslauncher-dark .input-sm:focus {
+    background-color: var(--jl-input-focus);
+    border-color: var(--jl-primary);
+    color: var(--jl-text);
+    box-shadow: 0 0 0 2px rgba(108, 138, 255, 0.18);
+    outline: none;
+}
 
-    .jobslauncher-dark .input-sm::placeholder {
-        color: var(--jl-text-dim);
-    }
+.jobslauncher-dark .input-sm::placeholder {
+    color: var(--jl-text-dim);
+}
 
 
 /* ============================================================
@@ -846,23 +846,23 @@
     margin-bottom: 4px;
 }
 
-    .jobslauncher-dark input[type="file"]::file-selector-button {
-        background-color: var(--jl-surface-3);
-        border: 1px solid var(--jl-border);
-        border-radius: var(--jl-radius);
-        color: var(--jl-text);
-        cursor: pointer;
-        font-size: 12px;
-        font-weight: 600;
-        padding: 3px 10px;
-        margin-right: 8px;
-        transition: background-color 0.18s, border-color 0.18s;
-    }
+.jobslauncher-dark input[type="file"]::file-selector-button {
+    background-color: var(--jl-surface-3);
+    border: 1px solid var(--jl-border);
+    border-radius: var(--jl-radius);
+    color: var(--jl-text);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    margin-right: 8px;
+    transition: background-color 0.18s, border-color 0.18s;
+}
 
-        .jobslauncher-dark input[type="file"]::file-selector-button:hover {
-            background-color: var(--jl-surface-2);
-            border-color: var(--jl-border-light);
-        }
+.jobslauncher-dark input[type="file"]::file-selector-button:hover {
+    background-color: var(--jl-surface-2);
+    border-color: var(--jl-border-light);
+}
 
 
 /* ============================================================
@@ -1008,48 +1008,48 @@
     padding-top: 10px;
 }
 
-    .jobslauncher-page-wrapper > .nav-tabs {
-        border-bottom: 1px solid var(--jl-border);
-        margin-bottom: 0;
-        background-color: var(--jl-surface-2);
-        padding: 0 4px;
-        border-radius: var(--jl-radius) var(--jl-radius) 0 0;
-    }
+.jobslauncher-page-wrapper > .nav-tabs {
+    border-bottom: 1px solid var(--jl-border);
+    margin-bottom: 0;
+    background-color: var(--jl-surface-2);
+    padding: 0 4px;
+    border-radius: var(--jl-radius) var(--jl-radius) 0 0;
+}
 
-        .jobslauncher-page-wrapper > .nav-tabs > li > a {
-            color: var(--jl-text-muted);
-            background-color: transparent;
-            border: 1px solid transparent;
-            border-radius: var(--jl-radius) var(--jl-radius) 0 0;
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-            padding: 9px 18px;
-            margin-right: 2px;
-            transition: color 0.18s, background-color 0.18s;
-        }
+.jobslauncher-page-wrapper > .nav-tabs > li > a {
+    color: var(--jl-text-muted);
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--jl-radius) var(--jl-radius) 0 0;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    padding: 9px 18px;
+    margin-right: 2px;
+    transition: color 0.18s, background-color 0.18s;
+}
 
-            .jobslauncher-page-wrapper > .nav-tabs > li > a:hover {
-                color: var(--jl-text);
-                background-color: var(--jl-surface-3);
-                border-color: var(--jl-border) var(--jl-border) transparent;
-            }
+.jobslauncher-page-wrapper > .nav-tabs > li > a:hover {
+    color: var(--jl-text);
+    background-color: var(--jl-surface-3);
+    border-color: var(--jl-border) var(--jl-border) transparent;
+}
 
-        .jobslauncher-page-wrapper > .nav-tabs > li.active > a,
-        .jobslauncher-page-wrapper > .nav-tabs > li.active > a:hover,
-        .jobslauncher-page-wrapper > .nav-tabs > li.active > a:focus {
-            background-color: var(--jl-surface);
-            border-color: var(--jl-border) var(--jl-border) var(--jl-surface);
-            color: var(--jl-primary);
-        }
+.jobslauncher-page-wrapper > .nav-tabs > li.active > a,
+.jobslauncher-page-wrapper > .nav-tabs > li.active > a:hover,
+.jobslauncher-page-wrapper > .nav-tabs > li.active > a:focus {
+    background-color: var(--jl-surface);
+    border-color: var(--jl-border) var(--jl-border) var(--jl-surface);
+    color: var(--jl-primary);
+}
 
-    .jobslauncher-page-wrapper > .tab-content {
-        background-color: var(--jl-surface);
-        border: 1px solid var(--jl-border);
-        border-top: none;
-        border-radius: 0 0 var(--jl-radius) var(--jl-radius);
-        padding: 20px;
-    }
+.jobslauncher-page-wrapper > .tab-content {
+    background-color: var(--jl-surface);
+    border: 1px solid var(--jl-border);
+    border-top: none;
+    border-radius: 0 0 var(--jl-radius) var(--jl-radius);
+    padding: 20px;
+}
 
 /* ============================================================
    JobLauncher Dashboard - Estilos adicionales para HistoryTab
@@ -1069,9 +1069,9 @@
     padding-left: 20px;
 }
 
-    .jobslauncher-dark .alert ul li {
-        color: inherit;
-        font-size: 13px;
-        margin-bottom: 3px;
-        line-height: 1.5;
-    }
+.jobslauncher-dark .alert ul li {
+    color: inherit;
+    font-size: 13px;
+    margin-bottom: 3px;
+    line-height: 1.5;
+}

@@ -390,7 +390,7 @@
             '\nMode: ' + req.executionMode + '\nEngine: ' + (req.recurringEngine || 'Direct') +
             '\nParameters: ' + (req.rawParametersJson || JSON.stringify(req.parameters));
         utils.$('previewContent').textContent = summary;
-        utils.$('previewPanel').style.display = 'block';
+        utils.$('previewPanel').classList.remove('jobslauncher-hidden');
     }
 
     /* ── Funciones auxiliares para rellenar campos (usadas por templates/history) ── */
