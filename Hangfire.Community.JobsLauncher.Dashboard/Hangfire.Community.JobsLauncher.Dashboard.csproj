@@ -44,6 +44,30 @@
 			<Generator>RazorGenerator</Generator>
 			<LastGenOutput>JobLauncher.cshtml.cs</LastGenOutput>
 		</None>
+		<None Update="Pages\Partial\_AuditLogTab.cshtml">
+			<Generator>RazorGenerator</Generator>
+			<LastGenOutput>_AuditLogTab.cshtml.cs</LastGenOutput>
+		</None>
+		<None Update="Pages\Partial\_CriticalConfirmModal.cshtml">
+			<Generator>RazorGenerator</Generator>
+			<LastGenOutput>_CriticalConfirmModal.cshtml.cs</LastGenOutput>
+		</None>
+		<None Update="Pages\Partial\_CronGeneratorModal.cshtml">
+			<Generator>RazorGenerator</Generator>
+			<LastGenOutput>_CronGeneratorModal.cshtml.cs</LastGenOutput>
+		</None>
+		<None Update="Pages\Partial\_HistoryTab.cshtml">
+			<Generator>RazorGenerator</Generator>
+			<LastGenOutput>_HistoryTab.cshtml.cs</LastGenOutput>
+		</None>
+		<None Update="Pages\Partial\_LaunchTab.cshtml">
+			<Generator>RazorGenerator</Generator>
+			<LastGenOutput>_LaunchTab.cshtml.cs</LastGenOutput>
+		</None>
+		<None Update="Pages\Partial\_TemplatesTab.cshtml">
+			<Generator>RazorGenerator</Generator>
+			<LastGenOutput>_TemplatesTab.cshtml.cs</LastGenOutput>
+		</None>
 		<!-- Agrega más archivos aquí siguiendo el mismo patrón -->
 	</ItemGroup>
 
